@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+/* ===========================================
+   CROMIKS DESIGN TOKENS — v1.0
+   Source of truth: DESIGN.md
+   =========================================== */
+
+@theme {
+  /* —— Surfaces —— */
+  --color-surface-deep: #0a0e14;
+  --color-surface-base: #0f141c;
+  --color-surface-raised: #161d28;
+  --color-surface-elevated: #1e2734;
+
+  /* —— Text —— */
+  --color-text-primary: #f0f4f8;
+  --color-text-secondary: #b0bac8;
+  --color-text-muted: #6b7585;
+  --color-text-ghost: #3a4250;
+
+  /* —— Brand —— */
+  --color-argentina-glow: #6bb9ff;
+  --color-gold: #d4a93c;
+  --color-celeste-deep: #29537a;
+
+  /* —— Rarity tiers —— */
+  --color-tier-common: #6b7585;
+  --color-tier-uncommon: #c9a659;
+  --color-tier-rare: #5ba3e0;
+  --color-tier-epic: #b97fe3;
+  --color-tier-legendary-1: #ff6b9d;
+  --color-tier-legendary-2: #6bb9ff;
+  --color-tier-legendary-3: #ffd96b;
+  --color-tier-legendary-4: #b97fe3;
+
+  /* —— Semantic —— */
+  --color-success: #5dc58a;
+  --color-warning: #ffb454;
+  --color-danger: #ff6b6b;
+  --color-info: #6bb9ff;
+
+  /* —— Fonts (injected by next/font) —— */
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-body: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "SF Mono", Menlo, monospace;
+
+  /* —— Spacing scale (4-based) —— */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 24px;
+  --spacing-6: 32px;
+  --spacing-7: 48px;
+  --spacing-8: 64px;
+  --spacing-9: 96px;
+
+  /* —— Radius —— */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* —— Motion durations —— */
+  --duration-instant: 100ms;
+  --duration-quick: 200ms;
+  --duration-moderate: 350ms;
+  --duration-cinematic: 700ms;
+  --duration-epic: 1200ms;
+
+  /* —— Motion easings —— */
+  --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-drama: cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* ===========================================
+   GLOBAL RESET / BASE
+   =========================================== */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Asegurar dark always */
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--color-surface-deep);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ambient glow sutil arriba */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      ellipse at top,
+      rgba(107, 185, 255, 0.08) 0%,
+      transparent 50%
+    );
+    z-index: 0;
+  }
+
+  /* Hacer que el contenido esté arriba del ambient */
+  body > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Selección */
+  ::selection {
+    background: var(--color-argentina-glow);
+    color: var(--color-surface-deep);
+  }
+
+  /* Focus rings */
+  :focus-visible {
+    outline: 2px solid var(--color-argentina-glow);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface-base);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-full);
+    border: 3px solid var(--color-surface-base);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-ghost);
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===========================================
+   UTILITIES
+   =========================================== */
+
+@utility text-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+}
+
+@utility text-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+@utility prism-gradient {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    var(--color-tier-legendary-1),
+    var(--color-tier-legendary-2),
+    var(--color-tier-legendary-3),
+    var(--color-tier-legendary-4),
+    var(--color-tier-legendary-1)
+  );
+}
+
+@utility prism-text {
+  background: linear-gradient(
+    90deg,
+    var(--color-tier-legendary-1),
+    var(--color-tier-legendary-2),
+    var(--color-tier-legendary-3),
+    var(--color-tier-legendary-4)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===========================================
+   ANIMATIONS — base
+   =========================================== */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes prism-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
