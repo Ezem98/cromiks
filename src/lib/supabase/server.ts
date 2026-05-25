@@ -24,14 +24,14 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           try {
             for (const { name, value, options } of cookiesToSet) {
               cookieStore.set(name, value, options)
             }
           } catch {
-            // El método setAll puede fallar si se llama desde un Server Component.
-            // Se puede ignorar si hay un middleware refreshing tokens del user.
+            // setAll puede fallar si se llama desde un Server Component.
+            // Se puede ignorar si hay un middleware refreshing tokens.
           }
         },
       },

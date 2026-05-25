@@ -1,0 +1,2397 @@
+# =====================================================================
+# Eterno Diciembre — Master Catálogo
+# Primer álbum de Replay: Argentina Campeón del Mundo 2022
+# =====================================================================
+#
+# Este archivo es la fuente única de verdad del contenido del álbum.
+# Define los 205 cromos con su metadata, rareza y fuentes a procesar.
+#
+# Estructura de cada cromo:
+#   - id: slug único (kebab-case)
+#   - name: nombre display
+#   - page: id de la página a la que pertenece
+#   - rarity: common | uncommon | rare | epic | legendary
+#   - card_number: 1-205, único en el álbum
+#   - description: copy corto para el detalle del cromo
+#   - content: definición de assets a procesar
+#       photo: { type, source_url, capture_frame? }
+#       video: { type, source_url, start, duration } (rare+ solo)
+#       audio: { source_url, start, duration } (cromos de audio)
+#       relator_clip: { source_url, start, duration, relator } (epic+ solo)
+#   - metadata: contexto del momento
+#
+# Estados de content:
+#   - source: "TODO" → no se obtuvo aún
+#   - source: "wikimedia" → fuente libre identificada
+#   - source: "youtube" → URL de YouTube a procesar con yt-dlp
+#   - source: "self-capture" → captura propia del video del partido
+#
+# Tipos de processing:
+#   - video_capture: tomar foto desde frame específico del video
+#   - extract: descargar video/audio y recortar segmento
+#   - official: foto oficial pública (Wikipedia, Commons)
+#
+# =====================================================================
+
+meta:
+  album_id: "eterno-diciembre"
+  album_name: "Eterno Diciembre"
+  album_subtitle: "Argentina Campeón del Mundo 2022"
+  total_cards: 205
+  language: "es-AR"
+  version: "1.0.0"
+  release_date: "2026-06-XX"
+  created_at: "2026-05-24"
+
+# =====================================================================
+# DISTRIBUCIÓN DE RAREZAS
+# =====================================================================
+
+rarity_distribution:
+  common: 113
+  uncommon: 55
+  rare: 14
+  epic: 12
+  legendary: 11
+  total: 205
+
+# =====================================================================
+# PÁGINAS DEL ÁLBUM
+# =====================================================================
+
+pages:
+  - id: "plantel"
+    name: "El plantel"
+    description: "Los 26 que escribieron la historia, más el cuerpo técnico y los protagonistas en acción"
+    order: 1
+    card_range: [1, 40]
+    bonus_card_id: "plantel-firmado"  # cromo dorado al completar
+    
+  - id: "antes-del-comienzo"
+    name: "Antes del comienzo"
+    description: "Del Maracaná a Qatar. La Copa América 2021, la Finalissima, la llegada"
+    order: 2
+    card_range: [41, 50]
+    bonus_card_id: "scaloni-llegada-firmado"
+    
+  - id: "arabia"
+    name: "Arabia Saudita — La caída"
+    description: "La derrota fundante. El golpe que hizo más fuerte al grupo"
+    order: 3
+    card_range: [51, 65]
+    bonus_card_id: "arabia-firmado"
+    
+  - id: "mexico"
+    name: "México — El desahogo"
+    description: "El gol de Messi que salvó al equipo y el golazo de Enzo"
+    order: 4
+    card_range: [66, 80]
+    bonus_card_id: "mexico-firmado"
+    
+  - id: "polonia-australia"
+    name: "Polonia + Australia"
+    description: "Pase a octavos y el primer milagro del Dibu"
+    order: 5
+    card_range: [81, 100]
+    bonus_card_id: "octavos-firmado"
+    
+  - id: "paises-bajos"
+    name: "Países Bajos — La guerra"
+    description: "El partido más caliente del Mundial. Y el bobazo eterno"
+    order: 6
+    card_range: [101, 120]
+    bonus_card_id: "andate-pa-alla-firmado"
+    
+  - id: "croacia"
+    name: "Croacia — Nace una leyenda"
+    description: "Julián Álvarez se corona y Messi humilla a Gvardiol"
+    order: 7
+    card_range: [121, 135]
+    bonus_card_id: "julian-firmado"
+    
+  - id: "francia"
+    name: "Francia — La final eterna"
+    description: "La final más dramática de todos los tiempos"
+    order: 8
+    card_range: [136, 165]
+    bonus_card_id: "final-firmado"
+    
+  - id: "la-gloria"
+    name: "La gloria"
+    description: "Levantar la copa, volver a casa, el Obelisco lleno"
+    order: 9
+    card_range: [166, 190]
+    bonus_card_id: "copa-firmada"
+    
+  - id: "simbolos"
+    name: "Símbolos y cultura"
+    description: "Los íconos que quedan. La copa, las estrellas, los cánticos"
+    order: 10
+    card_range: [191, 205]
+    bonus_card_id: "tres-estrellas-firmado"
+
+# =====================================================================
+# CARDS — PÁGINA 1: EL PLANTEL (40 cromos)
+# =====================================================================
+
+cards:
+  # ----- Arqueros -----
+  - id: "armani-plantel"
+    name: "Franco Armani"
+    page: "plantel"
+    rarity: "common"
+    card_number: 1
+    description: "Arquero histórico de River. La experiencia bajo los tres palos"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Arquero"
+      number: 1
+      club: "River Plate"
+      
+  - id: "rulli-plantel"
+    name: "Gerónimo Rulli"
+    page: "plantel"
+    rarity: "common"
+    card_number: 2
+    description: "El tercer arquero, siempre listo"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Arquero"
+      number: 12
+      club: "Villarreal"
+      
+  - id: "dibu-plantel"
+    name: "Emiliano \"Dibu\" Martínez"
+    page: "plantel"
+    rarity: "common"
+    card_number: 3
+    description: "El arquero del Mundial. Mejor guardameta de Qatar 2022"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Arquero"
+      number: 23
+      club: "Aston Villa"
+  
+  # ----- Defensores -----
+  - id: "lisandro-martinez-plantel"
+    name: "Lisandro Martínez"
+    page: "plantel"
+    rarity: "common"
+    card_number: 4
+    description: "Licha. El defensor que no negocia"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 25
+      club: "Manchester United"
+      
+  - id: "montiel-plantel"
+    name: "Gonzalo Montiel"
+    page: "plantel"
+    rarity: "common"
+    card_number: 5
+    description: "El Cachete. El penal que cambió la historia"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 4
+      club: "Sevilla"
+      
+  - id: "pezzella-plantel"
+    name: "Germán Pezzella"
+    page: "plantel"
+    rarity: "common"
+    card_number: 6
+    description: "Capitán del Betis, defensor del grupo"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 6
+      club: "Real Betis"
+      
+  - id: "acuna-plantel"
+    name: "Marcos Acuña"
+    page: "plantel"
+    rarity: "common"
+    card_number: 7
+    description: "El Huevo. Lateral con sangre"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 8
+      club: "Sevilla"
+      
+  - id: "tagliafico-plantel"
+    name: "Nicolás Tagliafico"
+    page: "plantel"
+    rarity: "common"
+    card_number: 8
+    description: "Lateral izquierdo de máquina"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 3
+      club: "Olympique Lyon"
+      
+  - id: "cuti-plantel"
+    name: "Cristian \"Cuti\" Romero"
+    page: "plantel"
+    rarity: "common"
+    card_number: 9
+    description: "El defensor más temido. Cero respeto a los rivales"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 13
+      club: "Tottenham"
+      
+  - id: "otamendi-plantel"
+    name: "Nicolás Otamendi"
+    page: "plantel"
+    rarity: "common"
+    card_number: 10
+    description: "El General. Liderazgo y experiencia"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 19
+      club: "Benfica"
+      
+  - id: "foyth-plantel"
+    name: "Juan Foyth"
+    page: "plantel"
+    rarity: "common"
+    card_number: 11
+    description: "Polifuncional, defensor central o lateral"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 25
+      club: "Villarreal"
+      
+  - id: "molina-plantel"
+    name: "Nahuel Molina"
+    page: "plantel"
+    rarity: "common"
+    card_number: 12
+    description: "Lateral derecho. El gol contra Países Bajos quedó en la historia"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Defensor"
+      number: 26
+      club: "Atlético Madrid"
+
+  # ----- Mediocampistas -----
+  - id: "depaul-plantel"
+    name: "Rodrigo De Paul"
+    page: "plantel"
+    rarity: "common"
+    card_number: 13
+    description: "El motor de la Selección. Compañero inseparable de Messi"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 7
+      club: "Atlético Madrid"
+      
+  - id: "paredes-plantel"
+    name: "Leandro Paredes"
+    page: "plantel"
+    rarity: "common"
+    card_number: 14
+    description: "El cinco que ordena el juego"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 5
+      club: "Juventus"
+      
+  - id: "almada-plantel"
+    name: "Thiago Almada"
+    page: "plantel"
+    rarity: "common"
+    card_number: 15
+    description: "El pibe que entró por Lo Celso. La nueva generación"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 16
+      club: "Atlanta United"
+      
+  - id: "enzo-plantel"
+    name: "Enzo Fernández"
+    page: "plantel"
+    rarity: "common"
+    card_number: 16
+    description: "El revelación del Mundial. Mejor jugador joven del torneo"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 24
+      club: "Benfica"
+      
+  - id: "macallister-plantel"
+    name: "Alexis Mac Allister"
+    page: "plantel"
+    rarity: "common"
+    card_number: 17
+    description: "Hijo del Colorado. Aportó goles, asistencias y carácter"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 20
+      club: "Brighton"
+      
+  - id: "guidorodriguez-plantel"
+    name: "Guido Rodríguez"
+    page: "plantel"
+    rarity: "common"
+    card_number: 18
+    description: "El cinco recio. Cuando hace falta marca, marca"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 18
+      club: "Real Betis"
+      
+  - id: "papugomez-plantel"
+    name: "Alejandro \"Papu\" Gómez"
+    page: "plantel"
+    rarity: "common"
+    card_number: 19
+    description: "El Papu. Mediocampista creativo, parte de la familia"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 17
+      club: "Sevilla"
+      
+  - id: "palacios-plantel"
+    name: "Exequiel Palacios"
+    page: "plantel"
+    rarity: "common"
+    card_number: 20
+    description: "Pibe de River en Europa. Mediocampista con técnica"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Mediocampista"
+      number: 14
+      club: "Bayer Leverkusen"
+
+  # ----- Delanteros -----
+  - id: "messi-plantel"
+    name: "Lionel Messi"
+    page: "plantel"
+    rarity: "common"
+    card_number: 21
+    description: "Capitán y leyenda. El 10 que volvió eterno a Qatar"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Delantero"
+      number: 10
+      club: "PSG"
+      birth_date: "1987-06-24"
+      
+  - id: "dimaria-plantel"
+    name: "Ángel Di María"
+    page: "plantel"
+    rarity: "common"
+    card_number: 22
+    description: "El Fideo. El especialista en finales eternas"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Delantero"
+      number: 11
+      club: "Juventus"
+      
+  - id: "lautaro-plantel"
+    name: "Lautaro Martínez"
+    page: "plantel"
+    rarity: "common"
+    card_number: 23
+    description: "El Toro. Delantero centro con corazón albiceleste"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Delantero"
+      number: 22
+      club: "Inter Milan"
+      
+  - id: "julian-plantel"
+    name: "Julián Álvarez"
+    page: "plantel"
+    rarity: "common"
+    card_number: 24
+    description: "La Araña. El pibe que se hizo grande en Qatar"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Delantero"
+      number: 9
+      club: "Manchester City"
+      
+  - id: "dybala-plantel"
+    name: "Paulo Dybala"
+    page: "plantel"
+    rarity: "common"
+    card_number: 25
+    description: "La Joya. Convirtió en la final"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Delantero"
+      number: 21
+      club: "Roma"
+      
+  - id: "angelcorrea-plantel"
+    name: "Ángel Correa"
+    page: "plantel"
+    rarity: "common"
+    card_number: 26
+    description: "Reemplazo de Joaquín Correa. Delantero versátil"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Delantero"
+      number: 15
+      club: "Atlético Madrid"
+
+  # ----- Cuerpo técnico -----
+  - id: "scaloni-plantel"
+    name: "Lionel Scaloni"
+    page: "plantel"
+    rarity: "common"
+    card_number: 27
+    description: "El DT que conectó al equipo con la gente. Onze d'Or 2022"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      position: "Director Técnico"
+      role: "Head Coach"
+      
+  - id: "aimar-plantel"
+    name: "Pablo Aimar"
+    page: "plantel"
+    rarity: "common"
+    card_number: 28
+    description: "El Payaso. Asistente técnico y referente emocional"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      role: "Asistente técnico"
+      
+  - id: "samuel-plantel"
+    name: "Walter Samuel"
+    page: "plantel"
+    rarity: "common"
+    card_number: 29
+    description: "El Muro. Asistente del cuerpo técnico"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      role: "Asistente técnico"
+      
+  - id: "ayala-plantel"
+    name: "Roberto Ayala"
+    page: "plantel"
+    rarity: "common"
+    card_number: 30
+    description: "Otro ex-defensor leyenda en el cuerpo técnico"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      role: "Asistente técnico"
+
+  # ----- Hero cards (Especiales) -----
+  - id: "messi-hero"
+    name: "Messi en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 31
+    description: "El 10 en su elemento. Genio puro"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "dibu-hero"
+    name: "Dibu Martínez en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 32
+    description: "El arquero campeón en pose característica"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "dimaria-hero"
+    name: "Di María en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 33
+    description: "El Fideo desbordando por la izquierda"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "julian-hero"
+    name: "Julián Álvarez en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 34
+    description: "La Araña corriendo a presionar"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "depaul-hero"
+    name: "De Paul en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 35
+    description: "El motor del equipo en plena pelea"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "enzo-hero"
+    name: "Enzo Fernández en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 36
+    description: "El revelación del Mundial dirigiendo el medio"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "macallister-hero"
+    name: "Mac Allister en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 37
+    description: "El pibe que aportó balance al equipo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "cuti-hero"
+    name: "Cuti Romero en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 38
+    description: "El defensor más temible del Mundial"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "otamendi-hero"
+    name: "Otamendi en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 39
+    description: "El General liderando la defensa"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+      
+  - id: "molina-hero"
+    name: "Molina en acción"
+    page: "plantel"
+    rarity: "uncommon"
+    card_number: 40
+    description: "El lateral derecho que se vistió de gloria contra Países Bajos"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      hero_card: true
+
+  # =====================================================================
+  # PÁGINA 2: ANTES DEL COMIENZO (10 cromos, 41-50)
+  # =====================================================================
+
+  - id: "copa-america-2021"
+    name: "Copa América 2021 — Campeón"
+    page: "antes-del-comienzo"
+    rarity: "common"
+    card_number: 41
+    description: "Argentina rompe la sequía en el Maracaná. El comienzo de todo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      date: "2021-07-10"
+      tournament: "Copa América 2021"
+      
+  - id: "messi-copa-america-beso"
+    name: "Messi besando la Copa América"
+    page: "antes-del-comienzo"
+    rarity: "uncommon"
+    card_number: 42
+    description: "El primer título mayor con la Selección. La emoción del 10"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      date: "2021-07-10"
+      
+  - id: "messi-esto-era-para-ustedes"
+    name: "\"Esto era para ustedes\""
+    page: "antes-del-comienzo"
+    rarity: "uncommon"
+    card_number: 43
+    description: "Messi se lo dedica a Argentina después de la Copa América"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      quote: "Esto era para ustedes"
+      
+  - id: "finalissima-2022"
+    name: "Finalissima 2022 vs Italia"
+    page: "antes-del-comienzo"
+    rarity: "common"
+    card_number: 44
+    description: "3-0 a Italia en Wembley. Antesala del Mundial"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      date: "2022-06-01"
+      
+  - id: "llegada-qatar"
+    name: "Llegada del plantel a Qatar"
+    page: "antes-del-comienzo"
+    rarity: "common"
+    card_number: 45
+    description: "El equipo desembarca en Doha para escribir historia"
+    content:
+      photo: { type: "official", source: "TODO" }
+    metadata:
+      date: "2022-11-17"
+      
+  - id: "concentracion-universidad-qatar"
+    name: "La Universidad de Qatar"
+    page: "antes-del-comienzo"
+    rarity: "common"
+    card_number: 46
+    description: "El lugar que el plantel hizo casa por un mes"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "primer-entrenamiento"
+    name: "Primer entrenamiento en Qatar"
+    page: "antes-del-comienzo"
+    rarity: "common"
+    card_number: 47
+    description: "La concentración arranca formal"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "foto-plantel-completo"
+    name: "Foto grupal del plantel"
+    page: "antes-del-comienzo"
+    rarity: "uncommon"
+    card_number: 48
+    description: "Los 26 + cuerpo técnico antes del primer partido"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "asado-concentracion"
+    name: "Asado del plantel"
+    page: "antes-del-comienzo"
+    rarity: "common"
+    card_number: 49
+    description: "El ritual argentino: asado entre amigos"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "muchachos-concentracion"
+    name: "\"Muchachos\" en la concentración"
+    page: "antes-del-comienzo"
+    rarity: "rare"
+    card_number: 50
+    description: "El cántico que se hizo himno empieza en la concentración"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 8 }
+    metadata:
+      cantito: "Muchachos, ahora nos volvimos a ilusionar"
+
+  # =====================================================================
+  # PÁGINA 3: ARABIA SAUDITA — LA CAÍDA (15 cromos, 51-65)
+  # =====================================================================
+
+  - id: "arabia-11-inicial"
+    name: "11 inicial vs Arabia"
+    page: "arabia"
+    rarity: "uncommon"
+    card_number: 51
+    description: "La formación del primer partido. Nadie imaginaba lo que venía"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Argentina 1 - 2 Arabia Saudita"
+      date: "2022-11-22"
+      
+  - id: "messi-gol-penal-arabia"
+    name: "Gol de Messi de penal vs Arabia"
+    page: "arabia"
+    rarity: "rare"
+    card_number: 52
+    description: "El penal que abrió el partido y la ilusión"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "10"
+      
+  - id: "lautaro-gol-anulado-arabia"
+    name: "Gol anulado a Lautaro"
+    page: "arabia"
+    rarity: "common"
+    card_number: 53
+    description: "El VAR llegó al Mundial. Off-side cuando empezaba la fiesta"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "alshehri-gol-arabia"
+    name: "Gol de Saleh Al-Shehri"
+    page: "arabia"
+    rarity: "common"
+    card_number: 54
+    description: "El primer aviso saudita"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "48"
+      
+  - id: "aldawsari-gol-arabia"
+    name: "Gol de Salem Al-Dawsari"
+    page: "arabia"
+    rarity: "common"
+    card_number: 55
+    description: "El golazo que marcó la caída"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "53"
+      
+  - id: "messi-cara-arabia"
+    name: "La cara de Messi tras el gol árabe"
+    page: "arabia"
+    rarity: "uncommon"
+    card_number: 56
+    description: "La incredulidad del capitán"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "plantel-cabizbajo-arabia"
+    name: "Plantel cabizbajo"
+    page: "arabia"
+    rarity: "common"
+    card_number: 57
+    description: "El vestuario en silencio. El golpe duro"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "tribuna-shock-arabia"
+    name: "La tribuna argentina en shock"
+    page: "arabia"
+    rarity: "common"
+    card_number: 58
+    description: "Hinchas con las manos en la cabeza"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "festejo-arabia"
+    name: "Festejo árabe"
+    page: "arabia"
+    rarity: "common"
+    card_number: 59
+    description: "El estadio se convirtió en verde. Histórica victoria saudí"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "scaloni-conferencia-arabia"
+    name: "Conferencia de Scaloni"
+    page: "arabia"
+    rarity: "common"
+    card_number: 60
+    description: "El DT da la cara después del golpe"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "charla-plantel-arabia"
+    name: "Charla del plantel post-Arabia"
+    page: "arabia"
+    rarity: "uncommon"
+    card_number: 61
+    description: "La charla que cambió todo. Unión en la adversidad"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "frase-messi-grupo-unido"
+    name: "\"El grupo está más unido que nunca\""
+    page: "arabia"
+    rarity: "rare"
+    card_number: 62
+    description: "Las palabras del capitán que cambiaron la historia"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 6 }
+    metadata:
+      quote: "El grupo está más unido que nunca"
+      
+  - id: "carta-kun-aguero"
+    name: "La carta del Kun apoyando"
+    page: "arabia"
+    rarity: "common"
+    card_number: 63
+    description: "El Kun manda fuerza desde lejos"
+    content:
+      photo: { type: "social-media", source: "TODO" }
+      
+  - id: "dibu-bronca-arabia"
+    name: "Dibu pateando con bronca"
+    page: "arabia"
+    rarity: "uncommon"
+    card_number: 64
+    description: "El Dibu descargándose en el banco después del partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "memes-arabia"
+    name: "Memes y reacciones del país"
+    page: "arabia"
+    rarity: "common"
+    card_number: 65
+    description: "Argentina entera en estado de luto humorístico"
+    content:
+      photo: { type: "collage", source: "TODO" }
+
+  # =====================================================================
+  # PÁGINA 4: MÉXICO — EL DESAHOGO (15 cromos, 66-80)
+  # =====================================================================
+
+  - id: "mexico-11-inicial"
+    name: "11 inicial vs México"
+    page: "mexico"
+    rarity: "uncommon"
+    card_number: 66
+    description: "La formación del partido más importante hasta ese momento"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Argentina 2 - 0 México"
+      date: "2022-11-26"
+      
+  - id: "messi-gol-mexico"
+    name: "Gol de Messi a México"
+    page: "mexico"
+    rarity: "epic"
+    card_number: 67
+    description: "El zapatazo que liberó la tensión. El gol que mantuvo la ilusión viva"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8, relator: "Sebastián Vignolo" }
+    metadata:
+      minute: "64"
+      
+  - id: "enzo-gol-mexico"
+    name: "Golazo de Enzo a México"
+    page: "mexico"
+    rarity: "epic"
+    card_number: 68
+    description: "Enzo se inventa una pintura desde afuera del área. Tranquilidad final"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "87"
+      
+  - id: "messi-festejo-rodilla"
+    name: "Festejo de Messi rodilla en piso"
+    page: "mexico"
+    rarity: "uncommon"
+    card_number: 69
+    description: "La emoción contenida explotando frente a la hinchada"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "enzo-festejo-mexico"
+    name: "Festejo de Enzo con la gente"
+    page: "mexico"
+    rarity: "uncommon"
+    card_number: 70
+    description: "El pibe corriendo a abrazar a los hinchas"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "plantel-celebrando-mexico"
+    name: "Plantel celebrando en cancha"
+    page: "mexico"
+    rarity: "common"
+    card_number: 71
+    description: "Abrazos de equipo después de un partido de vida o muerte"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-salida-mexico"
+    name: "Salida de Messi del campo"
+    page: "mexico"
+    rarity: "common"
+    card_number: 72
+    description: "Aplauso del estadio para el capitán"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dimaria-recibimiento-mexico"
+    name: "Recibimiento de Di María"
+    page: "mexico"
+    rarity: "common"
+    card_number: 73
+    description: "El Fideo entrando desde el banco"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "mexico-11-inicial-rivales"
+    name: "11 mexicano"
+    page: "mexico"
+    rarity: "common"
+    card_number: 74
+    description: "El equipo rival que nunca pudo descifrar a Argentina"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "memo-ochoa-mexico"
+    name: "Memo Ochoa atajando"
+    page: "mexico"
+    rarity: "common"
+    card_number: 75
+    description: "El arquero rival que vivió noches eternas en mundiales"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "hinchada-delirio-mexico"
+    name: "Hinchada argentina en delirio"
+    page: "mexico"
+    rarity: "uncommon"
+    card_number: 76
+    description: "El estadio Lusail tomado por argentinos"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-cielo-mexico"
+    name: "Messi cabeza gacha mirando al cielo"
+    page: "mexico"
+    rarity: "uncommon"
+    card_number: 77
+    description: "Un momento de espiritualidad después del alivio"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "conferencia-post-mexico"
+    name: "Conferencia post partido"
+    page: "mexico"
+    rarity: "common"
+    card_number: 78
+    description: "Scaloni y Messi enfrentando la prensa"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "frase-equipo-vivo"
+    name: "\"El equipo está vivo\""
+    page: "mexico"
+    rarity: "common"
+    card_number: 79
+    description: "El espíritu del grupo en una frase"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      quote: "El equipo está vivo"
+      
+  - id: "vamos-argentina-tribuna"
+    name: "\"Vamos vamos Argentina\" tribuna"
+    page: "mexico"
+    rarity: "rare"
+    card_number: 80
+    description: "El cántico que retumbó después del 1-0"
+    content:
+      audio: { source: "TODO", duration: 8 }
+      photo: { type: "video_capture", source: "TODO" }
+
+  # =====================================================================
+  # PÁGINA 5: POLONIA + AUSTRALIA (20 cromos, 81-100)
+  # =====================================================================
+
+  # ----- Polonia (81-90) -----
+  - id: "polonia-11-inicial"
+    name: "11 vs Polonia"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 81
+    description: "El partido que necesitaba ganar para pasar"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Polonia 0 - 2 Argentina"
+      date: "2022-11-30"
+      
+  - id: "messi-penal-atajado-polonia"
+    name: "Messi penal atajado por Szczęsny"
+    page: "polonia-australia"
+    rarity: "uncommon"
+    card_number: 82
+    description: "El momento de tensión. Szczęsny adivina"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "szczesny-atajada"
+    name: "Szczęsny atajando"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 83
+    description: "El arquero polaco no dio el brazo a torcer"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "macallister-gol-polonia"
+    name: "Gol de Mac Allister vs Polonia"
+    page: "polonia-australia"
+    rarity: "rare"
+    card_number: 84
+    description: "La definición tranquila para abrir el partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "46"
+      
+  - id: "julian-primer-gol-mundial"
+    name: "Primer gol mundialista de Julián"
+    page: "polonia-australia"
+    rarity: "epic"
+    card_number: 85
+    description: "La Araña convierte por primera vez en un Mundial. Estrella en ascenso"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "67"
+      
+  - id: "macallister-festejo-polonia"
+    name: "Festejo de Mac Allister"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 86
+    description: "El pibe corriendo a celebrar con el equipo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "julian-festejo-polonia"
+    name: "Festejo de Julián"
+    page: "polonia-australia"
+    rarity: "uncommon"
+    card_number: 87
+    description: "La emoción del pibe en su primer gol mundialista"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "lewandowski-cabizbajo"
+    name: "Lewandowski cabizbajo"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 88
+    description: "El delantero polaco después de la derrota"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "pase-octavos"
+    name: "Pase a octavos"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 89
+    description: "Argentina avanza como primera del grupo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "vamos-vamos-tribuna"
+    name: "\"Vamos vamos Argentina\" tribuna"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 90
+    description: "El cántico clásico se escuchó toda la noche"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  # ----- Australia (91-100) -----
+  - id: "australia-11-inicial"
+    name: "11 vs Australia"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 91
+    description: "Octavos de final. El partido del gol 1000"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Argentina 2 - 1 Australia"
+      date: "2022-12-03"
+      
+  - id: "messi-gol-1000-australia"
+    name: "Gol 1000 de Messi"
+    page: "polonia-australia"
+    rarity: "legendary"
+    card_number: 92
+    description: "El gol número 1000 en la carrera del 10. Momento histórico"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8, relator: "Sebastián Vignolo" }
+    metadata:
+      minute: "35"
+      legendary_brief: "Lo histórico. Contador 1000 en oro envejecido en parallax detrás. Relato con reverb sutil + un chord de piano grave."
+      
+  - id: "julian-gol-australia"
+    name: "Gol de Julián vs Australia"
+    page: "polonia-australia"
+    rarity: "rare"
+    card_number: 93
+    description: "Aprovechando un error del arquero australiano"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "57"
+      
+  - id: "australia-gol-descuento"
+    name: "Gol descuento Australia"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 94
+    description: "Un rebote desviado en el área. Suspenso final"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "77"
+      
+  - id: "dibu-atajada-australia"
+    name: "Atajada final del Dibu (Australia)"
+    page: "polonia-australia"
+    rarity: "legendary"
+    card_number: 95
+    description: "El primer milagro. La atajada a Goodwin en el último minuto que clasifica a cuartos"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "90+7"
+      legendary_brief: "El primer milagro. Líneas estilo manga, slow-motion. Audio crudo del estadio, sin relato."
+      
+  - id: "messi-festejo-australia"
+    name: "Festejo Messi vs Australia"
+    page: "polonia-australia"
+    rarity: "uncommon"
+    card_number: 96
+    description: "El gol 1000 celebrado con la pasión de siempre"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "tribuna-llanto-australia"
+    name: "Llanto en la tribuna"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 97
+    description: "Hinchas argentinos emocionados después del partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "pase-cuartos"
+    name: "Pase a cuartos"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 98
+    description: "Argentina entre los 8 mejores del mundo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "plantel-celebrando-australia"
+    name: "Plantel celebrando"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 99
+    description: "Abrazos después de un partido cardíaco"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "goodwin-australia"
+    name: "Goodwin — el autor del descuento"
+    page: "polonia-australia"
+    rarity: "common"
+    card_number: 100
+    description: "El delantero australiano que casi nos hace temblar"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+
+  # =====================================================================
+  # PÁGINA 6: PAÍSES BAJOS — LA GUERRA (20 cromos, 101-120)
+  # =====================================================================
+
+  - id: "paises-bajos-11-inicial"
+    name: "11 vs Países Bajos"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 101
+    description: "El partido más intenso del torneo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Argentina 2 (4) - (3) 2 Países Bajos"
+      date: "2022-12-09"
+      
+  - id: "pase-imposible-messi-molina"
+    name: "Pase imposible de Messi a Molina"
+    page: "paises-bajos"
+    rarity: "uncommon"
+    card_number: 102
+    description: "El pase magistral por entre líneas. Genialidad pura"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "molina-gol-paises-bajos"
+    name: "Gol de Molina"
+    page: "paises-bajos"
+    rarity: "rare"
+    card_number: 103
+    description: "El lateral derecho convierte tras el pase de Messi"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "35"
+      
+  - id: "messi-penal-paises-bajos"
+    name: "Gol de Messi de penal"
+    page: "paises-bajos"
+    rarity: "rare"
+    card_number: 104
+    description: "El penal que parecía sellar el partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "73"
+      
+  - id: "weghorst-gol-1"
+    name: "Gol Weghorst 1"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 105
+    description: "El descuento que dio vida a Países Bajos"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "83"
+      
+  - id: "weghorst-gol-2"
+    name: "Gol Weghorst 2 (libre indirecto)"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 106
+    description: "El empate inventado. La jugada ensayada que dejó frío al estadio"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "90+11"
+      
+  - id: "anda-pa-alla-bobo"
+    name: "Andá pa' allá bobo"
+    page: "paises-bajos"
+    rarity: "legendary"
+    card_number: 107
+    description: "El momento cultural más viral del Mundial. Messi le manda a Weghorst"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 8 }
+      audio: { source: "TODO", duration: 6 }
+    metadata:
+      legendary_brief: "El meme. Formato polaroid, texto del bobazo en bold. SIN música, solo el audio crudo de la frase."
+      quote: "¿Qué mirás, bobo? Andá pa' allá, bobo"
+      
+  - id: "topo-gigio-vangaal"
+    name: "El topo Gigio de Messi a Van Gaal"
+    page: "paises-bajos"
+    rarity: "epic"
+    card_number: 108
+    description: "Mensaje claro. Las orejas de Messi mirando al DT rival"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "73"
+      
+  - id: "encontronazo-vangaal"
+    name: "Encontronazo con Van Gaal"
+    page: "paises-bajos"
+    rarity: "uncommon"
+    card_number: 109
+    description: "El cara a cara entre el DT holandés y la 10"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "tarjetas-amarillas-record"
+    name: "Tarjetas amarillas (récord histórico)"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 110
+    description: "Récord de tarjetas en un partido de Mundial: 17 en total"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "rina-final-paises-bajos"
+    name: "Riña final del partido"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 111
+    description: "Tensión hasta el último segundo entre los planteles"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-ataja-van-dijk"
+    name: "Dibu ataja a Van Dijk"
+    page: "paises-bajos"
+    rarity: "uncommon"
+    card_number: 112
+    description: "Primera atajada decisiva en los penales"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-ataja-berghuis"
+    name: "Dibu ataja a Berghuis"
+    page: "paises-bajos"
+    rarity: "uncommon"
+    card_number: 113
+    description: "Segunda atajada. El Dibu en modo gigante"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "lautaro-penal-decisivo"
+    name: "Penal decisivo de Lautaro"
+    page: "paises-bajos"
+    rarity: "legendary"
+    card_number: 114
+    description: "Argentina a semifinales. Liberación pura"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      legendary_brief: "Liberación colectiva. Halo de respiración suave. Heartbeat + relato + explosión de tribuna."
+      
+  - id: "lautaro-festejo-paises-bajos"
+    name: "Festejo de Lautaro"
+    page: "paises-bajos"
+    rarity: "uncommon"
+    card_number: 115
+    description: "El Toro liberándose después de tanta presión"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-dibu-canto"
+    name: "\"Dibu, Dibu\" tras la atajada"
+    page: "paises-bajos"
+    rarity: "rare"
+    card_number: 116
+    description: "El estadio entero coreando al arquero"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 6 }
+      
+  - id: "plantel-abrazo-dibu"
+    name: "Plantel abrazando al Dibu"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 117
+    description: "El equipo reconociendo al héroe del partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "provocacion-banco-holandes"
+    name: "Provocación al banco holandés"
+    page: "paises-bajos"
+    rarity: "uncommon"
+    card_number: 118
+    description: "El plantel argentino mirando provocativamente al banco rival"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "otamendi-cara-a-cara"
+    name: "Otamendi cara a cara con rival"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 119
+    description: "El General no se achicó nunca"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "conferencia-post-paises-bajos"
+    name: "Conferencia post partido"
+    page: "paises-bajos"
+    rarity: "common"
+    card_number: 120
+    description: "Scaloni y Messi defienden el partido. \"No nos van a hacer perder la cabeza\""
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+
+  # =====================================================================
+  # PÁGINA 7: CROACIA — NACE UNA LEYENDA (15 cromos, 121-135)
+  # =====================================================================
+
+  - id: "croacia-11-inicial"
+    name: "11 vs Croacia"
+    page: "croacia"
+    rarity: "common"
+    card_number: 121
+    description: "La semifinal. El partido donde nació la leyenda de Julián"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Argentina 3 - 0 Croacia"
+      date: "2022-12-13"
+      
+  - id: "messi-penal-croacia"
+    name: "Gol Messi de penal vs Croacia"
+    page: "croacia"
+    rarity: "rare"
+    card_number: 122
+    description: "El penal que abrió la semifinal"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+    metadata:
+      minute: "34"
+      
+  - id: "julian-contraataque-eterno"
+    name: "Gol Julián contraataque eterno"
+    page: "croacia"
+    rarity: "legendary"
+    card_number: 123
+    description: "La Araña corre medio campo, esquiva rivales y define. Golazo eterno"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 8 }
+      relator_clip: { source: "TODO", duration: 10 }
+    metadata:
+      minute: "39"
+      legendary_brief: "Velocidad y distancia. Formato wide, líneas de velocidad estilo cómic. Crescendo de hinchada al avanzar."
+      
+  - id: "gambeta-gvardiol"
+    name: "La gambeta de Messi a Gvardiol"
+    page: "croacia"
+    rarity: "legendary"
+    card_number: 124
+    description: "La jugada más elegante del Mundial. Arte puro. The corner of all corners"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 8 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "69"
+      legendary_brief: "Técnica pura. Blanco y negro parcial (solo Messi y Gvardiol a color). Sin relator, instrumental bajito + uuuh."
+      
+  - id: "julian-gol-2-croacia"
+    name: "Segundo gol de Julián (asistencia Messi)"
+    page: "croacia"
+    rarity: "rare"
+    card_number: 125
+    description: "La Araña convierte tras la gambeta histórica del capitán"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+    metadata:
+      minute: "69"
+      
+  - id: "modric-cabizbajo"
+    name: "Modrić cabizbajo"
+    page: "croacia"
+    rarity: "common"
+    card_number: 126
+    description: "El capitán croata acepta la derrota"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "plantel-celebrando-hinchada"
+    name: "Plantel celebrando con la hinchada"
+    page: "croacia"
+    rarity: "common"
+    card_number: 127
+    description: "Argentina a la final del mundo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-julian-abrazados"
+    name: "Messi y Julián abrazados"
+    page: "croacia"
+    rarity: "uncommon"
+    card_number: 128
+    description: "El maestro y el pibe. Conexión generacional"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "scaloni-emocionado-croacia"
+    name: "Scaloni emocionado"
+    page: "croacia"
+    rarity: "uncommon"
+    card_number: 129
+    description: "El DT no se aguanta las lágrimas en el banco"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "julian-festejo-solo"
+    name: "Julián festejando solo (rosario en mano)"
+    page: "croacia"
+    rarity: "uncommon"
+    card_number: 130
+    description: "El rosario que su mamá le regaló. Fe y emoción"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "hinchada-muchachos-croacia"
+    name: "Hinchada cantando muchachos"
+    page: "croacia"
+    rarity: "uncommon"
+    card_number: 131
+    description: "El cántico que ya era himno del Mundial"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "argentina-a-la-final"
+    name: "\"Argentina a la final del mundo\""
+    page: "croacia"
+    rarity: "rare"
+    card_number: 132
+    description: "El relato que retumbó en toda la patria"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 8 }
+      
+  - id: "final-partido-croacia"
+    name: "Final del partido"
+    page: "croacia"
+    rarity: "common"
+    card_number: 133
+    description: "El pitazo final. Argentina a la final del Mundial"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-camara-post-croacia"
+    name: "Messi a cámara post partido"
+    page: "croacia"
+    rarity: "common"
+    card_number: 134
+    description: "El capitán emocionado dirigiéndose a la gente"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "familia-pibes-cancha"
+    name: "Foto familiar de los pibes en el campo"
+    page: "croacia"
+    rarity: "common"
+    card_number: 135
+    description: "Los jugadores con sus hijos en cancha. Imagen de familia"
+    content:
+      photo: { type: "official", source: "TODO" }
+
+  # =====================================================================
+  # PÁGINA 8: FRANCIA — LA FINAL ETERNA (30 cromos, 136-165)
+  # =====================================================================
+
+  - id: "francia-11-inicial-argentina"
+    name: "11 vs Francia"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 136
+    description: "La formación de la final más dramática de la historia"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      match: "Argentina 3 (4) - (2) 3 Francia"
+      date: "2022-12-18"
+      
+  - id: "francia-11-inicial-rival"
+    name: "11 Francia (Mbappé, Griezmann, Giroud)"
+    page: "francia"
+    rarity: "common"
+    card_number: 137
+    description: "Los campeones defensores. El rival más temido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-a-dimaria"
+    name: "Penal a Di María"
+    page: "francia"
+    rarity: "rare"
+    card_number: 138
+    description: "Dembélé derriba al Fideo. Penal claro"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+      
+  - id: "messi-gol-penal-final"
+    name: "Gol Messi de penal (1-0)"
+    page: "francia"
+    rarity: "epic"
+    card_number: 139
+    description: "El capitán no falla. Argentina abre la final"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "23"
+      
+  - id: "asistencia-macallister-dimaria"
+    name: "Asistencia Mac Allister para Di María"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 140
+    description: "El pase de gol al Fideo. La jugada perfecta"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dimaria-gol-final"
+    name: "Gol de Di María (Final)"
+    page: "francia"
+    rarity: "legendary"
+    card_number: 141
+    description: "El gol que toda Argentina lloraba. El Fideo se hace eterno"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 8 }
+      relator_clip: { source: "TODO", duration: 10, relator: "Sebastián Vignolo" }
+    metadata:
+      minute: "36"
+      legendary_brief: "La revancha. Overlay sutil de lágrimas en Lottie. Gradient cálido. Gooooool argentino estirado + piano de fondo."
+      
+  - id: "dimaria-festejo-llorando"
+    name: "Festejo Di María llorando"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 142
+    description: "El Fideo no aguanta las lágrimas tras el gol"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "mbappe-empate-1"
+    name: "Mbappé empate 1 (penal)"
+    page: "francia"
+    rarity: "common"
+    card_number: 143
+    description: "Francia descuenta. El penal que cambió todo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "80"
+      
+  - id: "mbappe-empate-2"
+    name: "Mbappé empate 2 (volea)"
+    page: "francia"
+    rarity: "common"
+    card_number: 144
+    description: "La volea imposible. Mbappé empata el partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "81"
+      
+  - id: "messi-gol-3-2"
+    name: "Suplementarios — Gol Messi 3-2"
+    page: "francia"
+    rarity: "epic"
+    card_number: 145
+    description: "Messi rebota en el área y la mete. Argentina vuelve adelante"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "108"
+      
+  - id: "mbappe-empate-3-3"
+    name: "Suplementarios — Mbappé empate 3-3 de penal"
+    page: "francia"
+    rarity: "common"
+    card_number: 146
+    description: "Mbappé define con tranquilidad. Igualdad otra vez"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+    metadata:
+      minute: "118"
+      
+  - id: "dibu-atajada-kolo-muani"
+    name: "Atajada del Dibu a Kolo Muani"
+    page: "francia"
+    rarity: "legendary"
+    card_number: 147
+    description: "Se la sacó el Dibu. El segundo milagro. El minuto 120+3"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+      relator_clip: { source: "TODO", duration: 8 }
+    metadata:
+      minute: "120+3"
+      legendary_brief: "El segundo milagro. Slow-mo extremo + cronómetro decorativo 120+3. Bullet time sound design."
+      
+  - id: "penal-mbappe"
+    name: "Penal Mbappé convertido"
+    page: "francia"
+    rarity: "common"
+    card_number: 148
+    description: "Primer penal francés convertido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-messi-final"
+    name: "Penal Messi convertido"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 149
+    description: "El capitán mete el primero argentino con tranquilidad"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-ataja-coman"
+    name: "Dibu ataja a Coman"
+    page: "francia"
+    rarity: "epic"
+    card_number: 150
+    description: "La atajada en los penales que cambia el partido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 5 }
+      
+  - id: "truquito-dibu-penales"
+    name: "El truquito de Dibu en los penales"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 151
+    description: "El baile del Dibu para distraer a los franceses"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-paredes"
+    name: "Penal Paredes convertido"
+    page: "francia"
+    rarity: "common"
+    card_number: 152
+    description: "El cinco no falla en el momento clave"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-tchouameni"
+    name: "Penal Tchouameni errado"
+    page: "francia"
+    rarity: "common"
+    card_number: 153
+    description: "El francés tira el penal afuera. Argentina sube"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-dybala"
+    name: "Penal Dybala convertido"
+    page: "francia"
+    rarity: "common"
+    card_number: 154
+    description: "La Joya define con clase"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-kolo-muani"
+    name: "Penal Kolo Muani convertido"
+    page: "francia"
+    rarity: "common"
+    card_number: 155
+    description: "El francés mete el último de su lado"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "penal-montiel"
+    name: "El penal de Montiel"
+    page: "francia"
+    rarity: "legendary"
+    card_number: 156
+    description: "Argentina campeón del mundo. El gol que cierra todo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 8 }
+      relator_clip: { source: "TODO", duration: 12, relator: "Sebastián Vignolo" }
+    metadata:
+      legendary_brief: "Argentina campeón. Ring de 3 estrellas que se encienden una por una. Argentina campeón del mundo amplificado + campanadas."
+      
+  - id: "montiel-festejo"
+    name: "Festejo de Montiel"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 157
+    description: "El Cachete corriendo enloquecido tras meter el gol que cierra todo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "plantel-corre-dibu"
+    name: "Plantel corriendo al Dibu"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 158
+    description: "Todos corren a abrazar al arquero héroe"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "llanto-cancha-final"
+    name: "Llanto general en cancha"
+    page: "francia"
+    rarity: "common"
+    card_number: 159
+    description: "Lágrimas de alegría por todos lados"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "mbappe-caminando-solo"
+    name: "Mbappé caminando solo"
+    page: "francia"
+    rarity: "common"
+    card_number: 160
+    description: "El francés derrotado. El otro lado de la moneda"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "macron-consolando-mbappe"
+    name: "Macron consolando a Mbappé"
+    page: "francia"
+    rarity: "common"
+    card_number: 161
+    description: "El presidente francés en cancha"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-guante-oro"
+    name: "Dibu con el guante de oro"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 162
+    description: "Mejor arquero del Mundial. Reconocimiento merecido"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-balon-oro-mundial"
+    name: "Messi con el Balón de Oro del Mundial"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 163
+    description: "Mejor jugador del Mundial. Otro premio a la leyenda"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-bisht"
+    name: "Messi recibiendo el bisht"
+    page: "francia"
+    rarity: "uncommon"
+    card_number: 164
+    description: "La capa qatarí que viste al capitán"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-besando-copa"
+    name: "Messi besando la copa"
+    page: "francia"
+    rarity: "legendary"
+    card_number: 165
+    description: "La foto del siglo XXI según TIME. El beso eterno"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 6 }
+    metadata:
+      legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
+
+  # =====================================================================
+  # PÁGINA 9: LA GLORIA (25 cromos, 166-190)
+  # =====================================================================
+
+  - id: "levantada-copa-messi"
+    name: "Levantada de la copa por Messi"
+    page: "la-gloria"
+    rarity: "legendary"
+    card_number: 166
+    description: "THE momento. El capitán levanta la tercera para Argentina"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      video: { type: "extract", source: "TODO", duration: 8 }
+      audio: { source: "TODO", duration: 10 }
+    metadata:
+      legendary_brief: "La explosión. Confetti dorado con física real Three.js. Aurora prismática al hover. Cántico Muchachos + vamos Argentina carajo + grito de tribuna."
+      
+  - id: "messi-en-hombros"
+    name: "Messi en hombros del plantel"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 167
+    description: "El capitán llevado en andas por sus compañeros"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-beso-guante"
+    name: "Beso de Dibu al guante de oro"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 168
+    description: "El arquero reconoce su premio con emoción"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "foto-grupal-copa"
+    name: "Foto grupal con la copa"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 169
+    description: "El plantel completo con el trofeo más buscado"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "muchachos-cancha-final"
+    name: "Plantel cantando Muchachos en cancha"
+    page: "la-gloria"
+    rarity: "rare"
+    card_number: 170
+    description: "El plantel argentino canta el himno mundialista en pleno Lusail"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 8 }
+      
+  - id: "vuelta-olimpica"
+    name: "Vuelta olímpica"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 171
+    description: "Argentina dando la vuelta con la copa en Lusail"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "aimar-llorando"
+    name: "Aimar llorando en el banco"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 172
+    description: "El payaso emocionado hasta las lágrimas"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "otamendi-llorando"
+    name: "Otamendi llorando"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 173
+    description: "El General no se aguanta. Catársis total"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "dibu-hija-guante"
+    name: "Dibu con su hija con el guante"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 174
+    description: "Imagen de familia. El arquero con su nena en la cancha"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "dibu-trofeo-tata"
+    name: "Dibu y el \"trofeo Tata\""
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 175
+    description: "El gesto polémico con el trofeo de guantes"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "llegada-buenos-aires"
+    name: "Llegada del plantel a Buenos Aires"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 176
+    description: "El avión aterrizando con los campeones del mundo"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "caravana-obelisco"
+    name: "Caravana hacia el Obelisco"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 177
+    description: "El bus de los campeones rumbo al ícono porteño"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "obelisco-lleno"
+    name: "El Obelisco con 5 millones de personas"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 178
+    description: "La concentración más grande de la historia argentina"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "helicoptero-rescate"
+    name: "El helicóptero rescatando al plantel"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 179
+    description: "Tuvieron que sacarlos en helicóptero. Locura total"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "hincha-puente"
+    name: "Hincha tirándose desde un puente"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 180
+    description: "El nivel de euforia que llegó a viralizarse"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "familias-pibes-abuelos-calle"
+    name: "Familias y pibes en la calle"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 181
+    description: "Argentinos de todas las generaciones celebrando"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "messi-llegada-rosario"
+    name: "Messi llegando a Rosario"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 182
+    description: "El capitán vuelve a su casa con la copa"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "festejo-provincias"
+    name: "Festejo en cada provincia"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 183
+    description: "Argentina toda en las calles. De norte a sur"
+    content:
+      photo: { type: "collage", source: "TODO" }
+      
+  - id: "paloma-messi"
+    name: "La paloma sobre la cabeza de Messi"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 184
+    description: "La imagen mística. La paloma posándose en el campeón"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "camiseta-3-estrellas"
+    name: "Camiseta con 3 estrellas"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 185
+    description: "La nueva camiseta con la tercera estrella ganada"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "escudo-3-estrellas"
+    name: "Escudo nuevo de AFA con 3 estrellas"
+    page: "la-gloria"
+    rarity: "uncommon"
+    card_number: 186
+    description: "El escudo actualizado. Marca registrada de la tercera"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "scaloni-conferencia-final"
+    name: "Conferencia final de Scaloni"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 187
+    description: "El DT cerrando con emoción su ciclo mundialista"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "plantel-tigre-descanso"
+    name: "Plantel descansando en Tigre"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 188
+    description: "Los campeones disfrutando con la copa en el delta"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "vamos-argentina-carajo"
+    name: "\"Vamos Argentina carajo\" Messi a cámara"
+    page: "la-gloria"
+    rarity: "rare"
+    card_number: 189
+    description: "La frase del capitán que se hizo grito patrio"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 5 }
+      
+  - id: "asado-campeones"
+    name: "Asado de campeones"
+    page: "la-gloria"
+    rarity: "common"
+    card_number: 190
+    description: "El asado argentino, ahora con tres estrellas"
+    content:
+      photo: { type: "official", source: "TODO" }
+
+  # =====================================================================
+  # PÁGINA 10: SÍMBOLOS Y CULTURA (15 cromos, 191-205)
+  # =====================================================================
+
+  - id: "copa-del-mundo"
+    name: "La Copa del Mundo"
+    page: "simbolos"
+    rarity: "uncommon"
+    card_number: 191
+    description: "El trofeo más buscado del fútbol mundial"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "camiseta-titular-qatar"
+    name: "Camiseta titular Qatar 2022"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 192
+    description: "La celeste y blanca que vistió a los campeones"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "camiseta-suplente-violeta"
+    name: "Camiseta suplente violeta"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 193
+    description: "La alternativa violeta de Argentina en Qatar"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "camiseta-arquero"
+    name: "Camiseta arquero"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 194
+    description: "La que usó el Dibu para hacer historia"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "tres-estrellas-closeup"
+    name: "Las 3 estrellas (close up)"
+    page: "simbolos"
+    rarity: "uncommon"
+    card_number: 195
+    description: "El símbolo de las tres copas del mundo de Argentina"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "bandera-huevos"
+    name: "Bandera \"hay que ponerle huevos\""
+    page: "simbolos"
+    rarity: "common"
+    card_number: 196
+    description: "La bandera que se hizo símbolo del Mundial"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "bolso-abuela"
+    name: "El bolso de la abuela"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 197
+    description: "La abuela con el bolso celeste y blanco que se viralizó"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      
+  - id: "cantito-macri"
+    name: "Cántico \"Macri\" (audio)"
+    page: "simbolos"
+    rarity: "rare"
+    card_number: 198
+    description: "El cántico viral de la hinchada en Qatar"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 8 }
+      
+  - id: "muchachos-letra-completa"
+    name: "\"Muchachos\" — letra completa con video coral"
+    page: "simbolos"
+    rarity: "rare"
+    card_number: 199
+    description: "El himno del Mundial. La canción que unió a un país"
+    content:
+      photo: { type: "video_capture", source: "TODO" }
+      audio: { source: "TODO", duration: 15 }
+      
+  - id: "mascota-laeeb"
+    name: "Mascota La'eeb"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 200
+    description: "La mascota oficial del Mundial Qatar 2022"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "pelota-rihla"
+    name: "Pelota Al Rihla"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 201
+    description: "La pelota oficial del Mundial 2022"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "pelota-hilm"
+    name: "Pelota Al Hilm (la dorada de la final)"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 202
+    description: "La pelota dorada usada solo en la final"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "premio-onze-dor-scaloni"
+    name: "Premio Onze d'Or 2022 (Scaloni)"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 203
+    description: "Scaloni elegido entrenador del año 2022"
+    content:
+      photo: { type: "official", source: "TODO" }
+      
+  - id: "trofeos-torneo"
+    name: "Trofeos del torneo"
+    page: "simbolos"
+    rarity: "common"
+    card_number: 204
+    description: "Balón de Oro (Messi), Guante de Oro (Dibu), Jugador joven (Enzo)"
+    content:
+      photo: { type: "collage", source: "TODO" }
+      
+  - id: "meme-argentina-2-0"
+    name: "Meme \"Argentina ganando 2-0 y vos...\""
+    page: "simbolos"
+    rarity: "common"
+    card_number: 205
+    description: "Homenaje al folclore. El meme argentino más usado del Mundial"
+    content:
+      photo: { type: "social-media", source: "TODO" }
+
+# =====================================================================
+# CROMOS BONUS — PÁGINA COMPLETA (no cuentan en los 205)
+# =====================================================================
+
+bonus_cards:
+  - id: "plantel-firmado"
+    name: "Plantel — Cromo dorado firmado"
+    description: "Cromo bonus por completar la página El plantel"
+    obtained_by: "complete_page:plantel"
+    
+  - id: "scaloni-llegada-firmado"
+    name: "Scaloni — Cromo dorado firmado"
+    description: "Cromo bonus por completar Antes del comienzo"
+    obtained_by: "complete_page:antes-del-comienzo"
+    
+  - id: "arabia-firmado"
+    name: "Arabia — Cromo dorado de la unión"
+    description: "Cromo bonus por completar Arabia"
+    obtained_by: "complete_page:arabia"
+    
+  - id: "mexico-firmado"
+    name: "México — Cromo dorado del desahogo"
+    description: "Cromo bonus por completar México"
+    obtained_by: "complete_page:mexico"
+    
+  - id: "octavos-firmado"
+    name: "Octavos — Cromo dorado de la clasificación"
+    description: "Cromo bonus por completar Polonia + Australia"
+    obtained_by: "complete_page:polonia-australia"
+    
+  - id: "andate-pa-alla-firmado"
+    name: "Países Bajos — Cromo dorado del bobazo"
+    description: "Cromo bonus por completar Países Bajos"
+    obtained_by: "complete_page:paises-bajos"
+    
+  - id: "julian-firmado"
+    name: "Julián — Cromo dorado de la consagración"
+    description: "Cromo bonus por completar Croacia"
+    obtained_by: "complete_page:croacia"
+    
+  - id: "final-firmado"
+    name: "Final — Cromo dorado de la eternidad"
+    description: "Cromo bonus por completar Francia"
+    obtained_by: "complete_page:francia"
+    
+  - id: "copa-firmada"
+    name: "La Copa — Cromo dorado firmado"
+    description: "Cromo bonus por completar La Gloria"
+    obtained_by: "complete_page:la-gloria"
+    
+  - id: "tres-estrellas-firmado"
+    name: "Tres Estrellas — Cromo dorado emblema"
+    description: "Cromo bonus por completar Símbolos"
+    obtained_by: "complete_page:simbolos"
+    
+  - id: "copa-3d-album-completo"
+    name: "La Copa del Mundo — Animación 3D"
+    description: "Cromo único por completar el álbum entero. Diseño individual con Three.js"
+    obtained_by: "complete_album"
+    rarity: "legendary"
+
+# =====================================================================
+# RECORDATORIOS / ESTADO
+# =====================================================================
+
+content_status:
+  total_cards: 205
+  cards_with_photo_source: 0       # incrementar cuando se asigna fuente
+  cards_with_video_source: 0        # incrementar cuando se procesa video
+  cards_with_audio_source: 0        # incrementar cuando se procesa audio
+  cards_processed: 0                # incrementar cuando está full procesado en R2
+  
+  notes:
+    - "Todos los content.source están como TODO. Hay que ir asignando fuentes."
+    - "Las 11 Legendarias tienen brief de diseño individual en su metadata."
+    - "Para conseguir los videos: yt-dlp + ffmpeg de YouTube highlights oficiales."
+    - "Para las fotos: principalmente video_capture con ffmpeg del partido."
+    - "Audios de relatos: yt-dlp con --extract-audio del canal correspondiente."
