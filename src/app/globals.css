@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 /* ===========================================
    CROMIKS DESIGN TOKENS — v1.0
@@ -6,24 +9,20 @@
    =========================================== */
 
 @theme {
-  /* —— Surfaces —— */
   --color-surface-deep: #0a0e14;
   --color-surface-base: #0f141c;
   --color-surface-raised: #161d28;
   --color-surface-elevated: #1e2734;
 
-  /* —— Text —— */
   --color-text-primary: #f0f4f8;
   --color-text-secondary: #b0bac8;
   --color-text-muted: #6b7585;
   --color-text-ghost: #3a4250;
 
-  /* —— Brand —— */
   --color-argentina-glow: #6bb9ff;
   --color-gold: #d4a93c;
   --color-celeste-deep: #29537a;
 
-  /* —— Rarity tiers —— */
   --color-tier-common: #6b7585;
   --color-tier-uncommon: #c9a659;
   --color-tier-rare: #5ba3e0;
@@ -33,46 +32,127 @@
   --color-tier-legendary-3: #ffd96b;
   --color-tier-legendary-4: #b97fe3;
 
-  /* —— Semantic —— */
   --color-success: #5dc58a;
   --color-warning: #ffb454;
   --color-danger: #ff6b6b;
   --color-info: #6bb9ff;
 
-  /* —— Fonts (injected by next/font) —— */
   --font-display: var(--font-anton), "Arial Narrow", sans-serif;
   --font-body: var(--font-geist), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), "SF Mono", Menlo, monospace;
 
-  /* —— Spacing scale (4-based) —— */
-  --spacing-1: 4px;
-  --spacing-2: 8px;
-  --spacing-3: 12px;
-  --spacing-4: 16px;
-  --spacing-5: 24px;
-  --spacing-6: 32px;
-  --spacing-7: 48px;
-  --spacing-8: 64px;
-  --spacing-9: 96px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
 
-  /* —— Radius —— */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* —— Motion durations —— */
   --duration-instant: 100ms;
   --duration-quick: 200ms;
   --duration-moderate: 350ms;
   --duration-cinematic: 700ms;
   --duration-epic: 1200ms;
 
-  /* —— Motion easings —— */
   --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-drama: cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* ===========================================
+   SHADCN TOKENS → mapeados a nuestros tokens
+   Cromiks es dark-only: solo definimos :root.
+   =========================================== */
+
+:root {
+  --background: var(--color-surface-deep);
+  --foreground: var(--color-text-primary);
+
+  --card: var(--color-surface-raised);
+  --card-foreground: var(--color-text-primary);
+
+  --popover: var(--color-surface-raised);
+  --popover-foreground: var(--color-text-primary);
+
+  --muted: var(--color-surface-elevated);
+  --muted-foreground: var(--color-text-muted);
+
+  --accent: var(--color-surface-elevated);
+  --accent-foreground: var(--color-text-primary);
+
+  --primary: var(--color-argentina-glow);
+  --primary-foreground: var(--color-surface-deep);
+
+  --secondary: var(--color-surface-elevated);
+  --secondary-foreground: var(--color-text-primary);
+
+  --destructive: var(--color-danger);
+  --destructive-foreground: #ffffff;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: var(--color-argentina-glow);
+
+  --chart-1: var(--color-argentina-glow);
+  --chart-2: var(--color-gold);
+  --chart-3: var(--color-tier-epic);
+  --chart-4: var(--color-success);
+  --chart-5: var(--color-tier-uncommon);
+
+  --sidebar: var(--color-surface-base);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: var(--color-argentina-glow);
+  --sidebar-primary-foreground: var(--color-surface-deep);
+  --sidebar-accent: var(--color-surface-elevated);
+  --sidebar-accent-foreground: var(--color-text-primary);
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: var(--color-argentina-glow);
+
+  --radius: 10px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 /* ===========================================
@@ -82,11 +162,11 @@
 @layer base {
   * {
     box-sizing: border-box;
+    border-color: var(--color-border);
   }
 
   html {
     scroll-behavior: smooth;
-    /* Asegurar dark always */
     color-scheme: dark;
   }
 
@@ -103,7 +183,6 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Ambient glow sutil arriba */
   body::before {
     content: "";
     position: fixed;
@@ -117,49 +196,38 @@
     z-index: 0;
   }
 
-  /* Hacer que el contenido esté arriba del ambient */
   body > * {
     position: relative;
     z-index: 1;
   }
 
-  /* Selección */
   ::selection {
     background: var(--color-argentina-glow);
     color: var(--color-surface-deep);
   }
 
-  /* Focus rings */
   :focus-visible {
     outline: 2px solid var(--color-argentina-glow);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
 
-  /* Scrollbar */
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
   }
-
   ::-webkit-scrollbar-track {
     background: var(--color-surface-base);
   }
-
   ::-webkit-scrollbar-thumb {
     background: var(--color-surface-elevated);
     border-radius: var(--radius-full);
     border: 3px solid var(--color-surface-base);
   }
-
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-ghost);
   }
 }
-
-/* ===========================================
-   ACCESSIBILITY
-   =========================================== */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -212,7 +280,7 @@
 }
 
 /* ===========================================
-   ANIMATIONS — base
+   ANIMATIONS
    =========================================== */
 
 @keyframes float {
