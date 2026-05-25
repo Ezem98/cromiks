@@ -279,6 +279,29 @@
   color: transparent;
 }
 
+/*
+ * Border con prism gradient rotando.
+ * Usa @property para animar el ángulo del gradient internamente.
+ * No rota el elemento, así que no hay corners volando.
+ */
+@property --prism-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@utility prism-border-rotating {
+  background: conic-gradient(
+    from var(--prism-angle) at 50% 50%,
+    var(--color-tier-legendary-1),
+    var(--color-tier-legendary-2),
+    var(--color-tier-legendary-3),
+    var(--color-tier-legendary-4),
+    var(--color-tier-legendary-1)
+  );
+  animation: prism-spin 8s linear infinite;
+}
+
 /* ===========================================
    ANIMATIONS
    =========================================== */
@@ -306,6 +329,12 @@
 @keyframes prism-rotate {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes prism-spin {
+  to {
+    --prism-angle: 360deg;
   }
 }
 
