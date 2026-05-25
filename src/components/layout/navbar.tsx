@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { signOut } from '@/features/auth/actions'
 import { cn } from '@/lib/utils'
 
 /**
@@ -114,7 +115,10 @@ export function Navbar({ user, coinsBalance, onMobileNavToggle, className }: Nav
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-(--color-danger) focus:text-(--color-danger)">
+              <DropdownMenuItem
+                onSelect={() => signOut()}
+                className="text-(--color-danger) focus:text-(--color-danger)"
+              >
                 <LogOutIcon className="size-4" />
                 Cerrar sesión
               </DropdownMenuItem>
