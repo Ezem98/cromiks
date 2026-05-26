@@ -1,37 +1,36 @@
 'use client'
 
+import { Environment } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { motion } from 'motion/react'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import * as THREE from 'three'
-import { SobreMesh } from './sobre-mesh'
+import { PackModel3D } from './pack-model'
 
 /**
  * Escena 3D del sobre.
  *
- * Configura el canvas R3F, las luces, la cámara y el tracking del mouse.
+ * Usa el modelo GLTF real (Trading Card Pack by goonmize1, CC-BY-4.0).
  *
- * El drag para rasgar el sobre se hace DIRECTO sobre el mesh del techo
- * usando el raycaster de R3F (no hay HUD HTML overlay).
+ * Configura:
+ *  - Environment HDRI "warehouse": CRÍTICO. Material metálico 0.84 +
+ *    roughness 0.15. Sin HDRI no tiene nada para reflejar → se vería negro.
+ *  - Lights: ambient + key + rim dorada + fill azul. La rim light desde
+ *    atrás perfila los bordes del sobre, dando el "foil shine" típico TCG.
+ *  - Background: radial gradient sutil que da atmósfera al canvas (sino
+ *    el sobre flota en negro plano sin contexto).
  *
- * Renderer config:
- *  - antialias + alpha (transparent canvas)
- *  - ACESFilmicToneMapping: contraste cinematográfico (perfecto para apertura)
- *  - SRGBColorSpace: colores correctos en el output
- *  - dpr cap a [1, 2]: balance entre nitidez (retina) y performance (mobile)
- *
- * Props:
- *  - idle: si está en modo idle (sobre flotando sin tear). Default true.
- *  - tearProgress: 0..1, cuán abierto está el sobre. Default 0.
- *  - draggable: si el techo es draggable (true en fase tear).
- *  - onTearProgressChange: callback cuando el drag cambia el progreso.
- *  - onTearComplete: callback cuando supera el threshold.
+ * Como el modelo es un solo mesh (no hay techo separable), el feedback
+ * visual del tear se logra con scale + glow + emissive + shake en lugar
+ * de "abrir físicamente" el techo.
  */
 
 type SobreSceneProps = {
   idle?: boolean
   tearProgress?: number
   draggable?: boolean
+  /** Dispara la secuencia explosiva final del modelo. */
+  isCompleting?: boolean
   onTearProgressChange?: (progress: number) => void
   onTearComplete?: () => void
 }
@@ -40,6 +39,7 @@ export function SobreScene({
   idle = true,
   tearProgress = 0,
   draggable = false,
+  isCompleting = false,
   onTearProgressChange,
   onTearComplete,
 }: SobreSceneProps) {
@@ -64,39 +64,51 @@ export function SobreScene({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="w-full h-full flex items-center justify-center"
-      // touchAction: 'none' evita que el browser interprete el drag como scroll
-      // de la página en mobile. Crítico para que el raycaster del techo funcione bien.
-      style={{ touchAction: 'none' }}
+      style={{
+        touchAction: 'none',
+        // Radial gradient para dar atmósfera (el canvas es transparent).
+        // Centro azul oscuro → bordes casi negros (vignette natural).
+        background: 'radial-gradient(ellipse at center, #1a2540 0%, #0a0e14 60%, #050709 100%)',
+      }}
     >
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
-        // Cap dpr para evitar pesadez en retinas con dpr=3
         dpr={[1, 2]}
         gl={{
           antialias: true,
           alpha: true,
-          // Tone mapping cinematográfico — más contraste, look "premium"
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.0,
-          // Output color space correcto (post r152)
           outputColorSpace: THREE.SRGBColorSpace,
         }}
         style={{ background: 'transparent' }}
       >
-        {/* === Lights === */}
-        <ambientLight intensity={0.4} color="#1a2540" />
-        <directionalLight position={[-3, 5, 4]} intensity={1.2} color="#fff5e0" castShadow />
-        <directionalLight position={[2, -2, -3]} intensity={0.6} color="#D4A93C" />
+        {/* Environment HDRI — reflejos warehouse cálidos */}
+        <Suspense fallback={null}>
+          <Environment preset="warehouse" background={false} />
+        </Suspense>
 
-        {/* === Mesh del sobre — incluye el techo draggable === */}
-        <SobreMesh
-          mousePosition={mousePosition}
-          tearProgress={tearProgress}
-          idleFloat={idle && tearProgress < 0.05}
-          draggable={draggable}
-          onTearProgressChange={onTearProgressChange}
-          onTearComplete={onTearComplete}
-        />
+        {/* Lights: ambient + key + rim dorada + fill azul */}
+        <ambientLight intensity={0.3} color="#ffffff" />
+        {/* Key light blanca cálida desde arriba-izquierda */}
+        <directionalLight position={[-3, 5, 4]} intensity={0.6} color="#fff5e0" castShadow />
+        {/* Rim light dorada desde atrás — perfila bordes (foil shine TCG) */}
+        <directionalLight position={[3, 2, -5]} intensity={1.2} color="#D4A93C" />
+        {/* Fill azul desde abajo para que la base no quede muerta */}
+        <pointLight position={[0, -3, 2]} intensity={0.3} color="#6BB9FF" distance={8} decay={2} />
+
+        {/* Modelo GLTF del sobre */}
+        <Suspense fallback={null}>
+          <PackModel3D
+            mousePosition={mousePosition}
+            tearProgress={tearProgress}
+            idleFloat={idle && tearProgress < 0.05}
+            draggable={draggable}
+            isCompleting={isCompleting}
+            onTearProgressChange={onTearProgressChange}
+            onTearComplete={onTearComplete}
+          />
+        </Suspense>
       </Canvas>
     </motion.div>
   )

@@ -86,8 +86,10 @@ export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
         />
       </Canvas>
 
-      {/* HTML overlay con el texto del cromo, positioned encima del canvas */}
-      <CardTextOverlay card={card} />
+      {/* HTML overlay con el texto del cromo, positioned encima del canvas.
+          Recibe mousePosition para inclinarse en sync con la card 3D — sino
+          parecería "flotando" sobre el 3D que se mueve. */}
+      <CardTextOverlay card={card} mousePosition={mousePosition} />
     </motion.div>
   )
 }
@@ -96,15 +98,40 @@ export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
  * Overlay HTML con el texto del cromo (nombre, número, posición).
  *
  * Positioned absolute sobre el canvas, dentro del contenedor padre.
- * El layout matchea la posición visual de los elementos en la card 3D:
- *  - Número arriba a la derecha
- *  - Nombre + posición/club abajo a la izquierda
+ * El layout matchea la posición visual de los elementos en la card 3D.
+ *
+ * Tilt sync: aplica un transform CSS perspective + rotateX + rotateY usando el
+ * mismo mousePosition que la card 3D, pero con valores escalados a CSS
+ * (CardMesh3D usa 0.2 y 0.3 radianes — acá los convertimos a degrees: ~11.5° y ~17°).
+ * Así el HTML overlay se inclina junto con la card y no queda flotando.
  *
  * pointer-events: none para no bloquear el mouse del canvas (tilt).
  */
-function CardTextOverlay({ card }: { card: RevealedCard }) {
+function CardTextOverlay({
+  card,
+  mousePosition,
+}: {
+  card: RevealedCard
+  mousePosition: { x: number; y: number }
+}) {
+  // Matchear el tilt del 3D (CardMesh3D usa 0.2 rad en X, 0.3 rad en Y).
+  // Convertimos a degrees y aplicamos perspective para que se vea como un plano 3D.
+  const tiltX = -mousePosition.y * 11.5 // 0.2 rad ≈ 11.5°
+  const tiltY = mousePosition.x * 17 // 0.3 rad ≈ 17°
+
   return (
-    <div className="absolute inset-0 pointer-events-none" style={{ padding: '8%' }}>
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        padding: '8%',
+        perspective: '1000px',
+        // El transform se aplica al wrapper completo, igual que el group del 3D
+        transform: `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
+        transformStyle: 'preserve-3d',
+        // Transition suave para que no se vea robotic con cada pixel del mouse
+        transition: 'transform 0.1s ease-out',
+      }}
+    >
       {/* Número arriba a la derecha */}
       <div
         className="absolute text-display leading-none"

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { Sobre } from '@/components/domain/sobre'
@@ -47,7 +47,7 @@ function PhaseTear3D({ onComplete }: PhaseTearProps) {
   const handleTearComplete = () => {
     setIsCompleted(true)
     setTearProgress(1)
-    setTimeout(() => onComplete(), 800)
+    setTimeout(() => onComplete(), 1100)
   }
 
   return (
@@ -56,7 +56,7 @@ function PhaseTear3D({ onComplete }: PhaseTearProps) {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="relative min-h-screen select-none"
+      className="relative min-h-screen select-none overflow-hidden"
     >
       {/* Canvas 3D fullscreen */}
       <div className="fixed inset-0">
@@ -64,6 +64,7 @@ function PhaseTear3D({ onComplete }: PhaseTearProps) {
           idle={!isCompleted}
           tearProgress={tearProgress}
           draggable={!isCompleted}
+          isCompleting={isCompleted}
           onTearProgressChange={handleProgressChange}
           onTearComplete={handleTearComplete}
         />
@@ -82,34 +83,115 @@ function PhaseTear3D({ onComplete }: PhaseTearProps) {
         <p className="text-(--color-text-muted) text-xs">→ Arrastrá hacia la derecha para abrir</p>
       </motion.div>
 
-      {/* Particles cuando completa */}
-      {isCompleted &&
-        Array.from({ length: 16 }).map((_, i) => {
-          const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.2
-          const distance = 80 + Math.random() * 120
-          const px = Math.cos(angle) * distance
-          const py = Math.sin(angle) * distance
-
-          return (
-            <motion.div
-              // biome-ignore lint/suspicious/noArrayIndexKey: posición es identidad
-              key={i}
-              initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
-              animate={{ x: px, y: py, opacity: 0, scale: 1.5 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-              className="absolute size-1.5 rounded-full pointer-events-none"
-              style={{
-                top: '40%',
-                left: '50%',
-                marginLeft: -3,
-                background: 'var(--color-gold)',
-                boxShadow: '0 0 6px rgba(212,169,60,0.8)',
-                zIndex: 20,
-              }}
-            />
-          )
-        })}
+      {/* === Secuencia "complete" === */}
+      <AnimatePresence>
+        {isCompleted && (
+          <>
+            <CompleteFlash />
+            <CompleteParticles />
+            <CompleteAura />
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
+  )
+}
+
+/**
+ * Flash radial dorado fullscreen.
+ * Empieza pequeño y se expande hasta cubrir toda la pantalla.
+ * Gradient: blanco → dorado → transparente. Sensación de luz cegadora.
+ */
+function CompleteFlash() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.1 }}
+      animate={{
+        opacity: [0, 1, 1, 0],
+        scale: [0.1, 1, 1.2, 1.4],
+      }}
+      transition={{
+        duration: 1.1,
+        times: [0, 0.35, 0.8, 1],
+        ease: 'easeOut',
+      }}
+      className="fixed inset-0 z-30 pointer-events-none flex items-center justify-center"
+    >
+      <div
+        style={{
+          width: '200vmax',
+          height: '200vmax',
+          background:
+            'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,232,150,0.95) 15%, rgba(212,169,60,0.7) 35%, rgba(212,169,60,0.2) 60%, transparent 80%)',
+        }}
+      />
+    </motion.div>
+  )
+}
+
+/**
+ * Aura dorada sutil que perdura más tiempo que el flash. Da continuidad
+ * visual mientras el sobre desaparece y antes de que aparezcan las cards.
+ */
+function CompleteAura() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: [0, 0.6, 0.4, 0] }}
+      transition={{ duration: 1.1, times: [0, 0.3, 0.7, 1] }}
+      className="fixed inset-0 z-20 pointer-events-none"
+      style={{
+        background:
+          'radial-gradient(ellipse at center, rgba(212,169,60,0.4) 0%, rgba(107,185,255,0.1) 40%, transparent 70%)',
+      }}
+    />
+  )
+}
+
+/**
+ * 24 partículas doradas que explotan radialmente desde el centro.
+ * Ángulos distribuidos en 360° con jitter para no quedar simétrico.
+ */
+function CompleteParticles() {
+  return (
+    <div className="fixed inset-0 z-40 pointer-events-none flex items-center justify-center">
+      {Array.from({ length: 24 }).map((_, i) => {
+        const baseAngle = (i / 24) * Math.PI * 2
+        const angle = baseAngle + (Math.random() - 0.5) * 0.6
+        const distance = 150 + Math.random() * 250
+        const px = Math.cos(angle) * distance
+        const py = Math.sin(angle) * distance
+        const size = 4 + Math.random() * 6
+        const delay = Math.random() * 0.1
+
+        return (
+          <motion.div
+            // biome-ignore lint/suspicious/noArrayIndexKey: posición es identidad
+            key={i}
+            initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+            animate={{
+              x: px,
+              y: py,
+              opacity: [0, 1, 1, 0],
+              scale: [0, 1.2, 1, 0.5],
+            }}
+            transition={{
+              duration: 1.1,
+              delay,
+              times: [0, 0.15, 0.7, 1],
+              ease: 'easeOut',
+            }}
+            className="absolute rounded-full"
+            style={{
+              width: size,
+              height: size,
+              background: 'rgba(255, 232, 150, 1)',
+              boxShadow: '0 0 8px rgba(212,169,60,0.9), 0 0 16px rgba(212,169,60,0.5)',
+            }}
+          />
+        )
+      })}
+    </div>
   )
 }
 
