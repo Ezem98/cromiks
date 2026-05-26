@@ -1,42 +1,35 @@
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
 import { assignDailyMissions } from '@/features/home/actions'
-import { AlbumProgressCard } from '@/features/home/components/album-progress-card'
-import { DailyPackCard } from '@/features/home/components/daily-pack-card'
-import { MissionsCard } from '@/features/home/components/missions-card'
-import { StreakCard } from '@/features/home/components/streak-card'
 import { getHomeData, getMissionTemplates } from '@/features/home/queries'
+import { AlbumProgressCard } from './album-progress-card'
+import { DailyPackCard } from './daily-pack-card'
+import { MissionsCard } from './missions-card'
+import { StreakCard } from './streak-card'
 
-export const metadata: Metadata = {
-  title: 'Inicio',
-}
-
-export default async function HomePage() {
-  const data = await getHomeData()
-
+/**
+ * Componente server del Home autenticado.
+ *
+ * Lo importa app/page.tsx cuando el user está logueado.
+ *
+ * Lógica:
+ *  1. Trae home data (packs, streak, missions, cards)
+ *  2. Si no hay misiones activas hoy → asigna 3 random
+ *  3. Hidrata misiones con templates (title, description)
+ *  4. Render
+ */
+export async function Home() {
+  let data = await getHomeData()
   if (!data) {
-    redirect('/signin')
+    // Layout debería haber redirigido. Si llegamos acá, algo raro.
+    return null
   }
 
   // Si no tiene misiones activas hoy, asignar 3 random.
-  // El render del componente las muestra una vez que están en DB.
   if (data.missions.length === 0) {
     await assignDailyMissions()
-    // Re-fetch los datos con las nuevas misiones
     const refreshed = await getHomeData()
-    if (refreshed) {
-      return <HomeContent data={refreshed} />
-    }
+    if (refreshed) data = refreshed
   }
 
-  return <HomeContent data={data} />
-}
-
-async function HomeContent({
-  data,
-}: {
-  data: NonNullable<Awaited<ReturnType<typeof getHomeData>>>
-}) {
   // Hidratar misiones con datos del template (title, description)
   const templateIds = data.missions.map((m) => m.mission_template_id)
   const templates = await getMissionTemplates(templateIds)

@@ -620,6 +620,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _coin_reward_for_rarity: {
+        Args: { p_rarity: Database['public']['Enums']['card_rarity'] }
+        Returns: number
+      }
       claim_daily_pack: {
         Args: never
         Returns: {
@@ -648,9 +652,17 @@ export type Database = {
         Args: { p_pack_id: string }
         Returns: {
           card_id: string
+          card_name: string
+          card_number: number
+          card_role: string
+          card_tier: Database['public']['Enums']['card_rarity']
+          coin_reward: number
+          coins_after: number
+          coins_earned: number
           copies_after: number
+          image_url: string
           is_new: boolean
-          rarity: Database['public']['Enums']['card_rarity']
+          pack_type: Database['public']['Enums']['pack_type']
         }[]
       }
       pin_card: { Args: { p_card_id: string }; Returns: undefined }

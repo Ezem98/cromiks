@@ -1,64 +1,69 @@
-import { Button } from '@/components/ui/button'
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { AppShell } from '@/components/layout/app-shell'
+import { MarketingShell } from '@/components/layout/marketing-shell'
+import { Home } from '@/features/home/components/home'
+import { Landing } from '@/features/landing/landing'
+import { createClient } from '@/lib/supabase/server'
 
-export default function HomePage() {
+export const metadata: Metadata = {
+  title: 'Cromiks · El álbum eterno',
+}
+
+/**
+ * Root route — la URL "/" para todo el mundo.
+ *
+ * Decide qué renderizar según el estado del user:
+ *  - No hay sesión          → Landing pública con MarketingShell
+ *  - Hay sesión sin onboarding → redirect a /onboarding
+ *  - Hay sesión completa    → Home autenticado con AppShell
+ *
+ * La URL del browser SIEMPRE queda en "/". No hay redirect a /home.
+ */
+export default async function RootPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // Caso 1: no logueado
+  if (!user) {
+    return (
+      <MarketingShell>
+        <Landing />
+      </MarketingShell>
+    )
+  }
+
+  // Caso 2: logueado pero sin onboarding
+  if (!user.user_metadata?.onboarded) {
+    redirect('/onboarding')
+  }
+
+  // Caso 3: logueado y onboarded → renderizar Home con AppShell
+  const [profileResult, coinsResult] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('username, display_name, avatar_url')
+      .eq('id', user.id)
+      .single(),
+    supabase.from('user_coins').select('balance').eq('user_id', user.id).single(),
+  ])
+
+  if (!profileResult.data) {
+    redirect('/onboarding')
+  }
+
   return (
-    <main className="min-h-screen flex flex-col">
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 max-w-4xl mx-auto text-center">
-        {/* Eyebrow */}
-        <div className="flex items-center gap-3 mb-6">
-          <span className="h-px w-6 bg-gold" />
-          <span className="text-mono text-[11px] uppercase tracking-[0.15em] text-gold">
-            Próximamente · junio 2026
-          </span>
-        </div>
-
-        {/* Hero title */}
-        <h1 className="text-display text-[clamp(64px,12vw,128px)] leading-[0.88] mb-6">
-          El álbum
-          <br />
-          <span className="prism-text">eterno.</span>
-        </h1>
-
-        {/* Tagline */}
-        <p className="text-[18px] leading-normal text-text-secondary max-w-xl mb-8">
-          El primer álbum digital donde los cromos épicos se mueven, suenan y te devuelven el
-          momento original. Empezamos por el más sagrado: Argentina campeón mundial 2022.
-        </p>
-
-        {/* Meta */}
-        <div className="flex flex-wrap items-center justify-center gap-6 text-mono text-[12px] text-(--color-text-muted) mb-12">
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-gold" />
-            205 cromos
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-gold" />
-            10 páginas narrativas
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-gold" />
-            11 Legendarias
-          </span>
-        </div>
-
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button variant="primary" size="lg">
-            Sumate a la wait list
-          </Button>
-          <Button variant="ghost" size="lg">
-            Conocé el proyecto
-          </Button>
-        </div>
-      </div>
-
-      {/* Footer minimal */}
-      <footer className="border-t border-white/6 py-6 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-mono text-[11px] text-(--color-text-muted)">
-          <span>Cromiks · Homenaje no comercial · 2026</span>
-          <span>Hecho con cariño en Argentina</span>
-        </div>
-      </footer>
-    </main>
+    <AppShell
+      user={{
+        username: profileResult.data.username,
+        displayName: profileResult.data.display_name,
+        avatarUrl: profileResult.data.avatar_url,
+      }}
+      coinsBalance={coinsResult.data?.balance ?? 0}
+    >
+      <Home />
+    </AppShell>
   )
 }

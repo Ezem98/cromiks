@@ -26,6 +26,12 @@ type SobreProps = {
   state?: SobreState
   size?: SobreSize
   context?: string
+  /**
+   * Si se muestra el label "SOBRE DIARIO" debajo del sobre.
+   * Default: true. Se puede ocultar cuando el contexto ya lo deja claro
+   * (ej. card del home con su propio eyebrow).
+   */
+  showTypeLabel?: boolean
   className?: string
 }
 
@@ -61,6 +67,7 @@ export function Sobre({
   state = 'closed',
   size = 'md',
   context,
+  showTypeLabel = true,
   className,
 }: SobreProps) {
   const dims = sizeMap[size]
@@ -138,9 +145,11 @@ export function Sobre({
       </div>
 
       {/* Type label */}
-      <div className={cn('text-mono text-[11px] uppercase tracking-[0.15em]', typeColors[type])}>
-        {typeLabels[type]}
-      </div>
+      {showTypeLabel && (
+        <div className={cn('text-mono text-[11px] uppercase tracking-[0.15em]', typeColors[type])}>
+          {typeLabels[type]}
+        </div>
+      )}
 
       {/* Context opcional */}
       {context && (

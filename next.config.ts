@@ -2,7 +2,11 @@ import type { NextConfig } from 'next'
 
 const config: NextConfig = {
   reactStrictMode: true,
-  typedRoutes: true,
+  // typedRoutes desactivado por ahora.
+  // Razones:
+  //   - Tenemos rutas planificadas que aún no existen (/album, /missions, /settings, /about, /u/[username])
+  //   - Cuando todas estén implementadas, lo podemos re-activar para validación estricta de URLs.
+  typedRoutes: false,
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

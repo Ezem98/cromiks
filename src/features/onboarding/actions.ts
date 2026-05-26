@@ -122,5 +122,5 @@ export async function completeOnboarding(data: {
   })
 
   revalidatePath('/', 'layout')
-  redirect('/home')
+  redirect('/')
 }

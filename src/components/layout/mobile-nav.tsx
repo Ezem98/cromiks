@@ -23,7 +23,7 @@ type MobileNavProps = {
 }
 
 const navItems = [
-  { href: '/home', label: 'Inicio', icon: HomeIcon },
+  { href: '/', label: 'Inicio', icon: HomeIcon },
   { href: '/album', label: 'Álbum', icon: LayoutGridIcon },
   { href: '/missions', label: 'Misiones', icon: TargetIcon },
 ] as const

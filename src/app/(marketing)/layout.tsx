@@ -15,7 +15,7 @@ export default async function MarketingLayout({ children }: { children: React.Re
   } = await supabase.auth.getUser()
 
   if (user) {
-    redirect('/home')
+    redirect('/')
   }
 
   return <MarketingShell>{children}</MarketingShell>

@@ -58,13 +58,13 @@ export function Navbar({ user, coinsBalance, onMobileNavToggle, className }: Nav
         </button>
 
         {/* Logo */}
-        <Link href="/home" className="text-display text-2xl leading-none">
+        <Link href="/" className="text-display text-2xl leading-none">
           Cromiks
         </Link>
 
         {/* Nav links — desktop only */}
         <nav className="hidden md:flex items-center gap-1 ml-6">
-          <NavLink href="/home">Inicio</NavLink>
+          <NavLink href="/">Inicio</NavLink>
           <NavLink href="/album">Álbum</NavLink>
           <NavLink href="/missions">Misiones</NavLink>
         </nav>

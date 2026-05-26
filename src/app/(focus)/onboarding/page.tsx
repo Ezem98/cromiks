@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  * el centro de la pantalla. Sin distracciones.
  *
  * Si el user no está logueado, redirige a /signin.
- * Si ya completó el onboarding, redirige a /home.
+ * Si ya completó el onboarding, redirige a /.
  */
 export default async function OnboardingPage() {
   const supabase = await createClient()
@@ -27,7 +27,7 @@ export default async function OnboardingPage() {
   }
 
   if (user.user_metadata?.onboarded) {
-    redirect('/home')
+    redirect('/')
   }
 
   const { data: profile } = await supabase

@@ -15,7 +15,7 @@ import { signInWithOtp, verifyOtp } from '@/features/auth/actions'
  * - Botón "Mandar otro código" si no llegó
  * - Botón "Cambiar email" para volver atrás
  *
- * Tras un verify exitoso, redirige a /home (el server-side va a decidir si
+ * Tras un verify exitoso, redirige a / (el server-side va a decidir si
  * mostrar onboarding o no).
  */
 
@@ -57,8 +57,8 @@ export function OtpVerifyForm({ email, onChangeEmail }: OtpVerifyFormProps) {
         return
       }
 
-      // Éxito: redirigir a /home (que después puede mandar a /onboarding)
-      router.push('/home')
+      // Éxito: redirigir a / (el server decide si manda a /onboarding)
+      router.push('/')
       router.refresh()
     })
   }
