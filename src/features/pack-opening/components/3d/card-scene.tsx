@@ -1,0 +1,158 @@
+'use client'
+
+import { Canvas } from '@react-three/fiber'
+import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
+import * as THREE from 'three'
+import type { RevealedCard } from '../../types'
+import { CardMesh3D } from './card-mesh'
+
+/**
+ * Escena 3D para una card individual revelada.
+ *
+ * Estrategia híbrida 3D + HTML:
+ *  - El Canvas R3F renderea la card 3D (box + border + avatar + flip)
+ *  - HTML overlay positioned absolute MUESTRA el texto del cromo
+ *    (nombre, número, posición). Razón: drei <Text> tiene incompat con
+ *    three r0.184 (renderea quad blanco gigante en lugar del texto).
+ *
+ * Cuando cambia el prop `card`:
+ *  - El Canvas NO se desmonta (mantiene WebGL context, evita "context lost")
+ *  - El mesh interno cambia (CardMesh3D reacciona al nuevo card)
+ *  - El flip 3D vuelve a correr (rotateY: π → 0)
+ *  - El HTML overlay actualiza el texto
+ */
+
+type CardScene3DProps = {
+  card: RevealedCard
+  autoFlip?: boolean
+}
+
+export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [rotateY, setRotateY] = useState(autoFlip ? Math.PI : 0)
+
+  // Flip automático cuando cambia la card (incluyendo primer mount)
+  useEffect(() => {
+    if (!autoFlip) return
+    setRotateY(Math.PI)
+    const timer = setTimeout(() => setRotateY(0), 100)
+    return () => clearTimeout(timer)
+  }, [autoFlip, card.cardId])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1
+    const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1)
+    setMousePosition({ x, y })
+  }
+
+  const handleMouseLeave = () => {
+    setMousePosition({ x: 0, y: 0 })
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative w-full h-full flex items-center justify-center"
+      style={{ touchAction: 'none' }}
+    >
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        dpr={[1, 2]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.0,
+          outputColorSpace: THREE.SRGBColorSpace,
+        }}
+        style={{ background: 'transparent' }}
+      >
+        <ambientLight intensity={0.5} color="#ffffff" />
+        <directionalLight position={[-3, 5, 4]} intensity={1.0} color="#fff5e0" />
+        <directionalLight position={[2, -2, -3]} intensity={0.4} color="#D4A93C" />
+
+        <CardMesh3D
+          card={card}
+          mousePosition={mousePosition}
+          tiltStrength={1}
+          rotateY={rotateY}
+          size={1.2}
+        />
+      </Canvas>
+
+      {/* HTML overlay con el texto del cromo, positioned encima del canvas */}
+      <CardTextOverlay card={card} />
+    </motion.div>
+  )
+}
+
+/**
+ * Overlay HTML con el texto del cromo (nombre, número, posición).
+ *
+ * Positioned absolute sobre el canvas, dentro del contenedor padre.
+ * El layout matchea la posición visual de los elementos en la card 3D:
+ *  - Número arriba a la derecha
+ *  - Nombre + posición/club abajo a la izquierda
+ *
+ * pointer-events: none para no bloquear el mouse del canvas (tilt).
+ */
+function CardTextOverlay({ card }: { card: RevealedCard }) {
+  return (
+    <div className="absolute inset-0 pointer-events-none" style={{ padding: '8%' }}>
+      {/* Número arriba a la derecha */}
+      <div
+        className="absolute text-display leading-none"
+        style={{
+          top: '14%',
+          right: '14%',
+          fontSize: 'clamp(28px, 7vw, 40px)',
+          color: '#ffffff',
+          textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+        }}
+      >
+        {card.number ?? ''}
+      </div>
+
+      {/* Nombre + posición/club abajo a la izquierda */}
+      <div
+        className="absolute left-0 right-0"
+        style={{
+          bottom: '14%',
+          paddingLeft: '12%',
+          paddingRight: '12%',
+        }}
+      >
+        <div
+          className="text-display uppercase leading-tight"
+          style={{
+            fontSize: 'clamp(16px, 4vw, 22px)',
+            color: '#ffffff',
+            textShadow: '0 2px 6px rgba(0,0,0,0.8)',
+            letterSpacing: '0.04em',
+          }}
+        >
+          {card.name}
+        </div>
+        {card.playerRole && (
+          <div
+            className="text-mono uppercase mt-1"
+            style={{
+              fontSize: 'clamp(9px, 2.2vw, 11px)',
+              color: 'rgba(255,255,255,0.7)',
+              textShadow: '0 1px 4px rgba(0,0,0,0.8)',
+              letterSpacing: '0.15em',
+            }}
+          >
+            {card.playerRole}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

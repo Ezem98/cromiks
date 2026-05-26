@@ -1,12 +1,19 @@
 'use client'
 
 import { AnimatePresence, motion, useMotionValue, useTransform } from 'motion/react'
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { Cromo } from '@/components/domain/cromo'
 import { TierLabel } from '@/components/domain/tier-label'
 import { Button } from '@/components/ui/button'
+import { useReducedMotion } from '@/lib/hooks/use-reduced-motion'
 import { cn } from '@/lib/utils'
 import type { RevealedCard, Tier } from '../types'
+
+// Lazy load del 3D scene de la card — solo se carga cuando se reveal
+const CardScene3D = dynamic(() => import('./3d/card-scene').then((mod) => mod.CardScene3D), {
+  ssr: false,
+})
 
 /**
  * Fase 3 — Stack (pila de cartas + reveal con peek).
@@ -269,6 +276,7 @@ function RevealedView({
   onContinue: () => void
   isLast: boolean
 }) {
+  const reducedMotion = useReducedMotion()
   // El "Siguiente" en la última card se reemplaza por el flow natural al summary
   const ctaText = isLast ? 'Ver resumen' : 'Siguiente'
 
@@ -284,28 +292,51 @@ function RevealedView({
       {/* Tier burst de fondo */}
       <TierBurst tier={revealedCard.tier} />
 
-      {/* Card revelada al centro con flip 3D inicial */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
-        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-        transition={{
-          opacity: { duration: 0.3 },
-          scale: { duration: 0.5, type: 'spring', stiffness: 150 },
-          rotateY: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
-        }}
-        style={{ perspective: 1500 }}
-        className="relative z-10"
-      >
-        <Cromo
-          tier={revealedCard.tier}
-          name={revealedCard.name}
-          playerRole={revealedCard.playerRole}
-          number={revealedCard.number}
-          seed={revealedCard.seed}
-          imageUrl={revealedCard.imageUrl ?? undefined}
-          size="lg"
-        />
-      </motion.div>
+      {/* Card revelada al centro — 3D si motion ok, CSS si reduced */}
+      {reducedMotion ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{
+            opacity: { duration: 0.3 },
+            scale: { duration: 0.5, type: 'spring', stiffness: 150 },
+            rotateY: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+          }}
+          style={{ perspective: 1500 }}
+          className="relative z-10"
+        >
+          <Cromo
+            tier={revealedCard.tier}
+            name={revealedCard.name}
+            playerRole={revealedCard.playerRole}
+            number={revealedCard.number}
+            seed={revealedCard.seed}
+            imageUrl={revealedCard.imageUrl ?? undefined}
+            size="lg"
+          />
+        </motion.div>
+      ) : (
+        // Wrapper outer: solo opacity, sin scale animation.
+        // Razon: el Canvas de R3F mide el parent una vez al mount. Si el parent
+        // está a mid-scale (ej. 0.7) durante la spring, el canvas se queda con ese
+        // tamaño "congelado" y la card aparece más chica. Sin scale, el container
+        // tiene tamaño consistente desde frame 1.
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="relative z-10"
+          style={{
+            width: 280,
+            height: 380,
+            // min-width/height fuerza el tamaño incluso si flex parent intenta achicar
+            minWidth: 280,
+            minHeight: 380,
+          }}
+        >
+          <CardScene3D card={revealedCard} autoFlip />
+        </motion.div>
+      )}
 
       {/* Info de la card */}
       <motion.div
