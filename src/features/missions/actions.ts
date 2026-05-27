@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { parseUuid } from '@/lib/validation'
 
 /**
  * Server action: reclama el reward de una misión completed.
@@ -33,21 +34,28 @@ export async function claimMission(userMissionId: string): Promise<
     }
   | { ok: false; error: string }
 > {
+  const validUserMissionId = parseUuid(userMissionId)
+  if (!validUserMissionId) {
+    return { ok: false, error: 'invalid_input' }
+  }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase.rpc('claim_mission', {
-    p_user_mission_id: userMissionId,
+    p_user_mission_id: validUserMissionId,
   })
 
   if (error) {
-    if (error.message.includes('mission_not_found')) {
-      return { ok: false, error: 'mission_not_found' }
-    }
-    if (error.message.includes('mission_not_completed')) {
-      return { ok: false, error: 'mission_not_completed' }
-    }
-    if (error.message.includes('template_not_found')) {
-      return { ok: false, error: 'template_not_found' }
+    // Match exacto contra los códigos del RPC claim_mission.
+    // Ver migration 20260526130000_add_claim_mission.sql.
+    const knownCodes = new Set([
+      'auth_required',
+      'mission_not_found',
+      'mission_not_completed',
+      'template_not_found',
+    ])
+    if (knownCodes.has(error.message)) {
+      return { ok: false, error: error.message }
     }
     console.error('[missions] claimMission:', error.message)
     return { ok: false, error: 'unknown' }

@@ -26,11 +26,74 @@ import { createClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 
+// Cache de 1h. La imagen es determinística por (cardId, username), pero si
+// cambia la foto/nombre/rareza del cromo en DB necesitamos que se regenere
+// eventualmente. Sin esto Vercel cachea para siempre y los posts viejos
+// muestran data vieja (B-07). 1h es un balance razonable.
+export const revalidate = 3600
+
 type RouteParams = {
   params: Promise<{ cardId: string }>
 }
 
+/** Imagen OG estática de fallback — se devuelve si la pipeline de Satori falla
+ *  o el cromo no existe. Sin esto los crawlers de WhatsApp/Twitter no muestran
+ *  preview cuando algo se rompe del lado del render (B-08). */
+function fallbackImage() {
+  return new ImageResponse(
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #0A0E14 0%, #1F1810 50%, #0A0E14 100%)',
+        color: '#E6ECF2',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 64,
+          letterSpacing: 10,
+          color: '#D4A93C',
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
+      >
+        Cromiks
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 22,
+          color: '#A6B0BD',
+          letterSpacing: 3,
+          paddingTop: 16,
+          textTransform: 'uppercase',
+        }}
+      >
+        Eterno Diciembre
+      </div>
+    </div>,
+    { width: 1200, height: 630 },
+  )
+}
+
 export async function GET(request: Request, { params }: RouteParams) {
+  try {
+    return await buildCardImage(request, params)
+  } catch (err) {
+    // Si Satori falla (CSS inválido, font 404, gradient mal armado), devolvemos
+    // la imagen estática en vez de 500. Los crawlers reciben algo mostrable.
+    console.error('[og/card] render failed:', err)
+    return fallbackImage()
+  }
+}
+
+async function buildCardImage(request: Request, params: RouteParams['params']) {
   const { cardId } = await params
   const url = new URL(request.url)
   const username = url.searchParams.get('u') ?? null
@@ -44,24 +107,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     .single()
 
   if (!card) {
-    // Fallback: imagen genérica "cromo no encontrado"
-    return new ImageResponse(
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#0A0E14',
-          color: '#E6ECF2',
-          fontSize: 48,
-        }}
-      >
-        Cromiks
-      </div>,
-      { width: 1200, height: 630 },
-    )
+    return fallbackImage()
   }
 
   const metadata = (card.metadata ?? {}) as {

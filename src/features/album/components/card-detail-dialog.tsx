@@ -5,7 +5,14 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { Cromo } from '@/components/domain/cromo'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { ShareSheet } from '@/features/sharing/components/share-sheet'
 import { cn } from '@/lib/utils'
 import { dismantleCard, pinCard, unpinCard } from '../actions'
@@ -295,6 +302,7 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
   const [isPinnedLocal, setIsPinnedLocal] = useState(card.isPinned)
   const [copiesLocal, setCopiesLocal] = useState(card.copies)
   const [shareOpen, setShareOpen] = useState(false)
+  const [dismantleConfirmOpen, setDismantleConfirmOpen] = useState(false)
 
   const canDismantle = copiesLocal > 1 && card.tier !== 'legendary'
   const reward = coinReward[card.tier]
@@ -316,7 +324,12 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
     })
   }
 
-  const handleDismantle = () => {
+  const handleDismantleRequest = () => {
+    setDismantleConfirmOpen(true)
+  }
+
+  const handleDismantleConfirm = () => {
+    setDismantleConfirmOpen(false)
     startTransition(async () => {
       const result = await dismantleCard(card.id, 1)
       if (!result.ok) {
@@ -325,6 +338,7 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
           no_extra_copies: 'Solo tenés una copia, no se puede canjear',
           not_dismantleable: 'Esta carta no se puede canjear',
           insufficient_copies: 'No tenés copias extra',
+          invalid_input: 'Datos inválidos',
         }
         toast.error(msgMap[result.error] ?? 'Algo salió mal')
         return
@@ -354,7 +368,12 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
         </Button>
 
         {canDismantle && (
-          <Button variant="ghost" onClick={handleDismantle} disabled={isPending} className="w-full">
+          <Button
+            variant="ghost"
+            onClick={handleDismantleRequest}
+            disabled={isPending}
+            className="w-full"
+          >
             <CoinsIcon className="size-4 mr-1.5" />
             Canjear 1 copia por {reward}
             <span className="text-(--color-gold) ml-0.5">●</span>
@@ -375,6 +394,29 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
         cardName={card.name}
         username={username}
       />
+
+      {/* Confirmación destructiva del dismantle. Sin esto un mis-tap canjeaba la
+          copia silenciosamente (B-02). */}
+      <Dialog open={dismantleConfirmOpen} onOpenChange={setDismantleConfirmOpen}>
+        <DialogContent className={cn('bg-(--color-surface-deep) border-white/[0.08]', 'max-w-sm')}>
+          <DialogHeader>
+            <DialogTitle className="text-(--color-text-primary)">¿Canjear esta copia?</DialogTitle>
+            <DialogDescription className="text-(--color-text-secondary)">
+              Vas a canjear 1 copia de <strong>{card.name}</strong> por{' '}
+              <span className="text-(--color-gold)">{reward}</span> monedas. Esta acción no se puede
+              deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDismantleConfirmOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={handleDismantleConfirm} disabled={isPending}>
+              Sí, canjear
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

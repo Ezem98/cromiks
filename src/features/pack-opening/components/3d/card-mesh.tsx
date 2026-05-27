@@ -30,6 +30,14 @@ const SURFACE_DEEP = '#1a1f28'
 const SURFACE_BASE = '#0f131a'
 const GOLD = '#D4A93C'
 
+/**
+ * Tilt máximo del card 3D en respuesta al mouse (radianes).
+ * Exportados para que el overlay HTML pueda matchear el mismo tilt
+ * sin desincronizarse si alguien tunea estos valores.
+ */
+export const CARD_TILT_X_RAD = 0.2
+export const CARD_TILT_Y_RAD = 0.3
+
 function getTierColor(tier: Tier): string {
   switch (tier) {
     case 'common':
@@ -68,8 +76,8 @@ export function CardMesh3D({
     if (!groupRef.current) return
 
     if (tiltStrength > 0) {
-      const targetRotX = -mousePosition.y * 0.2 * tiltStrength
-      const targetRotY = rotateY + mousePosition.x * 0.3 * tiltStrength
+      const targetRotX = -mousePosition.y * CARD_TILT_X_RAD * tiltStrength
+      const targetRotY = rotateY + mousePosition.x * CARD_TILT_Y_RAD * tiltStrength
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
         targetRotX,

@@ -2,10 +2,13 @@
 
 import { Canvas } from '@react-three/fiber'
 import { motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import * as THREE from 'three'
 import type { RevealedCard } from '../../types'
-import { CardMesh3D } from './card-mesh'
+import { Canvas3DErrorBoundary, Canvas3DSkeleton } from './canvas-fallback'
+import { CARD_TILT_X_RAD, CARD_TILT_Y_RAD, CardMesh3D } from './card-mesh'
+
+const RAD_TO_DEG = 180 / Math.PI
 
 /**
  * Escena 3D para una card individual revelada.
@@ -62,30 +65,43 @@ export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
       className="relative w-full h-full flex items-center justify-center"
       style={{ touchAction: 'none' }}
     >
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{
-          antialias: true,
-          alpha: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.0,
-          outputColorSpace: THREE.SRGBColorSpace,
-        }}
-        style={{ background: 'transparent' }}
-      >
-        <ambientLight intensity={0.5} color="#ffffff" />
-        <directionalLight position={[-3, 5, 4]} intensity={1.0} color="#fff5e0" />
-        <directionalLight position={[2, -2, -3]} intensity={0.4} color="#D4A93C" />
+      <Canvas3DErrorBoundary>
+        <Suspense fallback={<Canvas3DSkeleton />}>
+          <Canvas
+            camera={{ position: [0, 0, 5], fov: 45 }}
+            dpr={[1, 2]}
+            gl={{
+              antialias: true,
+              alpha: true,
+              toneMapping: THREE.ACESFilmicToneMapping,
+              toneMappingExposure: 1.0,
+              outputColorSpace: THREE.SRGBColorSpace,
+            }}
+            style={{ background: 'transparent' }}
+            // Si WebGL pierde el contexto (GPU pressure, otro WebGL en otra app),
+            // tiramos el error para que lo capture el ErrorBoundary y muestre
+            // el fallback en lugar de canvas en blanco (B-14).
+            onCreated={({ gl }) => {
+              gl.domElement.addEventListener('webglcontextlost', (e) => {
+                e.preventDefault()
+                throw new Error('webgl_context_lost')
+              })
+            }}
+          >
+            <ambientLight intensity={0.5} color="#ffffff" />
+            <directionalLight position={[-3, 5, 4]} intensity={1.0} color="#fff5e0" />
+            <directionalLight position={[2, -2, -3]} intensity={0.4} color="#D4A93C" />
 
-        <CardMesh3D
-          card={card}
-          mousePosition={mousePosition}
-          tiltStrength={1}
-          rotateY={rotateY}
-          size={1.2}
-        />
-      </Canvas>
+            <CardMesh3D
+              card={card}
+              mousePosition={mousePosition}
+              tiltStrength={1}
+              rotateY={rotateY}
+              size={1.2}
+            />
+          </Canvas>
+        </Suspense>
+      </Canvas3DErrorBoundary>
 
       {/* HTML overlay con el texto del cromo, positioned encima del canvas.
           Recibe mousePosition para inclinarse en sync con la card 3D — sino
@@ -115,10 +131,11 @@ function CardTextOverlay({
   card: RevealedCard
   mousePosition: { x: number; y: number }
 }) {
-  // Matchear el tilt del 3D (CardMesh3D usa 0.2 rad en X, 0.3 rad en Y).
-  // Convertimos a degrees y aplicamos perspective para que se vea como un plano 3D.
-  const tiltX = -mousePosition.y * 11.5 // 0.2 rad ≈ 11.5°
-  const tiltY = mousePosition.x * 17 // 0.3 rad ≈ 17°
+  // Matchear el tilt del 3D usando las mismas constantes que CardMesh3D,
+  // convertidas a degrees. Así si alguien tunea el tilt del mesh el overlay
+  // se actualiza solo (B-17).
+  const tiltX = -mousePosition.y * CARD_TILT_X_RAD * RAD_TO_DEG
+  const tiltY = mousePosition.x * CARD_TILT_Y_RAD * RAD_TO_DEG
 
   return (
     <div

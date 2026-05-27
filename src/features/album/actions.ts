@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { parseUuid } from '@/lib/validation'
 
 /**
  * Server actions del álbum.
@@ -27,9 +28,14 @@ import { createClient } from '@/lib/supabase/server'
 export async function pinCard(
   cardId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const validCardId = parseUuid(cardId)
+  if (!validCardId) {
+    return { ok: false, error: 'invalid_input' }
+  }
+
   const supabase = await createClient()
 
-  const { error } = await supabase.rpc('pin_card', { p_card_id: cardId })
+  const { error } = await supabase.rpc('pin_card', { p_card_id: validCardId })
 
   if (error) {
     console.error('[album] pinCard:', error.message)
@@ -46,9 +52,14 @@ export async function pinCard(
 export async function unpinCard(
   cardId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const validCardId = parseUuid(cardId)
+  if (!validCardId) {
+    return { ok: false, error: 'invalid_input' }
+  }
+
   const supabase = await createClient()
 
-  const { error } = await supabase.rpc('unpin_card', { p_card_id: cardId })
+  const { error } = await supabase.rpc('unpin_card', { p_card_id: validCardId })
 
   if (error) {
     console.error('[album] unpinCard:', error.message)
@@ -86,23 +97,29 @@ export async function dismantleCard(
     }
   | { ok: false; error: string }
 > {
+  const validCardId = parseUuid(cardId)
+  if (!validCardId || !Number.isInteger(count) || count < 1) {
+    return { ok: false, error: 'invalid_input' }
+  }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase.rpc('dismantle_card', {
-    p_card_id: cardId,
+    p_card_id: validCardId,
     p_count: count,
   })
 
   if (error) {
-    if (error.message.includes('not_owned')) return { ok: false, error: 'not_owned' }
-    if (error.message.includes('no_extra_copies')) {
-      return { ok: false, error: 'no_extra_copies' }
-    }
-    if (error.message.includes('not_dismantleable')) {
-      return { ok: false, error: 'not_dismantleable' }
-    }
-    if (error.message.includes('insufficient_copies')) {
-      return { ok: false, error: 'insufficient_copies' }
+    // Match exacto contra los códigos que el RPC tira con raise exception.
+    // Ver migration 20260526120000_fix_open_pack_ambiguous_column.sql y siguientes.
+    const knownCodes = new Set([
+      'not_owned',
+      'no_extra_copies',
+      'not_dismantleable',
+      'insufficient_copies',
+    ])
+    if (knownCodes.has(error.message)) {
+      return { ok: false, error: error.message }
     }
     console.error('[album] dismantleCard:', error.message)
     return { ok: false, error: 'unknown' }

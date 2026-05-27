@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { parseUuid } from '@/lib/validation'
 
 /**
  * Server actions para el feature de sharing (E3).
@@ -34,6 +35,11 @@ export async function recordShare(
   cardId: string,
   channel: ShareChannel,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const validCardId = parseUuid(cardId)
+  if (!validCardId || !(channel in channelToPlatform)) {
+    return { ok: false, error: 'invalid_input' }
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -45,7 +51,7 @@ export async function recordShare(
 
   const { error } = await supabase.from('share_events').insert({
     user_id: user.id,
-    card_id: cardId,
+    card_id: validCardId,
     platform: channelToPlatform[channel],
   })
 

@@ -4,6 +4,21 @@
 
 export type Tier = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
 
+const TIERS: readonly Tier[] = ['common', 'uncommon', 'rare', 'epic', 'legendary']
+
+/**
+ * Valida que un string sea un Tier conocido. Útil para data que viene de la DB
+ * que TS solo tipea como `string` — el `as Tier` evade el check y rompe silencioso
+ * si la DB introduce un tier nuevo. Si no matchea, log y null.
+ */
+export function parseTier(value: unknown): Tier | null {
+  if (typeof value === 'string' && (TIERS as readonly string[]).includes(value)) {
+    return value as Tier
+  }
+  console.warn('[parseTier] unknown tier value:', value)
+  return null
+}
+
 /**
  * Cromo que se revela en la apertura.
  *
