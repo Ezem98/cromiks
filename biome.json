@@ -16,7 +16,8 @@
       "!public",
       "!playwright-report",
       "!test-results",
-      "!tests/.auth"
+      "!tests/.auth",
+      "!src/types/database.types.ts"
     ]
   },
   "formatter": {
