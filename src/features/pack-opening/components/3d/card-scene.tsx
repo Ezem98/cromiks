@@ -33,6 +33,7 @@ export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
   const [rotateY, setRotateY] = useState(autoFlip ? Math.PI : 0)
 
   // Flip automático cuando cambia la card (incluyendo primer mount)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: card.cardId dispara el flip al cambiar de cromo
   useEffect(() => {
     if (!autoFlip) return
     setRotateY(Math.PI)

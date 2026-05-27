@@ -620,6 +620,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _advance_missions: {
+        Args: {
+          p_context?: Json
+          p_increment?: number
+          p_type: Database['public']['Enums']['mission_type']
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       _coin_reward_for_rarity: {
         Args: { p_rarity: Database['public']['Enums']['card_rarity'] }
         Returns: number
@@ -630,6 +639,15 @@ export type Database = {
           is_first_claim: boolean
           new_streak: number
           pack_id: string
+        }[]
+      }
+      claim_mission: {
+        Args: { p_user_mission_id: string }
+        Returns: {
+          out_cards_earned: number
+          out_coins_earned: number
+          out_new_balance: number
+          out_pack_id: string
         }[]
       }
       complete_referral: {
@@ -651,9 +669,7 @@ export type Database = {
       open_pack: {
         Args: { p_pack_id: string }
         Returns: {
-          card_id: string
           card_name: string
-          card_number: number
           card_role: string
           card_tier: Database['public']['Enums']['card_rarity']
           coin_reward: number
@@ -662,6 +678,8 @@ export type Database = {
           copies_after: number
           image_url: string
           is_new: boolean
+          out_card_id: string
+          out_card_number: number
           pack_type: Database['public']['Enums']['pack_type']
         }[]
       }

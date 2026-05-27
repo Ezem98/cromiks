@@ -45,17 +45,21 @@ export async function openPack(
 
   // El RPC devuelve un array de filas, cada una un cromo + metadata del pack.
   // Los 3 campos meta (pack_type, coins_earned, coins_after) son iguales en todas las filas.
+  //
+  // NOTA: las output columns out_card_id y out_card_number tienen ese prefijo
+  // para evitar la ambigüedad con user_cards.card_id / cards.card_number dentro
+  // de la función SQL. Ver supabase/migrations/20260526120000_fix_open_pack_ambiguous_column.sql
   const first = data[0]
   const cards: RevealedCard[] = data.map((row) => ({
-    cardId: row.card_id,
+    cardId: row.out_card_id,
     name: row.card_name,
     playerRole: row.card_role ?? '',
-    number: row.card_number ?? 0,
+    number: row.out_card_number ?? 0,
     tier: row.card_tier as Tier,
     isNew: row.is_new,
     reward: row.coin_reward,
     imageUrl: row.image_url ?? null,
-    seed: row.card_id, // usar cardId como seed determinístico
+    seed: row.out_card_id, // usar cardId como seed determinístico
   }))
 
   return {

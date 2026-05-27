@@ -19,13 +19,17 @@ import type { Database } from '@/types/database.types'
  * await supabase.from('cards').insert(...)
  */
 export function createAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const secretKey = process.env.SUPABASE_SECRET_KEY
 
+  if (!url) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL is not defined')
+  }
   if (!secretKey) {
     throw new Error('SUPABASE_SECRET_KEY is not defined')
   }
 
-  return createSupabaseClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL!, secretKey, {
+  return createSupabaseClient<Database>(url, secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

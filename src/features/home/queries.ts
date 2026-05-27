@@ -41,11 +41,13 @@ export async function getHomeData() {
       .in('status', ['active', 'completed'])
       .or(`expires_at.gte.${today}T00:00:00,expires_at.is.null`),
 
-    // Cuántos cromos únicos tiene
+    // Cuántos cromos únicos tiene del álbum eterno-diciembre.
+    // Inner join filtra automáticamente user_cards huérfanos o de otros álbumes.
     supabase
       .from('user_cards')
-      .select('card_id', { count: 'exact', head: true })
-      .eq('user_id', user.id),
+      .select('card_id, cards!inner(album_id)', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('cards.album_id', ALBUM_ID),
 
     // Total de cromos del álbum
     supabase.from('cards').select('id', { count: 'exact', head: true }).eq('album_id', ALBUM_ID),

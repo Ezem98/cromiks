@@ -12,8 +12,12 @@ import type { Database } from '@/types/database.types'
  * const { data } = await supabase.from('cards').select('*')
  */
 export function createClient() {
-  return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-  )
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+  if (!url || !key) {
+    throw new Error('Supabase env vars are not defined')
+  }
+
+  return createBrowserClient<Database>(url, key)
 }

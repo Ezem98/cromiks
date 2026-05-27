@@ -1,5 +1,6 @@
 import { assignDailyMissions } from '@/features/home/actions'
-import { getHomeData, getMissionTemplates } from '@/features/home/queries'
+import { getHomeData } from '@/features/home/queries'
+import { getMissionsForUser } from '@/features/missions/queries'
 import { AlbumProgressCard } from './album-progress-card'
 import { DailyPackCard } from './daily-pack-card'
 import { MissionsCard } from './missions-card'
@@ -30,22 +31,9 @@ export async function Home() {
     if (refreshed) data = refreshed
   }
 
-  // Hidratar misiones con datos del template (title, description)
-  const templateIds = data.missions.map((m) => m.mission_template_id)
-  const templates = await getMissionTemplates(templateIds)
-  const templatesById = new Map(templates.map((t) => [t.id, t]))
-
-  const missionsWithMeta = data.missions.map((m) => {
-    const template = templatesById.get(m.mission_template_id)
-    return {
-      id: m.id,
-      title: template?.title ?? 'Misión',
-      description: template?.description ?? '',
-      status: m.status as 'active' | 'completed' | 'claimed' | 'expired',
-      progress: m.progress,
-      target: m.target,
-    }
-  })
+  // Trae misiones con sus templates joineados + reward info.
+  // Reemplaza el patrón viejo de 2 queries separadas.
+  const missions = await getMissionsForUser()
 
   return (
     <div className="space-y-8">
@@ -100,7 +88,7 @@ export async function Home() {
       </div>
 
       {/* Misiones — ancho completo */}
-      <MissionsCard missions={missionsWithMeta} />
+      <MissionsCard missions={missions} />
 
       {/* Sobres extra pendientes (si hay más de daily) */}
       {data.pendingPacks.filter((p) => p.type !== 'daily').length > 0 && (

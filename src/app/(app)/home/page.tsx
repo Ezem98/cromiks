@@ -5,14 +5,15 @@ import { AlbumProgressCard } from '@/features/home/components/album-progress-car
 import { DailyPackCard } from '@/features/home/components/daily-pack-card'
 import { MissionsCard } from '@/features/home/components/missions-card'
 import { StreakCard } from '@/features/home/components/streak-card'
-import { getHomeData, getMissionTemplates } from '@/features/home/queries'
+import { getHomeData } from '@/features/home/queries'
+import { getMissionsForUser } from '@/features/missions/queries'
 
 export const metadata: Metadata = {
   title: 'Inicio',
 }
 
 export default async function HomePage() {
-  const data = await getHomeData()
+  let data = await getHomeData()
 
   if (!data) {
     redirect('/signin')
@@ -22,43 +23,27 @@ export default async function HomePage() {
   // El render del componente las muestra una vez que están en DB.
   if (data.missions.length === 0) {
     await assignDailyMissions()
-    // Re-fetch los datos con las nuevas misiones
     const refreshed = await getHomeData()
-    if (refreshed) {
-      return <HomeContent data={refreshed} />
-    }
+    if (refreshed) data = refreshed
   }
 
-  return <HomeContent data={data} />
+  const missions = await getMissionsForUser()
+
+  return <HomeContent data={data} missions={missions} />
 }
 
 async function HomeContent({
   data,
+  missions,
 }: {
   data: NonNullable<Awaited<ReturnType<typeof getHomeData>>>
+  missions: Awaited<ReturnType<typeof getMissionsForUser>>
 }) {
-  // Hidratar misiones con datos del template (title, description)
-  const templateIds = data.missions.map((m) => m.mission_template_id)
-  const templates = await getMissionTemplates(templateIds)
-  const templatesById = new Map(templates.map((t) => [t.id, t]))
-
-  const missionsWithMeta = data.missions.map((m) => {
-    const template = templatesById.get(m.mission_template_id)
-    return {
-      id: m.id,
-      title: template?.title ?? 'Misión',
-      description: template?.description ?? '',
-      status: m.status as 'active' | 'completed' | 'claimed' | 'expired',
-      progress: m.progress,
-      target: m.target,
-    }
-  })
-
   return (
     <div className="space-y-8">
       {/* Hero — saludo */}
       <div>
-        <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-gold) mb-1">
+        <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-gold mb-1">
           Bienvenido de vuelta
         </p>
         <h1 className="text-display text-5xl leading-[0.9]">Tu álbum eterno</h1>
@@ -90,11 +75,11 @@ async function HomeContent({
         <AlbumProgressCard cardsOwned={data.cardsOwned} totalCards={data.totalCards} />
         <div className="sm:col-span-1 col-span-1">
           {/* Mini placeholder de balance de monedas — se va a usar más adelante */}
-          <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6 h-full">
+          <div className="rounded-[16px] bg-surface-raised border border-white/6 p-6 h-full">
             <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) mb-4">
               Próximamente
             </p>
-            <div className="text-display text-2xl text-(--color-text-secondary) leading-tight">
+            <div className="text-display text-2xl text-text-secondary leading-tight">
               Trades
               <br />
               entre amigos
@@ -107,15 +92,15 @@ async function HomeContent({
       </div>
 
       {/* Misiones — ancho completo */}
-      <MissionsCard missions={missionsWithMeta} />
+      <MissionsCard missions={missions} />
 
       {/* Sobres extra pendientes (si hay más de daily) */}
       {data.pendingPacks.filter((p) => p.type !== 'daily').length > 0 && (
-        <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6">
+        <div className="rounded-[16px] bg-surface-raised border border-white/6 p-6">
           <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) mb-3">
             Otros sobres pendientes
           </p>
-          <p className="text-(--color-text-secondary) text-sm">
+          <p className="text-text-secondary text-sm">
             Tenés {data.pendingPacks.filter((p) => p.type !== 'daily').length} sobre(s) extra de
             misiones o referrals esperando.
           </p>
