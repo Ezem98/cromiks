@@ -19,11 +19,12 @@ export const ERROR_COPY: Record<string, string> = {
   already_opened: 'Este sobre ya fue abierto',
   not_found: 'No encontramos ese sobre',
 
-  // Album / dismantle
-  not_owned: 'No tenés este cromo',
-  no_extra_copies: 'No tenés copias extras',
-  not_dismantleable: 'Este cromo no se puede canjear',
-  insufficient_copies: 'No alcanzan las copias',
+  // Album / dismantle (match exacto con codes del RPC dismantle_card)
+  invalid_count: 'Cantidad inválida',
+  card_not_found: 'No encontramos ese cromo',
+  legendary_not_dismantlable: 'Las legendarias no se canjean',
+  card_not_owned: 'No tenés ese cromo',
+  must_keep_one: 'Tenés que conservar al menos una copia',
 
   // Missions
   mission_not_found: 'No encontramos esa misión',
