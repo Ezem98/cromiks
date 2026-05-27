@@ -14,10 +14,11 @@ export const ERROR_COPY: Record<string, string> = {
   unknown: 'Algo salió mal. Intentá de nuevo',
   empty_result: 'No recibimos respuesta. Intentá de nuevo',
 
-  // Pack opening
-  not_owner: 'Este sobre no es tuyo',
-  already_opened: 'Este sobre ya fue abierto',
-  not_found: 'No encontramos ese sobre',
+  // Pack opening (post B-22/B-23: codes alineados con el RPC SQL)
+  pack_not_found: 'No encontramos ese sobre',
+  pack_not_pending: 'Este sobre no puede abrirse',
+  pack_expired: 'Este sobre expiró',
+  // auth_required ya está mapeado más abajo (cross-cutting)
 
   // Album / dismantle
   not_owned: 'No tenés este cromo',

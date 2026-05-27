@@ -22,7 +22,9 @@
     "seed": "tsx scripts/seed.ts",
     "seed:reset": "tsx scripts/reset.ts",
     "prepare": "husky",
-    "db:types": "pnpx supabase gen types typescript --project-id oaussuztahdxivemqbnd > src/types/database.types.ts"
+    "db:types": "pnpx supabase gen types typescript --project-id oaussuztahdxivemqbnd > src/types/database.types.ts",
+    "db:push": "pnpx supabase db push",
+    "db:link": "pnpx supabase link --project-ref oaussuztahdxivemqbnd"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",

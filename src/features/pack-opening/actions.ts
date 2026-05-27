@@ -21,10 +21,22 @@ import { parseTier } from './types'
  * puedan correr sin re-fetch.
  *
  * Contrato de errores del RPC (match exacto contra `error.message`):
- *  - 'not_found' | 'already_opened' | 'not_owner'
+ *  - 'auth_required'    → user sin sesión (la page filtra antes, defensivo)
+ *  - 'pack_not_found'   → pack no existe o no pertenece al user
+ *  - 'pack_not_pending' → pack en estado desconocido (no opened, no expired)
+ *  - 'pack_expired'     → pack venció antes de abrirse
+ *
+ * Post B-22: el RPC es idempotente. "Ya abierto" devuelve ok con las mismas
+ * cartas (replay path), no es error. Ver migration
+ * supabase/migrations/20260527120000_make_open_pack_idempotent.sql
  */
 
-const KNOWN_OPEN_PACK_CODES = new Set(['not_found', 'already_opened', 'not_owner'])
+const KNOWN_OPEN_PACK_CODES = new Set([
+  'auth_required',
+  'pack_not_found',
+  'pack_not_pending',
+  'pack_expired',
+])
 
 const openPackSchema = z.object({
   packId: z.uuid(),
@@ -34,7 +46,13 @@ export const openPack = defineAction({
   name: 'openPack',
   schema: openPackSchema,
   rateLimit: 'openPack',
-  expectedErrors: ['not_found', 'already_opened', 'not_owner', 'empty_result'],
+  expectedErrors: [
+    'auth_required',
+    'pack_not_found',
+    'pack_not_pending',
+    'pack_expired',
+    'empty_result',
+  ],
   fn: async ({ packId }, { supabase }) => {
     const { data, error } = await supabase.rpc('open_pack', { p_pack_id: packId })
 
