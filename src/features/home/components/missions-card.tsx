@@ -3,6 +3,7 @@
 import { CheckCircle2Icon, CircleIcon, CoinsIcon, GiftIcon } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
+import { useCoinsBalance } from '@/components/layout/coins-balance-context'
 import { Button } from '@/components/ui/button'
 import { claimMission } from '@/features/missions/actions'
 import type { MissionWithReward } from '@/features/missions/queries'
@@ -110,6 +111,7 @@ export function MissionsCard({ missions }: MissionsCardProps) {
  */
 function MissionRow({ mission, onClaimed }: { mission: MissionWithReward; onClaimed: () => void }) {
   const [isPending, startTransition] = useTransition()
+  const coinsCtx = useCoinsBalance()
 
   const isCompleted = mission.status === 'completed'
   const isClaimed = mission.status === 'claimed'
@@ -122,6 +124,10 @@ function MissionRow({ mission, onClaimed }: { mission: MissionWithReward; onClai
         toast.error(errorCopy(result.code))
         return
       }
+
+      // Optimistic update del balance en el navbar (B-09). Sin esto, el user
+      // ve el balance viejo hasta el próximo re-render del SC.
+      coinsCtx?.setBalance(result.data.newBalance)
 
       // Toast con el reward
       const parts: string[] = []
