@@ -56,7 +56,7 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 ## 🔍 Observabilidad y errores
 
 ### TP-01 · **Sentry** (`@sentry/nextjs`) 🔥 ✅
-**Resuelve**: error tracking en producción (server + client + edge + RSC), release tracking, performance traces, source maps, alertas. Hoy `console.error` se pierde en Vercel logs.
+**Resuelve**: error tracking en producción (server + client + edge + RSC), release tracking, performance traces, source maps, alertas. Hoy `console.error` se pierde en Railway logs.
 
 **Por qué pre-launch**: sin esto, los bugs reportados como B-04/B-08/B-14 en [`bugs.md`](./bugs.md) son invisibles después del launch.
 
@@ -73,14 +73,16 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 
 ---
 
-### TP-02 · **Vercel Analytics** + **Speed Insights** 🔥 ✅
-**Resuelve**: web vitals reales por ruta, performance regressions, top pages, dispositivos. Zero-config si ya estás en Vercel.
+### TP-02 · ~~Vercel Analytics + Speed Insights~~ ❌ N/A (era Vercel-specific)
 
-**Compatibilidad**: ✅ `@vercel/analytics/next` se monta una vez en root layout. Sin impacto en bundle (script async externo).
+**Estado**: descartada. Eran productos atados a deploys en Vercel y no aplican en Railway.
 
-**Esfuerzo**: 5 minutos.
+**Cómo se cubre el gap**:
 
-**Alternativas**: Cloudflare Web Analytics (free pero menos rico para Next), Plausible (más caro pero portable).
+- **Product analytics** (funnels, top pages, retention): ya planeado en TP-03 PostHog, que además incluye web analytics básicos (pageviews, devices, referrers).
+- **Web vitals / performance**: TP-01 Sentry ya captura traces con `tracesSampleRate: 0.1` — alcanza para detectar regresiones de performance por ruta.
+
+**Si más adelante hace falta web analytics liviano y portable** (sin la complejidad de PostHog): considerar **Plausible** o **Pirsch** — ambos son script-tag externos, agnósticos del hosting, EU-friendly y baratos. No los meto pre-launch porque PostHog ya cubre el caso.
 
 ---
 
@@ -99,13 +101,13 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 ---
 
 ### TP-04 · **Better Stack** (Logs + Uptime) 🟡 ✅
-**Resuelve**: log aggregation desde Vercel + uptime monitoring + status page público. Free tier decente.
+**Resuelve**: log aggregation desde Railway + uptime monitoring + status page público. Free tier decente.
 
-**Compatibilidad**: ✅ Integración nativa con Vercel (drain de logs automático), sin código.
+**Compatibilidad**: ✅ Railway tiene log drains nativos hacia syslog/HTTP — configurar Better Stack como destino del drain en el dashboard de Railway, sin código.
 
 **Esfuerzo**: 30 minutos.
 
-**Alternativas**: Axiom (mejor para Logs queryables tipo SQL), Datadog (caro, overkill para MVP).
+**Alternativas**: Axiom (mejor para logs queryables tipo SQL — también soporta Railway drains), Datadog (caro, overkill para MVP).
 
 ---
 
@@ -158,7 +160,7 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 
 **Esfuerzo**: 2-3 horas para cablear en acciones clave (`openPack`, `claimMission`, `recordShare`, OG endpoint).
 
-**Alternativas**: `@vercel/firewall` (free para casos básicos, pero menos granular), self-hosted Redis (overhead).
+**Alternativas**: Cloudflare WAF (R2 ya implica que el tráfico pasa por Cloudflare — se puede sumar rate-limit rules a nivel edge sin código), self-hosted Redis (overhead).
 
 ---
 
@@ -241,28 +243,32 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 
 ## 🗂 Storage / assets
 
-### TP-16 · **Supabase Storage** (ya disponible) ✅
-**Resuelve**: avatares (item 7.7 backlog), header images, fotos de usuario, audio de legendarios (F-20 en [`feature-ideas.md`](./feature-ideas.md)).
+### TP-16 · ~~Supabase Storage~~ ❌ Descartada en favor de R2
 
-**Compatibilidad**: ✅ Mismo proyecto Supabase. RLS policies análogas. Públicas vs privadas por bucket.
+**Estado**: descartada. ✅ Cubierto por **Cloudflare R2** para todo: assets estáticos de cromos, OG renders cacheables **y** user-generated (avatares item 7.7, header images, fotos, audio de legendarios F-20).
 
-**Recomendación**: usar Supabase Storage para todo lo user-generated hasta llegar a costos meaningful, después evaluar S3 + CloudFront.
+**Por qué R2 y no Supabase Storage**:
+
+- R2 ya está pagado y configurado para los assets estáticos — mantener una sola storage backend simplifica el mental model.
+- Egress gratis (Supabase Storage cuenta egress contra el plan).
+- No consume cuota de storage del proyecto Supabase.
+
+**Trade-off asumido**: Supabase Storage te daría auth/RLS gratis en el upload (cliente sube con JWT, RLS valida ownership). Con R2 hay que escribir el flow de upload: server action auth-checkea → genera presigned URL → cliente sube directo a R2. Son ~20 líneas más de código por feature de upload, pero a cambio nos quedamos con una sola backend. Para escala de hobby project alcanza tranquilo.
 
 ---
 
 ### TP-17 · **Cloudinary** o **imgix** 🟢 ⚠️
 **Resuelve**: image transformations on-the-fly (avatares circulares, OG images compuestas, blur placeholders). Hoy `next/image` cubre el grueso.
 
-**Compatibilidad**: ✅ Independiente. ⚠️ Costo crece rápido con tráfico — Supabase Storage + `next/image` alcanzan para MVP.
+**Compatibilidad**: ✅ Independiente. ⚠️ Costo crece rápido con tráfico — R2 + `next/image` alcanzan para MVP.
 
 **Recomendación**: posponer.
 
 ---
 
-### TP-18 · **Vercel Blob** 🟢 ✅
-**Resuelve**: storage simple si querés mantener todo en Vercel. Pero ya pagamos Supabase Storage.
+### TP-18 · ~~Vercel Blob~~ ❌ N/A (era Vercel-specific)
 
-**Recomendación**: no agregar — Supabase Storage es suficiente.
+**Estado**: descartada. ✅ Ya cubierto por **Cloudflare R2** (ver [`01-tech-stack.md`](./01-tech-stack.md#hosting--deploy)) — única storage backend del proyecto, incluyendo user-generated. R2 da egress gratis, S3-compatible API y ya está pagado en el plan de Cloudflare.
 
 ---
 
@@ -423,7 +429,7 @@ Ya está. Verificar que `lint-staged` también corra `tsc` en pre-push (no en pr
 
 **Esfuerzo**: 15 minutos por job, sin nuevas deps.
 
-**Alternativas**: Vercel Cron (requiere Pro plan + tiene min interval 1h en Hobby), Upstash QStash (HTTP cron, free tier).
+**Alternativas**: Railway Cron (cron jobs nativos en el mismo proyecto — útil si necesitamos correr scripts Node fuera de la DB), Upstash QStash (HTTP cron + delays/retries, free tier, pareja natural con Upstash Redis ya integrado en TP-08).
 
 ---
 
@@ -454,8 +460,7 @@ Ya está. Verificar que `lint-staged` también corra `tsc` en pre-push (no en pr
 | Lib / servicio | Para qué | Esfuerzo |
 |---|---|---|
 | **Sentry** | Error monitoring server + client | 2-3 h |
-| **Vercel Analytics + Speed Insights** | Web vitals y top pages | 5 min |
-| **PostHog** | Product analytics + feature flags | 1 día |
+| **PostHog** | Product analytics + feature flags + web analytics | 1 día |
 | **Vitest + Testing Library** | Unit tests | 3-4 h setup |
 | **Playwright** | 1 smoke E2E crítico | 1 día |
 | **Upstash Ratelimit** | Anti-abuso en actions y OG | 2-3 h |
@@ -509,7 +514,6 @@ Ya está. Verificar que `lint-staged` también corra `tsc` en pre-push (no en pr
 | Propuesta | Next 16 | React 19 | Tailwind v4 | Turbopack | Edge runtime | RSC |
 |---|---|---|---|---|---|---|
 | Sentry | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Vercel Analytics | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | PostHog | ✅ | ✅ | ✅ | ✅ | ⚠️ (server separado) | ⚠️ (split client/server) |
 | Vitest | ✅ | ✅ | n/a | n/a | n/a | ⚠️ (mocks RSC) |
 | Playwright | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |

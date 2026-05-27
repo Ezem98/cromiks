@@ -6,7 +6,7 @@
 
 El MVP funcional de Cromiks está cerrado (auth + onboarding + home + pack opening 3D + álbum + misiones + sharing + perfil + badges). Antes del launch público de junio 2026 hay 4 gaps críticos del stack que hay que tapar — todos identificados ya en [`docs/tech-proposals.md`](./tech-proposals.md) y conectados con [`docs/improvements.md`](./improvements.md) (C-01, C-02, C-03) y [`docs/bugs.md`](./bugs.md) (B-03, B-04, B-08):
 
-1. **Sin observabilidad**: `console.error` se pierde en Vercel logs. Si algo se rompe post-launch, no nos enteramos.
+1. **Sin observabilidad**: `console.error` se pierde en Railway logs. Si algo se rompe post-launch, no nos enteramos.
 2. **Server actions sin validación uniforme**: 9 actions exportadas en `src/features/*/actions.ts` validan inputs de forma ad-hoc con `parseUuid()` en `src/lib/validation.ts`. No hay un wrapper que centralice schema + auth + ratelimit + telemetry.
 3. **Sin anti-abuso**: endpoints calientes (`openPack`, `claimMission`, `recordShare`, `claimDailyPack`, `/api/og/card/[cardId]`) están abiertos a flooding. El OG endpoint con Satori es particularmente caro de renderizar.
 4. **Sin tests E2E**: no podemos detectar regresiones en el golden path. Cualquier deploy puede romper el flow signup → primer sobre → primer cromo en álbum sin que nos enteremos hasta que un usuario lo reporte.
@@ -28,16 +28,18 @@ Este plan integra los 4 items con un **único helper `defineAction`** que aplica
 
 | Env vars nuevas | Servicio | Dónde se setea |
 |---|---|---|
-| `SENTRY_DSN` (public) | Sentry | `.env.local` + Vercel + GitHub secret |
-| `SENTRY_AUTH_TOKEN` (build) | Sentry | Vercel build env + GitHub secret |
-| `SENTRY_ORG`, `SENTRY_PROJECT` | Sentry | Vercel build env |
-| `SENTRY_DISABLED` (kill switch) | Sentry | Vercel runtime env |
-| `UPSTASH_REDIS_REST_URL` | Upstash | Vercel runtime + `.env.local` |
-| `UPSTASH_REDIS_REST_TOKEN` | Upstash | Vercel runtime + `.env.local` |
-| `RATELIMIT_DISABLED` (kill switch) | — | Vercel runtime env |
+| `SENTRY_AUTH_TOKEN` (build) | Sentry | Railway Variables (build) + GitHub secret |
+| `SENTRY_DISABLED` (kill switch) | Sentry | Railway Variables (runtime) |
+| `UPSTASH_REDIS_REST_URL` | Upstash | Railway Variables (runtime) + `.env.local` |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash | Railway Variables (runtime) + `.env.local` |
+| `RATELIMIT_DISABLED` (kill switch) | — | Railway Variables (runtime) |
 | `PLAYWRIGHT_TEST_USER_EMAIL` | — | GitHub secret + `.env.test` |
 | `PLAYWRIGHT_TEST_USER_ID` | — | GitHub secret + `.env.test` |
-| `PLAYWRIGHT_BASE_URL` | — | CI workflow |
+| `PLAYWRIGHT_BASE_URL` | — | CI workflow (opcional: deploy de staging en Railway) |
+
+> **Notas**:
+> - `SENTRY_DSN`, `SENTRY_ORG` y `SENTRY_PROJECT` **no** son env vars: están hardcodeados en `sentry.*.config.ts` y `next.config.ts` (el DSN es público, org/project son fijos al proyecto). No hace falta setearlos en Railway ni en GitHub.
+> - `RAILWAY_ENVIRONMENT_NAME` y `RAILWAY_GIT_COMMIT_SHA` los inyecta Railway automáticamente en build y runtime — no se setean a mano. Sentry los usa para `environment` y `release`.
 
 ---
 
@@ -331,11 +333,11 @@ El wizard pide:
 import * as Sentry from '@sentry/nextjs'
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+  dsn: 'https://<public-dsn>@<sentry-host>/<project>', // hardcoded, ver sentry.*.config.ts
   enabled: process.env.SENTRY_DISABLED !== 'true',
   tracesSampleRate: 0.1,
-  environment: process.env.VERCEL_ENV ?? 'development',
-  release: process.env.VERCEL_GIT_COMMIT_SHA,
+  environment: process.env.RAILWAY_ENVIRONMENT_NAME ?? process.env.NODE_ENV ?? 'development',
+  release: process.env.RAILWAY_GIT_COMMIT_SHA,
   beforeSend(event, hint) {
     // Filtrar errores esperados de negocio
     const expectedTags = new Set(['not_owner', 'already_opened', 'no_extra_copies', 'rate_limited'])
@@ -382,7 +384,7 @@ export default function ErrorPage({ error, reset }: { error: Error; reset: () =>
 ```
 
 #### 2.6 Source maps en build
-El wizard ya configura `withSentryConfig({ silent: false, org: ..., project: ... })`. Verificar que `SENTRY_AUTH_TOKEN` está seteado en Vercel build env, sino el upload falla silenciosamente.
+El wizard ya configura `withSentryConfig({ silent: false, org: ..., project: ... })`. Verificar que `SENTRY_AUTH_TOKEN` está seteado en Railway Variables (build), sino el upload falla silenciosamente.
 
 #### 2.7 Endpoint de prueba (descartable)
 - Crear `src/app/sentry-test/page.tsx` temporal con un botón que tira un error a propósito. Confirmar que aparece en el dashboard de Sentry. Borrar después.
@@ -404,7 +406,7 @@ El wizard ya configura `withSentryConfig({ silent: false, org: ..., project: ...
 - Source maps: en el dashboard de un error, ver código fuente legible, no minificado
 
 ### Rollback / kill switch
-- `SENTRY_DISABLED=true` en Vercel env → init no inicializa, no hay overhead, no llegan eventos. Toma efecto al siguiente deploy.
+- `SENTRY_DISABLED=true` en Railway Variables → init no inicializa, no hay overhead, no llegan eventos. Toma efecto al siguiente deploy.
 - Si el wizard rompe algo en build: borrar `withSentryConfig` wrap en `next.config.ts` y los archivos `sentry.*.config.ts`. El helper `defineAction` queda usando el stub.
 
 ---
@@ -420,7 +422,7 @@ El wizard ya configura `withSentryConfig({ silent: false, org: ..., project: ...
 
 #### 3.1 Crear cuenta Upstash + base Redis
 - Sign up en upstash.com → crear DB Redis en region `sa-east-1` (São Paulo, misma que Supabase).
-- Copiar `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` a `.env.local` y Vercel.
+- Copiar `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` a `.env.local` y a Railway Variables.
 
 #### 3.2 Instalar deps
 
@@ -518,7 +520,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ cardId: string 
 - Refrescar `/api/og/card/<id>` 61 veces en un minuto → la 61 da 429.
 
 ### Rollback / kill switch
-- `RATELIMIT_DISABLED=true` en Vercel env: el check en `defineAction` se saltea (línea `if (opts.rateLimit && user && process.env.RATELIMIT_DISABLED !== 'true')`). Toma efecto al siguiente deploy.
+- `RATELIMIT_DISABLED=true` en Railway Variables: el check en `defineAction` se saltea (línea `if (opts.rateLimit && user && process.env.RATELIMIT_DISABLED !== 'true')`). Toma efecto al siguiente deploy.
 - Para el OG endpoint, hay que agregar la misma guard explícita.
 - En `lib/ratelimit.ts`, si Upstash está down y el `redis` falla, el `getRateLimiter` ya devuelve un noop limiter — fail-open.
 
@@ -709,7 +711,7 @@ Si este test se complica, dejarlo afuera del primer PR — el de golden path es 
 ### Decisiones tomadas
 - ✅ Auth: admin SDK + cookie injection en `global-setup.ts`.
 - ✅ Supabase: usar el proyecto **real** pero con un user dedicado `e2e@cromiks.app`. Pre-launch el blast radius es bajo. Post-launch evaluar mover a un proyecto staging.
-- ✅ `baseURL`: localhost en local, preview de Vercel en CI (set via env var en el workflow).
+- ✅ `baseURL`: localhost en local (vía `webServer` que levanta `pnpm dev`). En CI se queda con localhost por default; si más adelante tenemos deploy de staging en Railway, se puede setear `PLAYWRIGHT_BASE_URL` en el workflow.
 
 ### Compatibilidad
 - ✅ Playwright es runtime-agnostic.
@@ -834,7 +836,7 @@ jobs:
 | **Día 2** (mar) | AM 3-4h | PR 1.3 cont: migrar `pack-opening`, `home`, `onboarding` + docs/02-architecture.md | PR 1 listo para review, mergeado |
 | **Día 2** (mar) | PM 2h | PR 2: wizard Sentry + configs + reemplazar stub | PR 2 listo, mergeado el mismo día |
 | **Día 3** (mié) | AM 3-4h | PR 3: Upstash setup + `lib/ratelimit.ts` + wire en actions + OG endpoint | PR 3 listo, mergeado |
-| **Día 3** (mié) | PM 1-2h | Verificaciones manuales end-to-end de PR 1+2+3 en preview Vercel | Confirmación que stack integrado anda |
+| **Día 3** (mié) | PM 1-2h | Verificaciones manuales end-to-end de PR 1+2+3 en deploy de staging (Railway) o local | Confirmación que stack integrado anda |
 | **Día 4** (jue) | AM 3-4h | PR 4: Playwright setup + global-setup + smoke test | Test local pasa |
 | **Día 4** (jue) | PM 2-3h | PR 4 cont: CI workflow + secrets en GitHub + run completo en PR | CI verde, PR 4 mergeado |
 | **Día 5** (vie) | Buffer | Cleanup, ajustes de copy ES en `errors.ts`, screenshots para handoff | Listo para launch |
