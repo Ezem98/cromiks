@@ -151,8 +151,12 @@ function groupByCategory(
 ): Partial<Record<BadgeCategory, BadgeWithStatus[]>> {
   const out: Partial<Record<BadgeCategory, BadgeWithStatus[]>> = {}
   for (const b of badges) {
-    if (!out[b.category]) out[b.category] = []
-    out[b.category]!.push(b)
+    let bucket = out[b.category]
+    if (!bucket) {
+      bucket = []
+      out[b.category] = bucket
+    }
+    bucket.push(b)
   }
   return out
 }
