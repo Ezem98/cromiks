@@ -165,34 +165,44 @@ Convenciones:
 
 ### 4. Pattern de actions
 
+Toda server action exportada se define con el helper [`defineAction`](../src/lib/actions.ts).
+El helper centraliza los cross-cuts: parse Zod del input → auth check → rate-limit
+(stubeado, lo enchufa TP-08) → ejecución con instrumentación (stubeada, la enchufa
+TP-01). Detalle del orden y kill switches en [`implementation-plan-prelaunch.md`](./implementation-plan-prelaunch.md#-diseño-cruzado-el-helper-defineaction).
+
 ```ts
 // src/features/album/actions.ts
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
+import { defineAction } from '@/lib/actions'
 
-export async function pinCard(
-  cardId: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  const supabase = await createClient()
-  const { error } = await supabase.rpc('pin_card', { p_card_id: cardId })
-  
-  if (error) {
-    console.error('[album] pinCard:', error.message)
-    return { ok: false, error: 'unknown' }
-  }
-  
-  revalidatePath('/album')
-  return { ok: true }
-}
+export const pinCard = defineAction({
+  name: 'pinCard',
+  schema: z.object({ cardId: z.uuid() }),
+  fn: async ({ cardId }, { supabase }) => {
+    const { error } = await supabase.rpc('pin_card', { p_card_id: cardId })
+    if (error) return { ok: false, code: 'unknown', message: error.message }
+    revalidatePath('/album')
+    return { ok: true, data: undefined }
+  },
+})
 ```
 
 Convenciones:
-- Return discriminated union `{ ok: true } | { ok: false; error: string }`
-- Error codes mapeados desde el SQL si es relevante (e.g. `not_owned`, `no_extra_copies`)
-- `revalidatePath('/...')` al final para invalidar caché de Next
-- Log con prefijo `[feature]` para facilitar grep
+
+- Shape de retorno: `{ ok: true; data: T } | { ok: false; code: string; message?: string }`.
+  El campo `code` reemplazó al `error` previo.
+- `code` en inglés snake_case (`not_owner`, `no_extra_copies`, etc.). Copy ES en
+  [`src/lib/errors.ts`](../src/lib/errors.ts) → cliente llama `errorCopy(code)`.
+- Codes "esperables" de negocio (ej. `not_owner`, `already_opened`) van en
+  `expectedErrors` para que no inflen el dashboard de Sentry cuando se conecte.
+- Inputs siempre vía esquema Zod en `schema`. UUIDs con `z.uuid()` (Zod 4).
+- Auth automática: `auth: 'optional'` para opt-out. Por default requiere user.
+- `revalidatePath('/...')` al final para invalidar caché de Next.
+- Para acciones que terminan con `redirect()`/`notFound()`, el wrapper preserva
+  el control flow vía `unstable_rethrow` — no hay que hacer nada especial.
 
 ### 5. Route groups
 

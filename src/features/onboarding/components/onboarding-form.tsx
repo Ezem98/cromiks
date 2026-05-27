@@ -72,13 +72,13 @@ export function OnboardingForm({ initialUsername = '', email }: OnboardingFormPr
     setUsernameStatus({ state: 'checking' })
 
     const timeout = setTimeout(async () => {
-      const result = await checkUsernameAvailable(username)
-      if (result.available) {
+      const result = await checkUsernameAvailable({ username })
+      if (result.ok) {
         setUsernameStatus({ state: 'available' })
       } else {
         setUsernameStatus({
           state: 'unavailable',
-          error: result.error === 'invalid_format' ? 'invalid_format' : 'taken',
+          error: result.code === 'invalid_format' ? 'invalid_format' : 'taken',
         })
       }
     }, 400)
@@ -102,7 +102,7 @@ export function OnboardingForm({ initialUsername = '', email }: OnboardingFormPr
       })
 
       if (!result.ok) {
-        if (result.error === 'username_taken') {
+        if (result.code === 'username_taken') {
           setUsernameStatus({ state: 'unavailable', error: 'taken' })
           toast.error('Ese username ya fue tomado', {
             description: 'Probá con otro.',

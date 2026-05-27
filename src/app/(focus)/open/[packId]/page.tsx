@@ -71,12 +71,12 @@ export default async function OpenPackPage({ params, searchParams }: Props) {
   }
 
   // Abrir el sobre (asigna cromos, marca pack como opened)
-  const result = await openPack(packId)
+  const result = await openPack({ packId })
 
   if (!result.ok) {
     // Si falla, redirigimos al home con error info
     // (En el futuro podemos mostrar una error page específica)
-    console.error('[open pack page] openPack failed:', result.error)
+    console.error('[open pack page] openPack failed:', result.code)
     redirect('/?error=open_failed')
   }
 

@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { ShareSheet } from '@/features/sharing/components/share-sheet'
+import { errorCopy } from '@/lib/errors'
 import { cn } from '@/lib/utils'
 import { dismantleCard, pinCard, unpinCard } from '../actions'
 import type { AlbumCardSlot } from '../queries'
@@ -313,11 +314,13 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
     setIsPinnedLocal(!wasPinned)
 
     startTransition(async () => {
-      const result = wasPinned ? await unpinCard(card.id) : await pinCard(card.id)
+      const result = wasPinned
+        ? await unpinCard({ cardId: card.id })
+        : await pinCard({ cardId: card.id })
       if (!result.ok) {
         // Rollback
         setIsPinnedLocal(wasPinned)
-        toast.error(wasPinned ? 'No pude despinear' : 'No pude pinear')
+        toast.error(errorCopy(result.code))
       } else {
         toast.success(wasPinned ? 'Despineada' : 'Destacada en tu perfil')
       }
@@ -331,16 +334,9 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
   const handleDismantleConfirm = () => {
     setDismantleConfirmOpen(false)
     startTransition(async () => {
-      const result = await dismantleCard(card.id, 1)
+      const result = await dismantleCard({ cardId: card.id, count: 1 })
       if (!result.ok) {
-        const msgMap: Record<string, string> = {
-          not_owned: 'No tenés esta carta',
-          no_extra_copies: 'Solo tenés una copia, no se puede canjear',
-          not_dismantleable: 'Esta carta no se puede canjear',
-          insufficient_copies: 'No tenés copias extra',
-          invalid_input: 'Datos inválidos',
-        }
-        toast.error(msgMap[result.error] ?? 'Algo salió mal')
+        toast.error(errorCopy(result.code))
         return
       }
       setCopiesLocal(result.data.copiesLeft)

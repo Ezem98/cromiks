@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
+import { defineAction } from '@/lib/actions'
 
 /**
  * Server actions del onboarding.
@@ -16,111 +17,91 @@ import { createClient } from '@/lib/supabase/server'
  * En el futuro podríamos tener una columna boolean dedicada.
  */
 
-type OnboardingResult = {
-  ok: boolean
-  error?: string
-}
-
-const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/
+const usernameSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^[a-z0-9_]{3,20}$/, { message: 'invalid_format' })
 
 /**
  * Verifica si un username está disponible.
- * Excluye el username actual del user (para no marcar como "tomado" su propio username).
+ *
+ * Devuelve `{ available: boolean }` en data. Si el formato es inválido o el
+ * username está tomado por otro user, devuelve `ok: false` con el code
+ * correspondiente.
  */
-export async function checkUsernameAvailable(username: string): Promise<{
-  available: boolean
-  error?: string
-}> {
-  const cleaned = username.trim().toLowerCase()
+export const checkUsernameAvailable = defineAction({
+  name: 'checkUsernameAvailable',
+  schema: z.object({ username: z.string() }),
+  expectedErrors: ['empty', 'invalid_format', 'username_taken'],
+  fn: async ({ username }, { userId, supabase }) => {
+    const cleaned = username.trim().toLowerCase()
+    if (!cleaned) return { ok: false, code: 'empty' }
+    if (!/^[a-z0-9_]{3,20}$/.test(cleaned)) return { ok: false, code: 'invalid_format' }
 
-  if (!cleaned) {
-    return { available: false, error: 'empty' }
-  }
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('username', cleaned)
+      .neq('id', userId)
+      .maybeSingle()
 
-  if (!USERNAME_REGEX.test(cleaned)) {
-    return { available: false, error: 'invalid_format' }
-  }
-
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { available: false, error: 'unauthenticated' }
-  }
-
-  // Buscar si alguien más lo tiene
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('username', cleaned)
-    .neq('id', user.id)
-    .maybeSingle()
-
-  if (error) {
-    console.error('[onboarding] checkUsernameAvailable:', error.message)
-    return { available: false, error: 'unknown' }
-  }
-
-  return { available: !data }
-}
+    if (error) {
+      return { ok: false, code: 'unknown', message: error.message }
+    }
+    if (data) {
+      return { ok: false, code: 'username_taken' }
+    }
+    return { ok: true, data: { available: true } }
+  },
+})
 
 /**
  * Completa el onboarding: actualiza profile y redirige a /home.
+ *
+ * El redirect se hace dentro del fn — Next emite NEXT_REDIRECT que el wrapper
+ * re-throwea vía `unstable_rethrow` en defineAction. La función nunca retorna
+ * en el happy path.
  */
-export async function completeOnboarding(data: {
-  username: string
-  displayName?: string
-  language: 'es' | 'en' | 'pt' | 'it'
-  countryCode?: string
-}): Promise<OnboardingResult> {
-  const cleanedUsername = data.username.trim().toLowerCase()
-  const cleanedCountry = data.countryCode?.trim().toUpperCase()
+const completeOnboardingSchema = z.object({
+  username: usernameSchema,
+  displayName: z.string().trim().min(1).max(50).optional(),
+  language: z.enum(['es', 'en', 'pt', 'it']),
+  countryCode: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .length(2)
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
+})
 
-  if (!USERNAME_REGEX.test(cleanedUsername)) {
-    return { ok: false, error: 'invalid_username' }
-  }
+export const completeOnboarding = defineAction({
+  name: 'completeOnboarding',
+  schema: completeOnboardingSchema,
+  expectedErrors: ['username_taken'],
+  fn: async (input, { userId, supabase }) => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        username: input.username,
+        display_name: input.displayName ?? null,
+        language: input.language,
+        country_code: input.countryCode ?? null,
+      })
+      .eq('id', userId)
 
-  if (cleanedCountry && cleanedCountry.length !== 2) {
-    return { ok: false, error: 'invalid_country' }
-  }
-
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { ok: false, error: 'unauthenticated' }
-  }
-
-  // Update del profile
-  const { error } = await supabase
-    .from('profiles')
-    .update({
-      username: cleanedUsername,
-      display_name: data.displayName?.trim() || null,
-      language: data.language,
-      country_code: cleanedCountry || null,
-    })
-    .eq('id', user.id)
-
-  if (error) {
-    // Username tomado a último momento (race condition)
-    if (error.code === '23505') {
-      return { ok: false, error: 'username_taken' }
+    if (error) {
+      if (error.code === '23505') {
+        return { ok: false, code: 'username_taken' }
+      }
+      return { ok: false, code: 'unknown', message: error.message }
     }
-    console.error('[onboarding] completeOnboarding:', error.message)
-    return { ok: false, error: 'unknown' }
-  }
 
-  // Marcar onboarding completo en el metadata del user
-  // (Lo usamos para detectar si necesita onboarding o no en futuros logins.)
-  await supabase.auth.updateUser({
-    data: { onboarded: true },
-  })
+    // Marcar onboarding completo en el metadata del user.
+    await supabase.auth.updateUser({ data: { onboarded: true } })
 
-  revalidatePath('/', 'layout')
-  redirect('/')
-}
+    revalidatePath('/', 'layout')
+    redirect('/')
+  },
+})

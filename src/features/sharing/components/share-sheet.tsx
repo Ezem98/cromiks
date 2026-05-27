@@ -72,10 +72,10 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
    */
   const track = (channel: ShareChannel) => {
     startTransition(async () => {
-      const result = await recordShare(cardId, channel)
+      const result = await recordShare({ cardId, channel })
       if (!result.ok) {
         // Log silencioso. No molestamos al user con un error si el sharing ya pasó.
-        console.warn('[share] recordShare failed:', result.error)
+        console.warn('[share] recordShare failed:', result.code)
       }
     })
   }

@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Sobre } from '@/components/domain/sobre'
 import { Button } from '@/components/ui/button'
 import { claimDailyPack } from '@/features/home/actions'
+import { errorCopy } from '@/lib/errors'
 
 /**
  * Card del sobre diario.
@@ -51,15 +52,14 @@ function ClaimMode({ currentStreak }: { currentStreak: number }) {
       const result = await claimDailyPack()
       if (!result.ok) {
         toast.error('No pudimos darte el sobre', {
-          description:
-            result.error === 'already_claimed' ? 'Ya lo reclamaste hoy.' : 'Probá de nuevo.',
+          description: errorCopy(result.code),
         })
         return
       }
       toast.success('Sobre desbloqueado', {
         description: 'Listo para abrir.',
       })
-      router.push(`/open/${result.data?.packId}`)
+      router.push(`/open/${result.data.packId}`)
     })
   }
 

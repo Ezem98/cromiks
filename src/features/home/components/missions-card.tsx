@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { claimMission } from '@/features/missions/actions'
 import type { MissionWithReward } from '@/features/missions/queries'
+import { errorCopy } from '@/lib/errors'
 import { cn } from '@/lib/utils'
 
 /**
@@ -116,13 +117,9 @@ function MissionRow({ mission, onClaimed }: { mission: MissionWithReward; onClai
 
   const handleClaim = () => {
     startTransition(async () => {
-      const result = await claimMission(mission.id)
+      const result = await claimMission({ userMissionId: mission.id })
       if (!result.ok) {
-        const msgMap: Record<string, string> = {
-          mission_not_completed: 'Esta misión todavía no está completa',
-          mission_not_found: 'La misión no existe',
-        }
-        toast.error(msgMap[result.error] ?? 'No pude reclamar la misión')
+        toast.error(errorCopy(result.code))
         return
       }
 
