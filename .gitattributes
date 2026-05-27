@@ -1,0 +1,8 @@
+# Force LF line endings for text files across all platforms.
+# Reason: Biome (`lineEnding: "lf"` en biome.json) y los archivos en el repo
+# están en LF. En Windows, `core.autocrlf=true` (default) expandía a CRLF al
+# checkout, lo que rompía `pnpm lint` en cada clone/pull fresh.
+#
+# `text=auto` deja a git auto-detectar text vs binary; binarios se respetan
+# sin tocar.
+* text=auto eol=lf
