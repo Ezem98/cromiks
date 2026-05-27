@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { CoinsBalanceProvider } from './coins-balance-context'
 import { Footer } from './footer'
 import { MobileNav } from './mobile-nav'
 import { Navbar } from './navbar'
@@ -30,18 +31,18 @@ export function AppShell({ children, user, coinsBalance }: AppShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar
-        user={user}
-        coinsBalance={coinsBalance}
-        onMobileNavToggle={() => setMobileNavOpen(true)}
-      />
+    <CoinsBalanceProvider initialBalance={coinsBalance ?? 0}>
+      <div className="min-h-screen flex flex-col">
+        <Navbar user={user} onMobileNavToggle={() => setMobileNavOpen(true)} />
 
-      <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
+        <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10">{children}</main>
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10">
+          {children}
+        </main>
 
-      <Footer variant="minimal" />
-    </div>
+        <Footer variant="minimal" />
+      </div>
+    </CoinsBalanceProvider>
   )
 }

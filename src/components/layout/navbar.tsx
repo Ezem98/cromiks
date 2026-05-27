@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { signOut } from '@/features/auth/actions'
 import { cn } from '@/lib/utils'
+import { useCoinsBalance } from './coins-balance-context'
 
 /**
  * Navbar de la app autenticada.
@@ -37,6 +38,11 @@ type NavbarProps = {
 }
 
 export function Navbar({ user, coinsBalance, onMobileNavToggle, className }: NavbarProps) {
+  // El context tiene prioridad (vive dentro de AppShell, layouts autenticados).
+  // Si no hay provider (landing root, signin, etc.), caemos a la prop.
+  const ctx = useCoinsBalance()
+  const displayedBalance = ctx?.balance ?? coinsBalance
+
   return (
     <header
       className={cn(
@@ -72,10 +78,10 @@ export function Navbar({ user, coinsBalance, onMobileNavToggle, className }: Nav
         <div className="flex-1" />
 
         {/* Coins balance */}
-        {coinsBalance !== undefined && (
+        {displayedBalance !== undefined && (
           <div className="hidden sm:flex items-center gap-2 text-mono text-[13px]">
             <span className="size-4 rounded-full bg-(--color-gold)" />
-            <span className="text-(--color-text-primary)">{coinsBalance}</span>
+            <span className="text-(--color-text-primary)">{displayedBalance}</span>
           </div>
         )}
 

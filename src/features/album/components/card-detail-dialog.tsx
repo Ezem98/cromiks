@@ -4,6 +4,7 @@ import { CoinsIcon, Share2Icon, SparklesIcon } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { Cromo } from '@/components/domain/cromo'
+import { useCoinsBalance } from '@/components/layout/coins-balance-context'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -304,6 +305,7 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
   const [copiesLocal, setCopiesLocal] = useState(card.copies)
   const [shareOpen, setShareOpen] = useState(false)
   const [dismantleConfirmOpen, setDismantleConfirmOpen] = useState(false)
+  const coinsCtx = useCoinsBalance()
 
   const canDismantle = copiesLocal > 1 && card.tier !== 'legendary'
   const reward = coinReward[card.tier]
@@ -340,6 +342,9 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
         return
       }
       setCopiesLocal(result.data.copiesLeft)
+      // Optimistic update del balance en el navbar (B-09). Sin esto, el user
+      // ve el balance viejo hasta el próximo re-render del SC.
+      coinsCtx?.setBalance(result.data.newBalance)
       toast.success(`+${result.data.coinsEarned} monedas`, {
         description: `Te quedan ${result.data.copiesLeft - 1} copias extra de ${card.name}`,
       })
