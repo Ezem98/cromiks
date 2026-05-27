@@ -873,6 +873,39 @@ Una vez los 4 PRs mergeados:
 
 ---
 
+## 🐛 Hallazgos durante PR4 (Playwright smoke)
+
+### B-22 · Pack-opening Server Component se ejecuta dos veces 🔴
+
+**Archivo**: [`src/app/(focus)/open/[packId]/page.tsx`](../src/app/(focus)/open/[packId]/page.tsx)
+
+**Síntoma**: el page se renderea dos veces en algunos casos (probable: prefetch automático de Next al hacer `router.push`, o re-render por hidratación RSC). El primer render abre el sobre correctamente (`packs.status = 'opened'`); el segundo lock'ea el mismo pack y el RPC tira `pack_not_pending` con errcode `P0001`. Resultado: usuario redirigido a `/?error=open_failed` aunque el sobre se haya abierto.
+
+**Causa raíz**: anti-pattern — la mutación (`openPack`) se llama directamente dentro del render de un Server Component. Server Components NO garantizan ejecución única.
+
+**Impacto en producción**: cualquier user que refresque `/open/[packId]`, navegue back/forward, o cuyo browser prefetchee la ruta, ve "error" aunque el sobre se haya abierto. Probable que Next prefetchee la URL apenas el `router.push` se planea, disparando el RPC en background.
+
+**Fix sugerido (PR separado, P0 pre-launch)**:
+
+- Opción 1: Server Component solo valida pack + status; renderiza un Client Component `<OpenPackTrigger packId={packId} />` que en `useEffect` con guard `useRef(false)` dispara `openPack` una sola vez al montar y pasa el resultado a `PackOpeningFlow`.
+- Opción 2: hacer `open_pack` RPC idempotente — `UPDATE packs SET status='opened' WHERE id=$1 AND status='pending' RETURNING ...`. Si no devuelve rows porque ya estaba opened, leer los rolled_card_ids existentes en lugar de tirar `pack_not_pending`.
+
+**Workaround en el smoke E2E** (PR4): el [`global-setup.ts`](../tests/e2e/global-setup.ts) pre-siembra 3 `user_cards` vía admin SDK; el smoke skipea el flow de pack-opening y solo valida `auth → /home → /album → cromo owned visible`. Cuando se arregle B-22, sumar un test específico del flow completo.
+
+### B-23 · Mismatch de error codes en `openPack` action 🟡
+
+**Archivo**: [`src/features/pack-opening/actions.ts:27`](../src/features/pack-opening/actions.ts)
+
+```ts
+const KNOWN_OPEN_PACK_CODES = new Set(['not_found', 'already_opened', 'not_owner'])
+```
+
+Pero el RPC SQL tira `'auth_required' | 'pack_not_found' | 'pack_not_pending' | 'pack_expired'`. Los nombres no matchean → cualquier error esperado del RPC cae a `code: 'unknown'` y se reporta a Sentry como warning aunque sea business logic.
+
+**Fix**: alinear con `['auth_required', 'pack_not_found', 'pack_not_pending', 'pack_expired']` y actualizar `expectedErrors` en el `defineAction`. Trivial, 15 min.
+
+---
+
 ## 🚫 Fuera de scope (deliberadamente)
 
 - **PostHog / analytics**: TP-03, post-launch.
