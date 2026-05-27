@@ -14,24 +14,33 @@ import { createAdminClient } from '@/lib/supabase/admin'
  * Reclama el sobre diario del usuario llamante.
  * Llama a la SQL function security definer.
  *
- * El RPC devuelve mensajes con `_includes` legacy: `already_claimed_today` y
- * `streak_not_initialized`. Mapeo a los codes estables `already_claimed` y
- * `no_streak` para el cliente.
+ * Contrato de errores del RPC (match exacto contra `error.message`, ver dump en
+ * supabase/migrations/20260527100000_snapshot_existing_rpcs.sql):
+ *  - 'auth_required'          → user sin sesión (defensivo, el wrapper lo
+ *                                debería interceptar antes con 'unauthenticated')
+ *  - 'streak_not_initialized' → el row de streaks no existe (handle_new_user
+ *                                no corrió). Mapeo a `no_streak` (code estable
+ *                                para la UI).
+ *  - 'already_claimed_today'  → ya reclamó hoy. Mapeo a `already_claimed`.
  */
+const RPC_TO_CODE: Record<string, string> = {
+  auth_required: 'auth_required',
+  streak_not_initialized: 'no_streak',
+  already_claimed_today: 'already_claimed',
+}
+
 export const claimDailyPack = defineAction({
   name: 'claimDailyPack',
   schema: z.void(),
   rateLimit: 'claimDailyPack',
-  expectedErrors: ['already_claimed', 'no_streak', 'no_pack_returned'],
+  expectedErrors: ['auth_required', 'already_claimed', 'no_streak', 'no_pack_returned'],
   fn: async (_input, { supabase }) => {
     const { data, error } = await supabase.rpc('claim_daily_pack')
 
     if (error) {
-      if (error.message.includes('already_claimed_today')) {
-        return { ok: false, code: 'already_claimed' }
-      }
-      if (error.message.includes('streak_not_initialized')) {
-        return { ok: false, code: 'no_streak' }
+      const code = RPC_TO_CODE[error.message]
+      if (code) {
+        return { ok: false, code }
       }
       return { ok: false, code: 'unknown', message: error.message }
     }

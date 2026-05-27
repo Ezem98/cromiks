@@ -22,14 +22,23 @@ const cardIdSchema = z.object({ cardId: z.uuid() })
 /**
  * Pinea un cromo (lo destaca en el perfil del user).
  *
- * Llama al RPC `pin_card`. Si el user no tiene la carta, el RPC tira error.
+ * Llama al RPC `pin_card`. Codes que tira (ver snapshot en
+ * supabase/migrations/20260527130000_snapshot_pin_unpin_card.sql):
+ *  - 'auth_required' → user sin sesión (defensivo)
+ *  - 'card_not_owned' → el user no tiene esa carta
  */
+const KNOWN_PIN_CARD_CODES = new Set(['auth_required', 'card_not_owned'])
+
 export const pinCard = defineAction({
   name: 'pinCard',
   schema: cardIdSchema,
+  expectedErrors: ['auth_required', 'card_not_owned'],
   fn: async ({ cardId }, { supabase }) => {
     const { error } = await supabase.rpc('pin_card', { p_card_id: cardId })
     if (error) {
+      if (KNOWN_PIN_CARD_CODES.has(error.message)) {
+        return { ok: false, code: error.message }
+      }
       return { ok: false, code: 'unknown', message: error.message }
     }
     revalidatePath('/album')
@@ -39,13 +48,20 @@ export const pinCard = defineAction({
 
 /**
  * Quita el pin de un cromo.
+ *
+ * Codes que tira: sólo 'auth_required' (defensivo). El UPDATE es no-op si el
+ * user no tiene la carta — sin error.
  */
 export const unpinCard = defineAction({
   name: 'unpinCard',
   schema: cardIdSchema,
+  expectedErrors: ['auth_required'],
   fn: async ({ cardId }, { supabase }) => {
     const { error } = await supabase.rpc('unpin_card', { p_card_id: cardId })
     if (error) {
+      if (error.message === 'auth_required') {
+        return { ok: false, code: 'auth_required' }
+      }
       return { ok: false, code: 'unknown', message: error.message }
     }
     revalidatePath('/album')
@@ -64,17 +80,22 @@ export const unpinCard = defineAction({
  *  - Suma a user_coins.balance
  *  - Devuelve { coins_earned, copies_left, new_balance }
  *
- * Errores posibles del RPC:
- *  - 'not_owned': el user no tiene la carta
- *  - 'no_extra_copies': solo tiene 1 copia
- *  - 'not_dismantleable': el tier no permite canjear (ej: legendary)
- *  - 'insufficient_copies': pidió canjear más de lo que tiene como extra
+ * Errores del RPC (match exacto contra `error.message`, ver dump en
+ * supabase/migrations/20260527100000_snapshot_existing_rpcs.sql):
+ *  - 'auth_required'             → user sin sesión (defensivo)
+ *  - 'invalid_count'             → p_count < 1
+ *  - 'card_not_found'            → no existe esa card en el catálogo
+ *  - 'legendary_not_dismantlable' → cards legendary no se canjean
+ *  - 'card_not_owned'            → user no tiene la carta
+ *  - 'must_keep_one'             → restarían 0 copias (siempre dejar 1)
  */
 const KNOWN_DISMANTLE_CODES = new Set([
-  'not_owned',
-  'no_extra_copies',
-  'not_dismantleable',
-  'insufficient_copies',
+  'auth_required',
+  'invalid_count',
+  'card_not_found',
+  'legendary_not_dismantlable',
+  'card_not_owned',
+  'must_keep_one',
 ])
 
 const dismantleSchema = z.object({
@@ -86,10 +107,12 @@ export const dismantleCard = defineAction({
   name: 'dismantleCard',
   schema: dismantleSchema,
   expectedErrors: [
-    'not_owned',
-    'no_extra_copies',
-    'not_dismantleable',
-    'insufficient_copies',
+    'auth_required',
+    'invalid_count',
+    'card_not_found',
+    'legendary_not_dismantlable',
+    'card_not_owned',
+    'must_keep_one',
     'empty_result',
   ],
   fn: async ({ cardId, count }, { supabase }) => {

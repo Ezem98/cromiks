@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/nextjs'
 // Codes de negocio que NO queremos en Sentry (consumen cuota free + ruido).
 // Mantener sincronizado con `sentry.server.config.ts`.
 const EXPECTED_BUSINESS_CODES = new Set([
+  // Cross-cutting
   'invalid_input',
   'unauthenticated',
   'rate_limited',
@@ -15,11 +16,12 @@ const EXPECTED_BUSINESS_CODES = new Set([
   'pack_not_found',
   'pack_not_pending',
   'pack_expired',
-  // Album / dismantle
-  'not_owned',
-  'no_extra_copies',
-  'not_dismantleable',
-  'insufficient_copies',
+  // Album / dismantle / pin
+  'invalid_count',
+  'card_not_found',
+  'legendary_not_dismantlable',
+  'card_not_owned',
+  'must_keep_one',
   // Missions
   'mission_not_completed',
   'mission_not_found',
