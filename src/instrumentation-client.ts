@@ -21,8 +21,10 @@ const EXPECTED_BUSINESS_CODES = new Set([
   'mission_not_completed',
   'mission_not_found',
   'template_not_found',
+  // Home / daily pack
   'already_claimed',
   'no_streak',
+  // Onboarding
   'username_taken',
 ])
 
