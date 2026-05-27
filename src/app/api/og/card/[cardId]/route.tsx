@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/nextjs'
+import { headers } from 'next/headers'
 import { ImageResponse } from 'next/og'
+import { getRateLimiter } from '@/lib/ratelimit'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -84,6 +86,16 @@ function fallbackImage() {
 }
 
 export async function GET(request: Request, { params }: RouteParams) {
+  // Anti-abuso: limitamos por IP porque el endpoint es público (sin user). El
+  // render con Satori es caro (Resvg + fetch de fonts), así que sin esto un
+  // bucle desde cualquier máquina puede comernos los recursos del servidor.
+  // Fail-open si no hay Redis (dev sin Upstash) — el limiter retorna success.
+  const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const { success } = await getRateLimiter('ogCard').limit(`og:${ip}`)
+  if (!success) {
+    return new Response('Rate limited', { status: 429 })
+  }
+
   try {
     return await buildCardImage(request, params)
   } catch (err) {

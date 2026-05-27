@@ -37,6 +37,7 @@ const recordShareSchema = z.object({
 export const recordShare = defineAction({
   name: 'recordShare',
   schema: recordShareSchema,
+  rateLimit: 'recordShare',
   expectedErrors: ['insert_failed'],
   fn: async ({ cardId, channel }, { userId, supabase }) => {
     const { error } = await supabase.from('share_events').insert({

@@ -3,13 +3,12 @@ import 'server-only'
 import * as Sentry from '@sentry/nextjs'
 import { unstable_rethrow } from 'next/navigation'
 import type { z } from 'zod'
+import { getRateLimiter, type RateLimitName } from '@/lib/ratelimit'
 import { createClient } from '@/lib/supabase/server'
 
 /**
  * Wrapper único para server actions: parse Zod → auth → ratelimit → fn,
  * con instrumentación de Sentry. Centraliza los cross-cuts.
- *
- * Stub pendiente: ratelimit (lo enchufa PR3/TP-08 con Upstash).
  *
  * Ver `docs/implementation-plan-prelaunch.md` §"Diseño cruzado".
  */
@@ -22,9 +21,6 @@ export type ActionContext = {
   userId: string
   supabase: Awaited<ReturnType<typeof createClient>>
 }
-
-// Placeholder hasta que PR3 cree `src/lib/ratelimit.ts` con la unión real.
-type RateLimitName = string
 
 type DefineActionOpts<TSchema extends z.ZodType, TOk> = {
   name: string
@@ -59,12 +55,13 @@ export function defineAction<TSchema extends z.ZodType, TOk>(
       return { ok: false, code: 'unauthenticated' }
     }
 
-    // 3. Rate limit (stub hasta TP-08)
-    // TODO(TP-08): if (opts.rateLimit && user && process.env.RATELIMIT_DISABLED !== 'true') {
-    //   const rl = getRateLimiter(opts.rateLimit)
-    //   const { success } = await rl.limit(`${opts.name}:${user.id}`)
-    //   if (!success) return { ok: false, code: 'rate_limited' }
-    // }
+    // 3. Rate limit. El módulo `@/lib/ratelimit` ya hace fail-open si faltan
+    // env vars o si RATELIMIT_DISABLED=true, así que no hace falta chequear acá.
+    if (opts.rateLimit && user) {
+      const rl = getRateLimiter(opts.rateLimit)
+      const { success } = await rl.limit(`${opts.name}:${user.id}`)
+      if (!success) return { ok: false, code: 'rate_limited' }
+    }
 
     // 4. Ejecutar con instrumentación de Sentry. recordResponse:true incluye
     // el ActionResult en el span para debug.
