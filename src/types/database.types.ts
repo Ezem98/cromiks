@@ -629,6 +629,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      _check_and_unlock_badges: {
+        Args: { p_condition_type: string; p_context?: Json; p_user_id: string }
+        Returns: undefined
+      }
       _coin_reward_for_rarity: {
         Args: { p_rarity: Database['public']['Enums']['card_rarity'] }
         Returns: number
