@@ -9,7 +9,7 @@ import { toast } from 'sonner'
  * de sobre fallida, etc.) que redirigen al home.
  *
  * Códigos soportados — agregar acá cuando aparezcan nuevos:
- *  - open_failed: openPack tiró error (not_found, not_owner, already_opened, ...)
+ *  - open_failed: openPack tiró error en (focus)/open/[packId]/page.tsx
  *
  * Se monta una sola vez por valor de `code` (useRef evita doble fire en
  * StrictMode dev).
@@ -19,18 +19,6 @@ const errorCopy: Record<string, { title: string; description: string }> = {
   open_failed: {
     title: 'No pudimos abrir tu sobre',
     description: 'Probá de nuevo o reportá si el problema persiste.',
-  },
-  not_owner: {
-    title: 'Ese sobre no es tuyo',
-    description: 'No podemos abrir un sobre que no te pertenece.',
-  },
-  already_opened: {
-    title: 'Este sobre ya estaba abierto',
-    description: 'No te preocupes, los cromos ya están en tu álbum.',
-  },
-  not_found: {
-    title: 'No encontramos el sobre',
-    description: 'Puede que ya lo hayas abierto o que el link sea inválido.',
   },
 }
 

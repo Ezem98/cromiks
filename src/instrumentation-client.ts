@@ -10,18 +10,24 @@ const EXPECTED_BUSINESS_CODES = new Set([
   'invalid_input',
   'unauthenticated',
   'rate_limited',
-  'not_owner',
-  'already_opened',
-  'not_found',
+  // Pack opening (B-23)
+  'auth_required',
+  'pack_not_found',
+  'pack_not_pending',
+  'pack_expired',
+  // Album / dismantle
   'not_owned',
   'no_extra_copies',
   'not_dismantleable',
   'insufficient_copies',
+  // Missions
   'mission_not_completed',
   'mission_not_found',
   'template_not_found',
+  // Home / daily pack
   'already_claimed',
   'no_streak',
+  // Onboarding
   'username_taken',
 ])
 

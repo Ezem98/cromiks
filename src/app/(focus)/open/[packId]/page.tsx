@@ -9,9 +9,16 @@ import { createClient } from '@/lib/supabase/server'
  *
  * Server-side:
  *  1. Valida que el user esté logueado
- *  2. Valida que el pack exista, sea del user y esté pending
- *  3. Llama a openPack() para asignar cromos y marcar el pack como opened
- *  4. Pasa el resultado al client component PackOpeningFlow
+ *  2. Llama a openPack() — idempotente, maneja existencia/ownership/estado:
+ *     - pack_not_found → notFound()
+ *     - pack_expired / otros → redirect con error
+ *     - ok (primera vez o replay) → renderiza PackOpeningFlow
+ *
+ * Post B-22: NO hay SELECT previo ni check de `status !== 'pending'`. Eso
+ * rompía el flow ante double-render del Server Component (prefetch + render
+ * real): la segunda corrida veía `status='opened'` y redirigía a / aunque la
+ * primera hubiera abierto el sobre bien. El RPC idempotente + delegar la
+ * validación elimina el race.
  *
  * Modo debug (?debug=true en development):
  *  - Skip el openPack real
@@ -54,28 +61,16 @@ export default async function OpenPackPage({ params, searchParams }: Props) {
   }
 
   // ====== FLOW REAL ======
-  // Verificar que el pack existe y pertenece al user
-  const { data: pack } = await supabase
-    .from('packs')
-    .select('id, status')
-    .eq('id', packId)
-    .eq('user_id', user.id)
-    .single()
-
-  if (!pack) {
-    notFound()
-  }
-
-  if (pack.status !== 'pending') {
-    redirect('/')
-  }
-
-  // Abrir el sobre (asigna cromos, marca pack como opened)
+  // openPack es idempotente: primera llamada abre el sobre, llamadas
+  // subsiguientes (e.g. SC double-render por prefetch) entran al replay path
+  // y devuelven las mismas cartas sin re-mutar. Ver migration
+  // supabase/migrations/20260527120000_make_open_pack_idempotent.sql
   const result = await openPack({ packId })
 
   if (!result.ok) {
-    // Si falla, redirigimos al home con error info
-    // (En el futuro podemos mostrar una error page específica)
+    if (result.code === 'pack_not_found') {
+      notFound()
+    }
     console.error('[open pack page] openPack failed:', result.code)
     redirect('/?error=open_failed')
   }

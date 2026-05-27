@@ -85,34 +85,6 @@ export default async function globalSetup(config: FullConfig) {
     )
   if (profileErr) throw new Error(`[e2e setup] upsert profiles falló: ${profileErr.message}`)
 
-  // 3b) Pre-sembrar 3 cromos del catálogo en user_cards para que /album tenga
-  // contenido owned sin tener que correr el flow de pack-opening (que tiene un
-  // bug de double-execution en el Server Component — ver
-  // docs/implementation-plan-prelaunch.md sección "Known issues post-PR4").
-  const { data: sampleCards, error: cardsErr } = await admin
-    .from('cards')
-    .select('id')
-    .eq('album_id', 'eterno-diciembre')
-    .limit(3)
-  if (cardsErr) {
-    console.warn(`[e2e setup] no se pudieron leer cards para pre-seed: ${cardsErr.message}`)
-  } else if (sampleCards && sampleCards.length > 0) {
-    const now = new Date().toISOString()
-    const { error: seedErr } = await admin.from('user_cards').upsert(
-      sampleCards.map((c) => ({
-        user_id: userId,
-        card_id: c.id,
-        copies: 1,
-        first_obtained_at: now,
-        last_obtained_at: now,
-      })),
-      { onConflict: 'user_id,card_id' },
-    )
-    if (seedErr) {
-      console.warn(`[e2e setup] pre-seed user_cards falló: ${seedErr.message}`)
-    }
-  }
-
   // 4) Magic link → action_link que redirige al callback con tokens en hash
   const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
     type: 'magiclink',
