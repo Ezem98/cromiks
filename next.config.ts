@@ -15,6 +15,14 @@ const config: NextConfig = {
       // { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
     ],
   },
+  // Exponer envs de Railway al cliente. Railway no las auto-injecta como
+  // NEXT_PUBLIC_ (Vercel sí). Esto inlinea los valores en el bundle client al
+  // momento del `next build`, así Sentry client-side puede taggear environment
+  // + release igual que el server.
+  env: {
+    NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME: process.env.RAILWAY_ENVIRONMENT_NAME ?? '',
+    NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA: process.env.RAILWAY_GIT_COMMIT_SHA ?? '',
+  },
 }
 
 export default withSentryConfig(config, {
@@ -41,11 +49,9 @@ export default withSentryConfig(config, {
   tunnelRoute: '/monitoring',
 
   webpack: {
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
+    // automaticVercelMonitors está OFF: feature Vercel-specific, no aplica
+    // a Railway. Si más adelante usamos crons, los instrumentamos a mano.
+    automaticVercelMonitors: false,
 
     // Tree-shaking options for reducing bundle size
     treeshake: {

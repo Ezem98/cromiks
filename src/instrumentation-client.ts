@@ -29,8 +29,8 @@ Sentry.init({
   dsn: 'https://cf8810e1066dc099e235b2aeaed21f2d@o4511446656286720.ingest.us.sentry.io/4511459597352960',
 
   enabled: process.env.NEXT_PUBLIC_SENTRY_DISABLED !== 'true',
-  environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? 'development',
-  release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+  environment: process.env.NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME || 'development',
+  release: process.env.NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA || undefined,
 
   tracesSampleRate: 0.1,
 

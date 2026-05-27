@@ -106,9 +106,12 @@ pnpm db:types             # Regenera src/types/database.types.ts desde el schema
 
 ## Hosting / deploy
 
-- **Frontend**: Vercel (TBD — todavía no se hizo deploy público)
-- **DB / Auth / Storage**: Supabase (São Paulo)
+- **Frontend**: Railway (Hobby plan)
+- **DB / Auth**: Supabase (São Paulo)
+- **Storage**: Cloudflare R2 (avatares, assets de cromos, OG renders cacheables)
 - **Email**: Resend
+- **Error monitoring**: Sentry (cromiks-web)
+- **Anti-abuso / rate limiting**: Upstash Redis (sa-east-1)
 - **Domain**: TBD pre-launch
 
 ---

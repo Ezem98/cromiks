@@ -33,8 +33,8 @@ Sentry.init({
   // próximo deploy (sin desinstalar el paquete).
   enabled: process.env.SENTRY_DISABLED !== 'true',
 
-  environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? 'development',
-  release: process.env.VERCEL_GIT_COMMIT_SHA,
+  environment: process.env.RAILWAY_ENVIRONMENT_NAME ?? process.env.NODE_ENV ?? 'development',
+  release: process.env.RAILWAY_GIT_COMMIT_SHA,
 
   // Conservador: 10% de traces. Ajustar si vemos poco volumen real.
   tracesSampleRate: 0.1,
