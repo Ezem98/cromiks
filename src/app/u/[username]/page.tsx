@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getBadgesForUser } from '@/features/badges/queries'
 import { ProfileView } from '@/features/profile/components/profile-view'
 import { getCurrentUserProfile, getProfileByUsername } from '@/features/profile/queries'
 
@@ -71,8 +72,11 @@ export default async function ProfilePage({ params }: PageProps) {
     notFound()
   }
 
-  // Para CTAs y detección de dueño del perfil
-  const viewerProfile = await getCurrentUserProfile()
+  // Para CTAs y detección de dueño del perfil + badges del perfil
+  const [viewerProfile, badges] = await Promise.all([
+    getCurrentUserProfile(),
+    getBadgesForUser(profile.id),
+  ])
 
   return (
     <>
@@ -95,6 +99,7 @@ export default async function ProfilePage({ params }: PageProps) {
         profile={profile}
         viewerId={viewerProfile?.id ?? null}
         viewerUsername={viewerProfile?.username ?? null}
+        badges={badges}
       />
     </>
   )

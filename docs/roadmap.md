@@ -17,7 +17,8 @@ Estado actual del proyecto, pendientes, y orden sugerido de próximos sprints.
 | E2 Missions sprint 2 (auto-progress) | ✅ 4 triggers SQL | [`features/e2-missions.md`](./features/e2-missions.md) |
 | E3 Sharing (OG + página pública + sheet) | ✅ Funcional | [`features/e3-sharing.md`](./features/e3-sharing.md) |
 | Perfil público `/u/[username]` | ✅ V1 con stats + pineados | [`features/profile.md`](./features/profile.md) |
-| SQL versionado en `supabase/migrations/` | ✅ 4 migrations | [`operations/migrations.md`](./operations/migrations.md) |
+| Badges system (auto-unlock + UI + toast) | ✅ Cerrado | [`features/badges.md`](./features/badges.md) |
+| SQL versionado en `supabase/migrations/` | ✅ 5 migrations | [`operations/migrations.md`](./operations/migrations.md) |
 | Bug fix álbum (inner join + huérfanos) | ✅ | [`features/e1-album.md`](./features/e1-album.md) |
 | Bug fix `open_pack` ambiguous column | ✅ migration 120000 | [`05-sql-functions.md`](./05-sql-functions.md) |
 
@@ -25,27 +26,9 @@ Estado actual del proyecto, pendientes, y orden sugerido de próximos sprints.
 
 ## 🎯 Próximos pasos recomendados
 
-Mi voto fuerte para el siguiente sprint:
+Después del cierre de badges, los candidatos al próximo sprint son:
 
-### 1. **Badges system** ⭐ (recomendado)
-
-**Por qué**: las 15 badges ya están definidas en `seed.ts` pero no hay lógica de unlock. Sin badges, el sistema de progresión visible está flojo. Encaja naturalmente dentro del perfil.
-
-**Scope**:
-- Migration con triggers que insertan en `user_badges` cuando se cumple condition
-  - `card_count`: trigger en `user_cards` INSERT que cuenta total y compara con threshold
-  - `rarity_obtained`: similar pero filtrado por rarity
-  - `all_legendaries`: trigger especial que verifica si tiene las 11
-  - `streak`: trigger en `streaks` UPDATE OF current_streak
-  - `share_count`: trigger en `share_events` INSERT
-  - `referral_count`: TBD (no hay sistema de referrals todavía)
-- Server action `claimBadge` (si decidimos que se reclaman manualmente) o auto-claim
-- Sección "Badges" en `ProfileView` con grid de desbloqueadas + locked
-- Sheet/dialog "Todas las badges" mostrando progress hacia las locked
-
-**Estimación**: 1 sesión completa.
-
-### 2. **Página `/misiones` expandida**
+### 1. **Página `/misiones` expandida**
 
 **Por qué**: hoy el widget del home solo muestra las activas + completed del día. Falta histórico + misiones permanentes futuras.
 
@@ -58,6 +41,8 @@ Mi voto fuerte para el siguiente sprint:
 **Estimación**: media sesión.
 
 ### 3. **Pulido pre-launch**
+
+(Cuando se cierren features de producto, prioridad pre-launch)
 
 - Landing real (hoy es básica)
 - Páginas `/about` (con créditos), `/legal`, `/help`

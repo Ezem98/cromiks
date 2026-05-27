@@ -38,6 +38,7 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | [`features/e2-missions.md`](./features/e2-missions.md) | E2 — Misiones diarias + claim + auto-progress | ✅ Sprint 1 + 2 cerrados |
 | [`features/e3-sharing.md`](./features/e3-sharing.md) | E3 — Sharing con OG image dinámica | ✅ Cerrado |
 | [`features/profile.md`](./features/profile.md) | Perfil público `/u/[username]` | ✅ V1 cerrado |
+| [`features/badges.md`](./features/badges.md) | Sistema de logros con auto-unlock + UI | ✅ Cerrado |
 
 ### Operaciones
 | Archivo | Contenido |
@@ -76,7 +77,8 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | Misiones | ✅ Auto-progress + claim |
 | Sharing | ✅ OG image + página pública + sheet |
 | Perfil público `/u/[username]` | ✅ V1 con stats + pineados |
-| **Pendientes grandes** | Badges, custom fonts OG, avatar real, landing prelaunch |
+| Badges (auto-unlock + UI en perfil + toast) | ✅ Cerrado |
+| **Pendientes grandes** | Custom fonts OG, avatar real, landing prelaunch |
 
 Ver detalle en [`roadmap.md`](./roadmap.md).
 

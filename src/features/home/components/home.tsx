@@ -1,3 +1,5 @@
+import { BadgeToastListener } from '@/features/badges/components/badge-toast-listener'
+import { getBadgesForUser } from '@/features/badges/queries'
 import { assignDailyMissions } from '@/features/home/actions'
 import { getHomeData } from '@/features/home/queries'
 import { getMissionsForUser } from '@/features/missions/queries'
@@ -35,8 +37,14 @@ export async function Home() {
   // Reemplaza el patrón viejo de 2 queries separadas.
   const missions = await getMissionsForUser()
 
+  // Badges para el listener de notificaciones (toast cuando se desbloquea
+  // una nueva). El listener compara contra localStorage en cliente.
+  const badges = await getBadgesForUser(data.user.id)
+
   return (
     <div className="space-y-8">
+      <BadgeToastListener badges={badges} />
+
       {/* Hero — saludo */}
       <div>
         <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-gold) mb-1">

@@ -139,14 +139,21 @@ display_order int
 ```
 
 ### `user_badges`
-Badges desbloqueados por user.
+Badges desbloqueadas por user. Schema confirmado (ver `database.types.ts`).
 ```sql
--- Schema TBD. Se referencia desde reset.ts. Probablemente:
-user_id uuid REFERENCES auth.users(id)
-badge_id text REFERENCES badges(id)
-unlocked_at timestamptz
+user_id     uuid NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+badge_id    text NOT NULL REFERENCES badges(id)
+unlocked_at timestamptz NOT NULL DEFAULT now()
+is_pinned   boolean NOT NULL DEFAULT false   -- destacar en perfil (UI futura)
 PRIMARY KEY (user_id, badge_id)
 ```
+
+RLS (definida en migration 160000):
+- `SELECT`: público (las badges se muestran en `/u/[username]` sin auth)
+- `UPDATE`: solo el dueño (`auth.uid() = user_id`), pensado para `is_pinned`
+- `INSERT`: solo vía triggers SECURITY DEFINER, sin policy explícita
+
+Triggers de auto-unlock: `_check_and_unlock_badges` + 4 triggers AFTER (user_cards INSERT, streaks INSERT/UPDATE, share_events INSERT). Ver `docs/features/badges.md`.
 
 ### `profiles`
 Datos públicos del user (separados de auth para queryability).

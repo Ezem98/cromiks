@@ -4,6 +4,8 @@ import { MapPinIcon, Share2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Cromo } from '@/components/domain/cromo'
 import { Button } from '@/components/ui/button'
+import { BadgesGrid } from '@/features/badges/components/badges-grid'
+import type { BadgeWithStatus } from '@/features/badges/queries'
 import type { ProfilePinnedCard, ProfilePublic } from '@/features/profile/queries'
 import { cn } from '@/lib/utils'
 
@@ -29,6 +31,8 @@ type ProfileViewProps = {
   viewerId: string | null
   /** Username del viewer — para CTA "Mi álbum" si es otro user */
   viewerUsername: string | null
+  /** Badges del perfil con estado unlocked/locked + progress */
+  badges: BadgeWithStatus[]
 }
 
 const countryFlags: Record<string, string> = {
@@ -44,7 +48,7 @@ const countryFlags: Record<string, string> = {
   US: '🇺🇸',
 }
 
-export function ProfileView({ profile, viewerId, viewerUsername }: ProfileViewProps) {
+export function ProfileView({ profile, viewerId, viewerUsername, badges }: ProfileViewProps) {
   const isOwner = viewerId === profile.id
   const isLoggedIn = !!viewerId
   const completionPct =
@@ -151,6 +155,9 @@ export function ProfileView({ profile, viewerId, viewerUsername }: ProfileViewPr
             footer={null}
           />
         </section>
+
+        {/* === Badges === */}
+        <BadgesGrid badges={badges} isOwner={isOwner} maxVisible={6} />
 
         {/* === Pineados === */}
         <section className="space-y-4">

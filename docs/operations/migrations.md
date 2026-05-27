@@ -24,6 +24,7 @@ Ejemplo: `20260526140000_add_mission_progress_triggers.sql`
 | `20260526130000_add_claim_mission.sql` | RPC `claim_mission(user_mission_id)` | 2 | ✅ (`CREATE OR REPLACE`) |
 | `20260526140000_add_mission_progress_triggers.sql` | `_advance_missions` + 3 triggers (open_pack, collect_rarity, pin_card) + cleanup templates | 3 | ✅ |
 | `20260526150000_e3_sharing_trigger.sql` | Tabla `share_events` + trigger `share_card` + re-habilitar template | 4 | ✅ |
+| `20260526160000_badges_unlock_triggers.sql` | `_check_and_unlock_badges` + 4 triggers (user_cards, streaks insert/update, share_events) + RLS + backfill | 5 | ✅ |
 
 ⚠️ **No hay migration `00000000000000_initial_schema.sql`**. El schema base (tablas, enums, RLS inicial) vive solo en Supabase Studio. Pendiente: hacer dump y guardarlo para reproducibilidad completa.
 

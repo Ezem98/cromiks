@@ -24,10 +24,10 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 
 | Métrica | Valor |
 |---|---|
-| Features core implementadas | 8 / 8 ✅ |
+| Features core implementadas | 9 / 9 ✅ |
 | Bugs conocidos sin resolver | 0 |
 | Pendientes bloqueantes para launch | 4 (re-texturizado sobre, completar cromos catalog, dominio, nombre final) |
-| Pendientes no-bloqueantes priorizados | 6 (badges, /misiones expandida, custom fonts OG, avatar, OG perfil, paginación pineados) |
+| Pendientes no-bloqueantes priorizados | 5 (/misiones expandida, custom fonts OG, avatar, OG perfil, paginación pineados) |
 | Estado general | ✅ MVP completo, falta pulido pre-launch |
 
 ---
@@ -43,7 +43,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | **5. Misiones** | 7 | 0 | 4 | [link](./features/e2-missions.md) |
 | **6. Sharing** | 7 | 0 | 4 | [link](./features/e3-sharing.md) |
 | **7. Profile** | 6 | 0 | 7 | [link](./features/profile.md) |
-| **8. Gamification (badges)** | 0 | 1 | 4 | — |
+| **8. Gamification (badges)** | 4 | 0 | 1 | [link](./features/badges.md) |
 | **9. Content (cromos, fotos)** | 1 | 1 | 2 | [seeding](./operations/seeding.md) |
 | **10. Infrastructure & DevOps** | 3 | 0 | 4 | [migrations](./operations/migrations.md) |
 | **11. Pre-launch & marketing** | 0 | 0 | 14 | — |
@@ -174,13 +174,15 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 
 | # | Feature | Status | Notas |
 |---|---|---|---|
-| 8.1 | Catálogo de 15 badges en seed | 🟡 | Definidas en `seed.ts`, sin UI ni lógica |
-| 8.2 | Triggers SQL de unlock | 🚧 | Por type: card_count, rarity_obtained, streak, share_count |
-| 8.3 | Sección "Badges" en perfil | 🚧 | Grid de desbloqueadas + locked |
-| 8.4 | Página/sheet "Todas las badges" con progress | 🚧 | |
-| 8.5 | Notificación cuando se desbloquea (toast / modal) | 🚧 | |
+| 8.1 | Catálogo de 15 badges en seed | ✅ | Sembradas en `seed.ts` |
+| 8.2 | Triggers SQL de unlock | ✅ | Migration 160000: `_check_and_unlock_badges` + 4 triggers (user_cards, streaks, share_events). `referral_count` diferido |
+| 8.3 | Sección "Badges" en perfil | ✅ | `BadgesGrid` en `ProfileView` entre stats y pineados |
+| 8.4 | Sheet "Todos los logros" con progress | ✅ | `BadgesSheet` agrupado por categoría |
+| 8.5 | Notificación cuando se desbloquea (toast) | ✅ | `BadgeToastListener` en home con localStorage diff |
+| 8.6 | Pinear badges en el perfil (UI para `is_pinned`) | 🚧 | Columna existe, falta UI |
+| 8.7 | Badges con condition `referral_count` (2 badges) | 🚧 | Diferido — no hay sistema de referrals |
 
-> Ver detalle de scope en [`roadmap.md → próximos pasos recomendados`](./roadmap.md).
+> Ver detalle completo en [`features/badges.md`](./features/badges.md).
 
 ---
 
