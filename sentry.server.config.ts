@@ -8,17 +8,22 @@ import * as Sentry from '@sentry/nextjs'
 // `result.code = 'X'` al cliente, pero NO los queremos en Sentry: inflan el
 // dashboard y consumen cuota del plan free.
 const EXPECTED_BUSINESS_CODES = new Set([
+  // Cross-cutting
   'invalid_input',
   'unauthenticated',
   'rate_limited',
-  'not_owner',
-  'already_opened',
-  'not_found',
+  // Pack opening (B-23)
+  'auth_required',
+  'pack_not_found',
+  'pack_not_pending',
+  'pack_expired',
+  // Album / dismantle / pin
   'invalid_count',
   'card_not_found',
   'legendary_not_dismantlable',
   'card_not_owned',
   'must_keep_one',
+  // Missions
   'mission_not_completed',
   'mission_not_found',
   'template_not_found',
