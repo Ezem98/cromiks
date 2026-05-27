@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs'
 import { ImageResponse } from 'next/og'
 import { createClient } from '@/lib/supabase/server'
 
@@ -88,7 +89,9 @@ export async function GET(request: Request, { params }: RouteParams) {
   } catch (err) {
     // Si Satori falla (CSS inválido, font 404, gradient mal armado), devolvemos
     // la imagen estática en vez de 500. Los crawlers reciben algo mostrable.
-    console.error('[og/card] render failed:', err)
+    // Reportamos a Sentry para ver el error real — no es un caso esperado.
+    const { cardId } = await params
+    Sentry.captureException(err, { tags: { route: 'og-card', cardId } })
     return fallbackImage()
   }
 }

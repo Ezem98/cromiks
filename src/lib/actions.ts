@@ -1,17 +1,15 @@
 import 'server-only'
 
+import * as Sentry from '@sentry/nextjs'
 import { unstable_rethrow } from 'next/navigation'
 import type { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 
 /**
  * Wrapper único para server actions: parse Zod → auth → ratelimit → fn,
- * con instrumentación de errores. Centraliza los cross-cuts de PR1/PR2/PR3.
+ * con instrumentación de Sentry. Centraliza los cross-cuts.
  *
- * Stubs intencionales (TP-01 y TP-08 los reemplazan):
- *  - `withInstrumentation`: no-op hasta que PR2 (Sentry) lo conecte.
- *  - Ratelimit: el chequeo se saltea hasta que PR3 (Upstash) provea
- *    `getRateLimiter` y `RateLimitName` en `@/lib/ratelimit`.
+ * Stub pendiente: ratelimit (lo enchufa PR3/TP-08 con Upstash).
  *
  * Ver `docs/implementation-plan-prelaunch.md` §"Diseño cruzado".
  */
@@ -35,21 +33,6 @@ type DefineActionOpts<TSchema extends z.ZodType, TOk> = {
   auth?: 'required' | 'optional'
   expectedErrors?: readonly string[]
   fn: (input: z.infer<TSchema>, ctx: ActionContext) => Promise<ActionResult<TOk>>
-}
-
-// TODO(TP-01): reemplazar por Sentry.withServerActionInstrumentation
-async function withInstrumentation<T>(_name: string, fn: () => Promise<T>): Promise<T> {
-  return fn()
-}
-
-// TODO(TP-01): reemplazar por Sentry.captureException
-function captureException(err: unknown, _ctx: { action: string }): void {
-  console.error(`[action:${_ctx.action}]`, err)
-}
-
-// TODO(TP-01): reemplazar por Sentry.captureMessage con tags
-function captureExpectedFailure(action: string, code: string): void {
-  console.warn(`[action:${action}] ${code}`)
 }
 
 export function defineAction<TSchema extends z.ZodType, TOk>(
@@ -83,27 +66,40 @@ export function defineAction<TSchema extends z.ZodType, TOk>(
     //   if (!success) return { ok: false, code: 'rate_limited' }
     // }
 
-    // 4. Ejecutar con instrumentación
-    return withInstrumentation(opts.name, async () => {
-      try {
-        const result = await opts.fn(parsed.data, {
-          // Si auth === 'optional' y no hay user, userId va vacío. Las actions
-          // que opten por 'optional' deben re-chequear en su fn antes de usarlo.
-          userId: user?.id ?? '',
-          supabase,
-        })
-        if (!result.ok && !opts.expectedErrors?.includes(result.code)) {
-          captureExpectedFailure(opts.name, result.code)
+    // 4. Ejecutar con instrumentación de Sentry. recordResponse:true incluye
+    // el ActionResult en el span para debug.
+    return Sentry.withServerActionInstrumentation(
+      opts.name,
+      { recordResponse: true },
+      async (): Promise<ActionResult<TOk>> => {
+        try {
+          const result = await opts.fn(parsed.data, {
+            // Si auth === 'optional' y no hay user, userId va vacío. Las
+            // actions que opten por 'optional' deben re-chequear en su fn
+            // antes de usarlo.
+            userId: user?.id ?? '',
+            supabase,
+          })
+          // Fallo de negocio: si el code NO está marcado como esperado,
+          // reportamos como warning (no ruido en dashboard).
+          // El beforeSend de sentry.*.config.ts dropea events con codes
+          // conocidos por las dudas, como segunda red.
+          if (!result.ok && !opts.expectedErrors?.includes(result.code)) {
+            Sentry.captureMessage(`[action:${opts.name}] ${result.code}`, {
+              level: 'warning',
+              tags: { action: opts.name, code: result.code },
+            })
+          }
+          return result
+        } catch (err) {
+          // redirect()/notFound() emiten errores especiales que Next.js usa
+          // para control flow. NO los queremos capturar como "unknown" ni
+          // reportar a Sentry — hay que re-emitirlos.
+          unstable_rethrow(err)
+          Sentry.captureException(err, { tags: { action: opts.name } })
+          return { ok: false, code: 'unknown' }
         }
-        return result
-      } catch (err) {
-        // redirect()/notFound() emiten errores especiales que Next.js usa para
-        // control flow. NO los queremos capturar como "unknown" ni reportar a
-        // Sentry — hay que re-emitirlos para que Next los procese.
-        unstable_rethrow(err)
-        captureException(err, { action: opts.name })
-        return { ok: false, code: 'unknown' }
-      }
-    })
+      },
+    )
   }
 }

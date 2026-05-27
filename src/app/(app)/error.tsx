@@ -1,5 +1,6 @@
 'use client'
 
+import * as Sentry from '@sentry/nextjs'
 import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button'
  * `reset()` re-renderiza el subtree del error, así que volvemos a correr el
  * server component que falló.
  *
- * En el futuro, cuando se integre Sentry, este es el lugar para hacer el report.
+ * Reporta a Sentry con el digest como tag para correlacionar con el server log.
  */
 export default function AppError({
   error,
@@ -22,7 +23,9 @@ export default function AppError({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error('[app error boundary]', error)
+    Sentry.captureException(error, {
+      tags: { source: 'app-error-boundary', digest: error.digest ?? 'none' },
+    })
   }, [error])
 
   return (
