@@ -227,7 +227,7 @@ Todo 🚧 — son los items críticos antes del launch público de junio 2026.
 | 11.7 | Página `/help` (FAQ) | 🚧 |
 | 11.8 | Tip jar Mercado Pago integrado | 🚧 |
 | 11.9 | Sentry (error monitoring) | 🚧 |
-| 11.10 | PostHog (analytics + feature flags) | 🚧 |
+| 11.10 | PostHog (analytics + feature flags) — 5 eventos + `useFeatureFlag` (PR6) | ✅ |
 | 11.11 | Better Uptime (uptime monitoring) | 🚧 |
 | 11.12 | Custom fonts (Inter + serif display + mono) | 🚧 |
 | 11.13 | Decidir fundación tip jar (Garrahan / Conin / Refugio Sin Cadenas) | 🚧 |

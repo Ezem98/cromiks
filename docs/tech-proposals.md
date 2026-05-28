@@ -86,7 +86,9 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 
 ---
 
-### TP-03 · **PostHog** 🔥 ⚠️
+### TP-03 · **PostHog** ✅
+**Estado**: Implementado en PR6 — ver [`implementation-plan-pr6.md`](./implementation-plan-pr6.md). Cloud (us.i.posthog.com), 5 eventos del funnel, autocapture off, replays off, kill switches `POSTHOG_DISABLED` + `NEXT_PUBLIC_POSTHOG_DISABLED`.
+
 **Resuelve**: product analytics (funnels, retention, replays, feature flags, A/B). Reemplaza varias herramientas (Mixpanel + LaunchDarkly + LogRocket). Generous free tier.
 
 **Compatibilidad**:

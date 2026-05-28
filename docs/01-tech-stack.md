@@ -70,6 +70,10 @@ SUPABASE_SECRET_KEY=...
 
 # Resend (transactional emails)
 RESEND_API_KEY=...
+
+# PostHog (kill switches opt-in; key + host están hardcodeados en src/lib/posthog/config.ts)
+# POSTHOG_DISABLED=true                  # server / edge
+# NEXT_PUBLIC_POSTHOG_DISABLED=true      # client
 ```
 
 **Project ID Supabase**: `oaussuztahdxivemqbnd` (São Paulo region). El `db:types` script lo tiene hardcodeado.
@@ -111,6 +115,7 @@ pnpm db:types             # Regenera src/types/database.types.ts desde el schema
 - **Storage**: Cloudflare R2 (avatares, assets de cromos, OG renders cacheables)
 - **Email**: Resend
 - **Error monitoring**: Sentry (cromiks-web)
+- **Product analytics + feature flags**: PostHog Cloud (us.i.posthog.com)
 - **Anti-abuso / rate limiting**: Upstash Redis (sa-east-1)
 - **Domain**: TBD pre-launch
 
@@ -120,8 +125,8 @@ pnpm db:types             # Regenera src/types/database.types.ts desde el schema
 
 | Servicio | Para qué | Estado |
 |---|---|---|
-| Sentry | Error monitoring | 🚧 No instalado |
-| PostHog | Analytics + feature flags | 🚧 No instalado |
+| Sentry | Error monitoring | ✅ Instalado (PR2) |
+| PostHog | Analytics + feature flags | ✅ Instalado (PR6) |
 | Better Uptime | Uptime monitoring | 🚧 No instalado |
 | Mercado Pago | Tip jar | 🚧 No integrado |
 | Apple Developer | iOS push notifications eventual | 🚧 TBD |
