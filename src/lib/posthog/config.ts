@@ -1,12 +1,14 @@
 // Compartido entre server (posthog-node) y client (posthog-js).
-// Project key es pública (mismo criterio que el DSN de Sentry: `sentry.server.config.ts`).
 // Ver `docs/implementation-plan-pr6.md` §1.
 
-// TODO: reemplazar con la key real del proyecto en PostHog Cloud post-signup.
-export const POSTHOG_PROJECT_KEY = 'phc_REPLACE_ME_FROM_DASHBOARD'
+// Project key: viene de env. Es pública (se inlinea en el bundle igual con
+// NEXT_PUBLIC_), pero la dejamos en env para poder rotarla / apuntar a otro
+// proyecto sin redeploy. Setear en Railway Variables y en .env.local.
+export const POSTHOG_PROJECT_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 
-// US tiene la cuota gratuita más alta. Para EU residency hay que crear un
-// proyecto distinto (no se puede cambiar host por proyecto).
+// Host hardcoded: no cambia por entorno (el plan free vive en us.i.posthog.com).
+// Para EU residency hay que crear un proyecto distinto (no se puede cambiar host
+// por proyecto), no un toggle por env.
 export const POSTHOG_HOST = 'https://us.i.posthog.com'
 
 /** Kill switch server-side. Mismo patrón que SENTRY_DISABLED. */

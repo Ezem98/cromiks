@@ -71,7 +71,9 @@ SUPABASE_SECRET_KEY=...
 # Resend (transactional emails)
 RESEND_API_KEY=...
 
-# PostHog (kill switches opt-in; key + host están hardcodeados en src/lib/posthog/config.ts)
+# PostHog (project key viene de env; host está hardcodeado en src/lib/posthog/config.ts)
+NEXT_PUBLIC_POSTHOG_KEY=phc_...
+# Kill switches opt-in:
 # POSTHOG_DISABLED=true                  # server / edge
 # NEXT_PUBLIC_POSTHOG_DISABLED=true      # client
 ```
