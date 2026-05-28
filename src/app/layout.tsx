@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { PostHogProvider } from '@/components/analytics/posthog-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { fontVariables } from '@/lib/fonts'
 import './globals.css'
@@ -59,8 +60,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-AR" className={`${fontVariables} dark`}>
       <body>
-        {children}
-        <Toaster position="top-center" richColors closeButton />
+        <PostHogProvider>
+          {children}
+          <Toaster position="top-center" richColors closeButton />
+        </PostHogProvider>
       </body>
     </html>
   )

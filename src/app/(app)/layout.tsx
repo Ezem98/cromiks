@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { PostHogIdentify } from '@/components/analytics/posthog-identify'
 import { AppShell } from '@/components/layout/app-shell'
 import { createClient } from '@/lib/supabase/server'
 
@@ -39,15 +40,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <AppShell
-      user={{
-        username: profileResult.data.username,
-        displayName: profileResult.data.display_name,
-        avatarUrl: profileResult.data.avatar_url,
-      }}
-      coinsBalance={coinsResult.data?.balance ?? 0}
-    >
-      {children}
-    </AppShell>
+    <PostHogIdentify userId={user.id} username={profileResult.data.username}>
+      <AppShell
+        user={{
+          username: profileResult.data.username,
+          displayName: profileResult.data.display_name,
+          avatarUrl: profileResult.data.avatar_url,
+        }}
+        coinsBalance={coinsResult.data?.balance ?? 0}
+      >
+        {children}
+      </AppShell>
+    </PostHogIdentify>
   )
 }
