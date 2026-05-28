@@ -52,6 +52,8 @@ jobs:
       PLAYWRIGHT_TEST_USER_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_USER_EMAIL }}
       SENTRY_DISABLED: 'true'
       RATELIMIT_DISABLED: 'true'
+      POSTHOG_DISABLED: 'true'
+      NEXT_PUBLIC_POSTHOG_DISABLED: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
