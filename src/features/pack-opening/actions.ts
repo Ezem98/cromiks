@@ -107,17 +107,21 @@ export const openPack = defineAction({
     // es nueva (ver supabase/migrations/20260527120000_make_open_pack_idempotent.sql).
     const wasReplay = coinsEarned === 0 && newCardsCount === 0
 
-    await track(
-      'pack_opened',
-      {
-        pack_type: first.pack_type ?? 'daily',
-        cards_count: cards.length,
-        new_cards_count: newCardsCount,
-        coins_earned: coinsEarned,
-        was_replay: wasReplay,
-      },
-      { distinctId: userId },
-    )
+    // Solo emitir en la apertura real. El SC de /open/[packId] puede re-renderizarse
+    // (prefetch + navigation + refresh) → openPack se invoca varias veces, todas excepto
+    // la primera entran al replay path. Trackear esas inflaba pack_opened 2-3x por sobre.
+    if (!wasReplay) {
+      await track(
+        'pack_opened',
+        {
+          pack_type: first.pack_type ?? 'daily',
+          cards_count: cards.length,
+          new_cards_count: newCardsCount,
+          coins_earned: coinsEarned,
+        },
+        { distinctId: userId },
+      )
+    }
 
     return {
       ok: true,
