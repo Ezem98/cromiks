@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { defineAction } from '@/lib/actions'
+import { track } from '@/lib/analytics'
 
 /**
  * Server actions para el feature de sharing (E3).
@@ -49,6 +50,8 @@ export const recordShare = defineAction({
     if (error) {
       return { ok: false, code: 'insert_failed', message: error.message }
     }
+
+    await track('share_initiated', { channel, target_card_id: cardId }, { distinctId: userId })
 
     // Revalidamos home porque las misiones pueden haber avanzado / completado.
     revalidatePath('/')

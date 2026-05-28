@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { defineAction } from '@/lib/actions'
+import { track } from '@/lib/analytics'
 
 /**
  * Server actions del álbum.
@@ -19,6 +20,10 @@ import { defineAction } from '@/lib/actions'
 
 const cardIdSchema = z.object({ cardId: z.uuid() })
 
+// pin/unpin reciben `tier` opcional desde el client para evitar un round-trip
+// extra a la DB. Solo se usa como propiedad de analítica — NO es input para el RPC.
+const pinSchema = cardIdSchema.extend({ tier: z.string().optional() })
+
 /**
  * Pinea un cromo (lo destaca en el perfil del user).
  *
@@ -31,9 +36,9 @@ const KNOWN_PIN_CARD_CODES = new Set(['auth_required', 'card_not_owned'])
 
 export const pinCard = defineAction({
   name: 'pinCard',
-  schema: cardIdSchema,
+  schema: pinSchema,
   expectedErrors: ['auth_required', 'card_not_owned'],
-  fn: async ({ cardId }, { supabase }) => {
+  fn: async ({ cardId, tier }, { userId, supabase }) => {
     const { error } = await supabase.rpc('pin_card', { p_card_id: cardId })
     if (error) {
       if (KNOWN_PIN_CARD_CODES.has(error.message)) {
@@ -42,6 +47,9 @@ export const pinCard = defineAction({
       return { ok: false, code: 'unknown', message: error.message }
     }
     revalidatePath('/album')
+
+    await track('card_pinned', { tier, action: 'pin' }, { distinctId: userId })
+
     return { ok: true, data: undefined }
   },
 })
@@ -54,9 +62,9 @@ export const pinCard = defineAction({
  */
 export const unpinCard = defineAction({
   name: 'unpinCard',
-  schema: cardIdSchema,
+  schema: pinSchema,
   expectedErrors: ['auth_required'],
-  fn: async ({ cardId }, { supabase }) => {
+  fn: async ({ cardId, tier }, { userId, supabase }) => {
     const { error } = await supabase.rpc('unpin_card', { p_card_id: cardId })
     if (error) {
       if (error.message === 'auth_required') {
@@ -65,6 +73,9 @@ export const unpinCard = defineAction({
       return { ok: false, code: 'unknown', message: error.message }
     }
     revalidatePath('/album')
+
+    await track('card_pinned', { tier, action: 'unpin' }, { distinctId: userId })
+
     return { ok: true, data: undefined }
   },
 })

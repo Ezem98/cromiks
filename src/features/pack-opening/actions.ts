@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { defineAction } from '@/lib/actions'
+import { track } from '@/lib/analytics'
 import type { RevealedCard } from './types'
 import { parseTier } from './types'
 
@@ -53,7 +54,7 @@ export const openPack = defineAction({
     'pack_expired',
     'empty_result',
   ],
-  fn: async ({ packId }, { supabase }) => {
+  fn: async ({ packId }, { userId, supabase }) => {
     const { data, error } = await supabase.rpc('open_pack', { p_pack_id: packId })
 
     if (error) {
@@ -100,12 +101,30 @@ export const openPack = defineAction({
       return { ok: false, code: 'empty_result' }
     }
 
+    const coinsEarned = first.coins_earned ?? 0
+    const newCardsCount = cards.filter((c) => c.isNew).length
+    // Replay path del RPC idempotente: no se acreditaron monedas y ninguna carta
+    // es nueva (ver supabase/migrations/20260527120000_make_open_pack_idempotent.sql).
+    const wasReplay = coinsEarned === 0 && newCardsCount === 0
+
+    await track(
+      'pack_opened',
+      {
+        pack_type: first.pack_type ?? 'daily',
+        cards_count: cards.length,
+        new_cards_count: newCardsCount,
+        coins_earned: coinsEarned,
+        was_replay: wasReplay,
+      },
+      { distinctId: userId },
+    )
+
     return {
       ok: true,
       data: {
         packType: first.pack_type ?? 'daily',
         cards,
-        coinsEarned: first.coins_earned ?? 0,
+        coinsEarned,
         coinsAfter: first.coins_after ?? 0,
       },
     }

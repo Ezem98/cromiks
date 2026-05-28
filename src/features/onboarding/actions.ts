@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { defineAction } from '@/lib/actions'
+import { track } from '@/lib/analytics'
 
 /**
  * Server actions del onboarding.
@@ -100,6 +101,8 @@ export const completeOnboarding = defineAction({
 
     // Marcar onboarding completo en el metadata del user.
     await supabase.auth.updateUser({ data: { onboarded: true } })
+
+    await track('onboarding_completed', { username: input.username }, { distinctId: userId })
 
     revalidatePath('/', 'layout')
     redirect('/')

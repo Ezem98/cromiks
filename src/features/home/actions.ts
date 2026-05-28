@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { defineAction } from '@/lib/actions'
+import { track } from '@/lib/analytics'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 /**
@@ -34,7 +35,7 @@ export const claimDailyPack = defineAction({
   schema: z.void(),
   rateLimit: 'claimDailyPack',
   expectedErrors: ['auth_required', 'already_claimed', 'no_streak', 'no_pack_returned'],
-  fn: async (_input, { supabase }) => {
+  fn: async (_input, { userId, supabase }) => {
     const { data, error } = await supabase.rpc('claim_daily_pack')
 
     if (error) {
@@ -49,6 +50,19 @@ export const claimDailyPack = defineAction({
     if (!row?.pack_id) {
       return { ok: false, code: 'no_pack_returned' }
     }
+
+    // Streak con un query extra (1/día, costo aceptable). Pack type es siempre 'daily'.
+    const { data: streakRow } = await supabase
+      .from('streaks')
+      .select('current_streak')
+      .eq('user_id', userId)
+      .single()
+
+    await track(
+      'daily_pack_claimed',
+      { streak: streakRow?.current_streak ?? 0, pack_type: 'daily' },
+      { distinctId: userId },
+    )
 
     revalidatePath('/')
     return { ok: true, data: { packId: row.pack_id } }
