@@ -31,7 +31,8 @@ const channelToPlatform = {
 } as const satisfies Record<ShareChannel, string>
 
 const recordShareSchema = z.object({
-  cardId: z.uuid(),
+  // card_id es slug text (p.ej. "hinchada-delirio-mexico"), NO uuid.
+  cardId: z.string().min(1).max(100),
   channel: z.enum(['whatsapp', 'twitter', 'copy', 'native', 'instagram']),
 })
 

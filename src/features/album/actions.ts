@@ -18,7 +18,8 @@ import { track } from '@/lib/analytics'
  * el estado fresco.
  */
 
-const cardIdSchema = z.object({ cardId: z.uuid() })
+// card_id es slug text (p.ej. "hinchada-delirio-mexico"), NO uuid.
+const cardIdSchema = z.object({ cardId: z.string().min(1).max(100) })
 
 // pin/unpin reciben `tier` opcional desde el client para evitar un round-trip
 // extra a la DB. Solo se usa como propiedad de analítica — NO es input para el RPC.
@@ -110,7 +111,7 @@ const KNOWN_DISMANTLE_CODES = new Set([
 ])
 
 const dismantleSchema = z.object({
-  cardId: z.uuid(),
+  cardId: z.string().min(1).max(100),
   count: z.number().int().min(1).max(99).optional().default(1),
 })
 
