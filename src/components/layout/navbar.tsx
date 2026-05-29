@@ -72,7 +72,6 @@ export function Navbar({ user, coinsBalance, onMobileNavToggle, className }: Nav
         <nav className="hidden md:flex items-center gap-1 ml-6">
           <NavLink href="/">Inicio</NavLink>
           <NavLink href="/album">Álbum</NavLink>
-          <NavLink href="/missions">Misiones</NavLink>
         </nav>
 
         <div className="flex-1" />
