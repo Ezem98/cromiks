@@ -316,9 +316,11 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
     setIsPinnedLocal(!wasPinned)
 
     startTransition(async () => {
+      // tier se manda solo como prop de analytics — el RPC no lo usa, viene del
+      // client para evitar un round-trip extra a la DB.
       const result = wasPinned
-        ? await unpinCard({ cardId: card.id })
-        : await pinCard({ cardId: card.id })
+        ? await unpinCard({ cardId: card.id, tier: card.tier })
+        : await pinCard({ cardId: card.id, tier: card.tier })
       if (!result.ok) {
         // Rollback
         setIsPinnedLocal(wasPinned)

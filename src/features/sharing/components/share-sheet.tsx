@@ -66,27 +66,28 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
   const shareText = `Mirá este cromo de mi álbum eterno: "${cardName}"`
 
   /**
-   * Wrapper que llama a recordShare después de la acción del usuario.
-   * No bloquea la UX — el share ya pasó del lado del browser, esto es
-   * background tracking.
+   * Llama a recordShare server-side. AWAIT obligatorio antes de cerrar el sheet
+   * (onOpenChange(false)) — si no, el componente unmountea antes de que el server
+   * action ejecute y el insert se cancela. Fail silencioso si recordShare devuelve
+   * !ok porque el share del lado del user ya pasó.
    */
-  const track = (channel: ShareChannel) => {
-    startTransition(async () => {
-      const result = await recordShare({ cardId, channel })
-      if (!result.ok) {
-        // Log silencioso. No molestamos al user con un error si el sharing ya pasó.
-        console.warn('[share] recordShare failed:', result.code)
-      }
-    })
+  const track = async (channel: ShareChannel) => {
+    const result = await recordShare({ cardId, channel })
+    if (!result.ok) {
+      console.warn('[share] recordShare failed:', result.code)
+    }
   }
 
   const handleWhatsApp = () => {
+    // window.open debe ejecutarse sincrónicamente para no caer en popup blockers.
     const url = buildShareUrl()
     const text = `${shareText}\n${url}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
-    track('whatsapp')
-    toast.success('Compartido en WhatsApp')
-    onOpenChange(false)
+    startTransition(async () => {
+      await track('whatsapp')
+      toast.success('Compartido en WhatsApp')
+      onOpenChange(false)
+    })
   }
 
   const handleTwitter = () => {
@@ -96,24 +97,29 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
       '_blank',
       'noopener,noreferrer',
     )
-    track('twitter')
-    toast.success('Compartido en Twitter')
-    onOpenChange(false)
+    startTransition(async () => {
+      await track('twitter')
+      toast.success('Compartido en Twitter')
+      onOpenChange(false)
+    })
   }
 
-  const handleCopy = async () => {
-    const url = buildShareUrl()
-    try {
-      await navigator.clipboard.writeText(url)
-      track('copy')
-      toast.success('Link copiado al portapapeles')
-      onOpenChange(false)
-    } catch {
-      toast.error('No pude copiar. Probá manualmente.')
-    }
+  const handleCopy = () => {
+    startTransition(async () => {
+      const url = buildShareUrl()
+      try {
+        await navigator.clipboard.writeText(url)
+        await track('copy')
+        toast.success('Link copiado al portapapeles')
+        onOpenChange(false)
+      } catch {
+        toast.error('No pude copiar. Probá manualmente.')
+      }
+    })
   }
 
   const handleNativeShare = async () => {
+    // navigator.share también requiere user gesture sync — antes de cualquier await.
     const url = buildShareUrl()
     try {
       await navigator.share({
@@ -121,15 +127,17 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
         text: shareText,
         url,
       })
-      track('native')
-      onOpenChange(false)
     } catch (err) {
-      // El user puede haber cancelado el share modal del OS — eso es esperable
       const isAbortError = err instanceof Error && err.name === 'AbortError'
       if (!isAbortError) {
         toast.error('No pude compartir')
       }
+      return
     }
+    startTransition(async () => {
+      await track('native')
+      onOpenChange(false)
+    })
   }
 
   return (
