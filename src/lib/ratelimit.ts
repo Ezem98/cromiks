@@ -2,6 +2,7 @@ import 'server-only'
 
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
+import { env } from '@/env'
 
 /**
  * Anti-abuso para endpoints calientes via Upstash Ratelimit (HTTP-based, edge-safe).
@@ -27,8 +28,8 @@ import { Redis } from '@upstash/redis'
  */
 
 const redis =
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-    ? Redis.fromEnv()
+  env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
+    ? new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN })
     : undefined
 
 const LIMITS = {

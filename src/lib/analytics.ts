@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { PostHog } from 'posthog-node'
+import { env } from '@/env'
 import { isPosthogServerEnabled, POSTHOG_HOST, POSTHOG_PROJECT_KEY } from '@/lib/posthog/config'
 
 /**
@@ -51,8 +52,8 @@ export async function track(
       event,
       properties: {
         ...properties,
-        environment: process.env.RAILWAY_ENVIRONMENT_NAME ?? process.env.NODE_ENV,
-        release: process.env.RAILWAY_GIT_COMMIT_SHA,
+        environment: env.RAILWAY_ENVIRONMENT_NAME ?? env.NODE_ENV,
+        release: env.RAILWAY_GIT_COMMIT_SHA,
       },
     })
   } catch (err) {

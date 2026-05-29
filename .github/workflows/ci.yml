@@ -10,6 +10,10 @@ jobs:
   check:
     name: type-check + lint
     runs-on: ubuntu-latest
+    env:
+      # type-check (tsc) y lint (biome) no ejecutan código, así que no disparan
+      # la validación de src/env.ts. El skip evita acoplar este job a los secrets.
+      SKIP_ENV_VALIDATION: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -28,9 +32,16 @@ jobs:
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      # Requerida por env.ts (no .optional) y leída en metadataBase del root layout.
+      NEXT_PUBLIC_APP_URL: https://cromiks.app
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      # Skip de la validación t3-oss en CI: este build es solo smoke-compile.
+      # El gate real es el build de deploy en Railway, que tiene TODAS las vars
+      # (RESEND_API_KEY, SUPABASE_SECRET_KEY, etc.). Para validar también en CI,
+      # agregar esos secrets al job y borrar esta línea.
+      SKIP_ENV_VALIDATION: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -49,11 +60,16 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
       SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      # Requerida por env.ts; el server de e2e corre en localhost.
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
       PLAYWRIGHT_TEST_USER_EMAIL: ${{ secrets.PLAYWRIGHT_TEST_USER_EMAIL }}
       SENTRY_DISABLED: 'true'
       RATELIMIT_DISABLED: 'true'
       POSTHOG_DISABLED: 'true'
       NEXT_PUBLIC_POSTHOG_DISABLED: 'true'
+      # `pnpm dev` evalúa next.config.ts → env.ts. Skipeamos: el job no setea
+      # RESEND_API_KEY (no lo lee el código) y no es un build de deploy.
+      SKIP_ENV_VALIDATION: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

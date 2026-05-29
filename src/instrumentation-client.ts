@@ -36,6 +36,8 @@ const EXPECTED_BUSINESS_CODES = new Set([
 Sentry.init({
   dsn: 'https://cf8810e1066dc099e235b2aeaed21f2d@o4511446656286720.ingest.us.sentry.io/4511459597352960',
 
+  // NEXT_PUBLIC_* crudas con process.env: este archivo corre en el cliente y el
+  // guard de @t3-oss/env-nextjs rompería la hidratación. Next las inlinea igual.
   enabled: process.env.NEXT_PUBLIC_SENTRY_DISABLED !== 'true',
   environment: process.env.NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME || 'development',
   release: process.env.NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA || undefined,

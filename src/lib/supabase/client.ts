@@ -5,6 +5,10 @@ import type { Database } from '@/types/database.types'
  * Cliente de Supabase para el browser.
  * Usar SOLO en componentes con 'use client'.
  *
+ * NEXT_PUBLIC_* con process.env (no el `env` de t3-oss): este módulo corre en el
+ * browser y el guard client de @t3-oss/env-nextjs rompería la hidratación. Next
+ * las inlinea igual; la validación de presencia la cubre src/env.ts en build/server.
+ *
  * @example
  * 'use client'
  * import { createClient } from '@/lib/supabase/client'
