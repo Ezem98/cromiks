@@ -3,7 +3,6 @@
 import posthog from 'posthog-js'
 import { PostHogProvider as PHProvider, usePostHog } from 'posthog-js/react'
 import { useEffect } from 'react'
-import { env } from '@/env'
 import { isPosthogClientEnabled, POSTHOG_HOST, POSTHOG_PROJECT_KEY } from '@/lib/posthog/config'
 
 /**
@@ -42,8 +41,8 @@ function initPostHog() {
 
     loaded: (ph) => {
       ph.register({
-        environment: env.NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME || 'development',
-        release: env.NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA || undefined,
+        environment: process.env.NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME || 'development',
+        release: process.env.NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA || undefined,
       })
     },
   })

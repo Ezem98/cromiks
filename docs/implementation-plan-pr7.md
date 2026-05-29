@@ -413,6 +413,8 @@ Cosas que cambiaron respecto del plan al ejecutar:
 
 5. **`RESEND_FROM_EMAIL` usa `z.email()`** (no `z.string().email()`) — API de Zod 4.
 
+6. **Componentes/módulos client NO usan el `env` de t3-oss — leen `NEXT_PUBLIC_*` con `process.env`** (`src/lib/supabase/client.ts`, `src/components/analytics/posthog-provider.tsx`, `src/instrumentation-client.ts`, `src/lib/posthog/config.ts`). **Por qué**: el smoke e2e falló (reproducido localmente). En el cliente `skipValidation` es `false` (`SKIP_ENV_VALIDATION` no es `NEXT_PUBLIC_` → no se inlinea), así que el guard de `@t3-oss/env-nextjs` queda activo y tira `❌ Attempted to access a server-side environment variable on the client` **durante la hidratación** → rompe la interactividad (los botones no disparan server actions) → el golden path se queda en `/home`. El gate **se mantiene**: `env.ts` valida la sección client en build (jiti en `next.config`, `isServer=true`) y en server; el runtime client solo lee las `NEXT_PUBLIC_*` ya inlineadas por Next. **Regla**: `env` de `@/env` es para server/edge/Server Components; los client components leen `NEXT_PUBLIC_*` de `process.env`.
+
 ---
 
 ## Orden de commits sugerido

@@ -1,12 +1,11 @@
 // Compartido entre server (posthog-node) y client (posthog-js).
 // Ver `docs/implementation-plan-pr6.md` §1.
 
-import { env } from '@/env'
-
-// Project key: viene de env. Es pública (se inlinea en el bundle igual con
-// NEXT_PUBLIC_), pero la dejamos en env para poder rotarla / apuntar a otro
-// proyecto sin redeploy. Setear en Railway Variables y en .env.local.
-export const POSTHOG_PROJECT_KEY = env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
+// NEXT_PUBLIC_POSTHOG_KEY se lee con process.env (no con el `env` de t3-oss): este
+// módulo se importa desde client components y el guard client de @t3-oss/env-nextjs
+// rompería la hidratación. Next inlinea las NEXT_PUBLIC_* igual. La validación de
+// presencia sigue cubierta en build/server por src/env.ts. Ver PR7.
+export const POSTHOG_PROJECT_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 
 // Host hardcoded: no cambia por entorno (el plan free vive en us.i.posthog.com).
 // Para EU residency hay que crear un proyecto distinto (no se puede cambiar host
