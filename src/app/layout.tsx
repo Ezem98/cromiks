@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { PostHogProvider } from '@/components/analytics/posthog-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { env } from '@/env'
 import { fontVariables } from '@/lib/fonts'
 import './globals.css'
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Cromiks' }],
   creator: 'Cromiks',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   openGraph: {
     type: 'website',
     locale: 'es_AR',

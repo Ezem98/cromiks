@@ -3,6 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs'
+import { env } from '@/env'
 
 // Business errors esperados de las server actions. Los reportamos como
 // `result.code = 'X'` al cliente, pero NO los queremos en Sentry: inflan el
@@ -41,8 +42,8 @@ Sentry.init({
   // próximo deploy (sin desinstalar el paquete).
   enabled: process.env.SENTRY_DISABLED !== 'true',
 
-  environment: process.env.RAILWAY_ENVIRONMENT_NAME ?? process.env.NODE_ENV ?? 'development',
-  release: process.env.RAILWAY_GIT_COMMIT_SHA,
+  environment: env.RAILWAY_ENVIRONMENT_NAME ?? env.NODE_ENV,
+  release: env.RAILWAY_GIT_COMMIT_SHA,
 
   // Conservador: 10% de traces. Ajustar si vemos poco volumen real.
   tracesSampleRate: 0.1,

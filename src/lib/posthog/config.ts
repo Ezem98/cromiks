@@ -1,10 +1,12 @@
 // Compartido entre server (posthog-node) y client (posthog-js).
 // Ver `docs/implementation-plan-pr6.md` §1.
 
+import { env } from '@/env'
+
 // Project key: viene de env. Es pública (se inlinea en el bundle igual con
 // NEXT_PUBLIC_), pero la dejamos en env para poder rotarla / apuntar a otro
 // proyecto sin redeploy. Setear en Railway Variables y en .env.local.
-export const POSTHOG_PROJECT_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
+export const POSTHOG_PROJECT_KEY = env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 
 // Host hardcoded: no cambia por entorno (el plan free vive en us.i.posthog.com).
 // Para EU residency hay que crear un proyecto distinto (no se puede cambiar host
