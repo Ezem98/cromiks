@@ -186,12 +186,12 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 
 ---
 
-### TP-11 · **`@t3-oss/env-nextjs`** 🟡 ✅
-**Resuelve**: validar env vars al boot (server y client separados). Hoy si falta `RESEND_API_KEY` se rompe en runtime, no en build.
+### TP-11 · **`@t3-oss/env-nextjs`** ✅ Implementado en PR7
+**Resuelve**: validar env vars al boot/build (server y client separados). El build falla con error claro si falta una requerida, en vez de romper en runtime.
 
-**Compatibilidad**: ✅ Reemplaza `process.env.X` por `env.X` tipado. Schema con Zod (ya tenemos).
+**Compatibilidad**: ✅ Reemplaza `process.env.X` por `env.X` tipado. Schema con Zod (ya teníamos).
 
-**Esfuerzo**: 1-2 horas para crear `env.ts` y migrar usos.
+**Estado**: implementado en `src/env.ts` + validación build-time vía jiti en `next.config.ts`. Ver [`docs/implementation-plan-pr7.md`](./implementation-plan-pr7.md). Nota: `RESEND_API_KEY` se valida como guard de presencia aunque la consuma Supabase Auth SMTP (no el proceso Next).
 
 ---
 

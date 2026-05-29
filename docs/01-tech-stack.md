@@ -58,25 +58,38 @@
 
 ---
 
-## Variables de entorno (`.env.local`)
+## Variables de entorno
+
+**Fuente de verdad: [`src/env.ts`](../src/env.ts)** (TP-11 · `@t3-oss/env-nextjs`).
+Las vars que el proceso Next lee se validan con Zod al boot/build: si falta o
+está vacía una requerida, **`next build` falla** con un error claro (en vez de
+romper en runtime — ver el incidente de `NEXT_PUBLIC_APP_URL` en PR6). Reemplazá
+`process.env.X` por `env.X` tipado. El listado completo (incluidas las vars que
+NO se validan y por qué) vive en [`.env.example`](../.env.example) y en el
+comentario de cabecera de `src/env.ts`.
 
 ```env
 # Supabase (públicas)
 NEXT_PUBLIC_SUPABASE_URL=https://oaussuztahdxivemqbnd.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 
 # Supabase (privada — solo para admin / scripts)
 SUPABASE_SECRET_KEY=...
 
-# Resend (transactional emails)
+# App (requerida — magic links + metadataBase)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Resend (la consume Supabase Auth SMTP; env.ts la valida como guard de presencia)
 RESEND_API_KEY=...
 
 # PostHog (project key viene de env; host está hardcodeado en src/lib/posthog/config.ts)
 NEXT_PUBLIC_POSTHOG_KEY=phc_...
-# Kill switches opt-in:
-# POSTHOG_DISABLED=true                  # server / edge
-# NEXT_PUBLIC_POSTHOG_DISABLED=true      # client
 ```
+
+> **Validación en CI**: el job `check` (type-check/lint) y los builds de CI usan
+> `SKIP_ENV_VALIDATION=1` (no necesitan secrets). El gate real es el build de
+> deploy en Railway, que tiene todas las vars. Kill switches y vars de tooling
+> (Playwright) se leen crudas, fuera del schema.
 
 **Project ID Supabase**: `oaussuztahdxivemqbnd` (São Paulo region). El `db:types` script lo tiene hardcodeado.
 
