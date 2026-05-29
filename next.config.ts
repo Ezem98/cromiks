@@ -1,5 +1,14 @@
 import { withSentryConfig } from '@sentry/nextjs'
+import { createJiti } from 'jiti'
 import type { NextConfig } from 'next'
+
+// Valida src/env.ts en build-time, antes de compilar. Si falta una var
+// requerida, el build aborta acá con un error legible (en vez de romper en
+// runtime). Next ya cargó las .env antes de evaluar este config, así que
+// process.env está poblado. jiti permite importar el TS con alias sin pasar
+// por el bundler. Se saltea con SKIP_ENV_VALIDATION=1 (ver src/env.ts).
+const jiti = createJiti(import.meta.url)
+jiti('./src/env')
 
 const config: NextConfig = {
   reactStrictMode: true,
