@@ -625,6 +625,49 @@ Revert de los 4 archivos.
 
 ---
 
+## ✅ Validation results — 2026-05-29
+
+PR6 fue mergeado a `main` el 2026-05-28 (commits direct-push, sin PR explícito) y validado end-to-end el 2026-05-29.
+
+### Estado de cada AC
+
+| AC | Status | Evidencia |
+|---|---|---|
+| **AC1** | ✅ | Golden path en Edge (sin shields) generó **6 `$pageview` events** con library `web` (posthog-js client SDK). Verificado vía HogQL: `SELECT * FROM events WHERE event='$pageview' AND distinct_id='<uuid>'`. |
+| **AC2** | ✅ | Server events post-login emiten con `distinct_id = '5d2165ea-9a39-4278-8d97-fd4a75e92aa5'` (UUID Supabase). `$identify` event capturado en el client con la transición de anon → identified distinct_id. |
+| **AC3** | ✅ | Los 5 funnel events confirmados: `onboarding_completed` (cuenta nueva), `daily_pack_claimed`, `pack_opened`, `card_pinned` (con `tier`), `share_initiated` (con `channel` y `target_card_id`). Cross-verified con DB: `is_pinned=true` para la card pinneada y row en `share_events`. **Caveat**: `pack_opened` doblea en SC re-renders — ver [issue #10](https://github.com/Ezem98/cromiks/issues/10). |
+| **AC4** | ✅ | Code review de [`src/lib/analytics.ts`](../src/lib/analytics.ts) (server) y [`src/components/analytics/posthog-provider.tsx`](../src/components/analytics/posthog-provider.tsx) (client): ambos kill switches cortan circuit antes de cualquier request a `us.i.posthog.com`. Server: `getClient()` retorna `null` si `POSTHOG_DISABLED=true`. Client: `initPostHog()` no llama `posthog.init()` si `NEXT_PUBLIC_POSTHOG_DISABLED=true`. |
+
+### PRs derivados de la validación
+
+La validación descubrió 4 bugs que requirieron PRs post-mergeo:
+
+| PR | Fix | Estado |
+|---|---|---|
+| [#6](https://github.com/Ezem98/cromiks/pull/6) | `pack_opened` guard inicial con `!wasReplay` (no resuelve completo) | Merged |
+| [#7](https://github.com/Ezem98/cromiks/pull/7) | `cardId` Zod schema: era `z.uuid()`, pero la columna es text slug | Merged |
+| [#8](https://github.com/Ezem98/cromiks/pull/8) | ShareSheet desmontaba el componente antes de que recordShare ejecute; falta de `tier` en `card_pinned` props | Merged |
+| [#9](https://github.com/Ezem98/cromiks/pull/9) | Trigger SQL `_on_share_event_inserted` referenciaba `new.channel` (columna inexistente); fix usa `new.platform` | Merged + aplicado a prod vía Supabase MCP |
+
+### Followups conocidos (no en scope de PR6)
+
+- [#10](https://github.com/Ezem98/cromiks/issues/10) — `pack_opened` aún doblea por idempotency del RPC; el guard de PR #6 no atrapa el segundo render porque el RPC devuelve `is_new=true` en ambas llamadas. Fix sugerido: checar `packs.status` antes del RPC.
+- [#11](https://github.com/Ezem98/cromiks/issues/11) — Console 404s en `/about` y `/missions` por `<Link>` prefetch a rutas inexistentes. Bug separado, sin impacto en funcionalidad.
+- [#12](https://github.com/Ezem98/cromiks/issues/12) — `unpinCard` emite `card_pinned` con `action: 'unpin'`. Renombrar a `card_unpinned` para que funnels en PostHog no cuenten unpins como pins.
+
+### Infraestructura levantada para la validación
+
+Durante el proceso se autorizaron MCPs que quedan disponibles para futuras iteraciones (configurados en `~/.claude.json`):
+
+- **PostHog MCP** — `https://mcp.posthog.com/mcp?features=sql,data_schema` (con `features=` para evitar `invalid_scope` OAuth)
+- **Supabase MCP** — `https://mcp.supabase.com/mcp?project_ref=oaussuztahdxivemqbnd` (commiteado en `.mcp.json`, OAuth per-user)
+- **Resend MCP** — stdio con `RESEND_API_KEY` (full-access scope para automatizar domain setup)
+- **Railway CLI** — linked al project `respectful-transformation` / service `cromiks`
+
+Tambien se verificó el dominio `cromiks.app` en Resend (DKIM + 2x SPF records via Porkbun DNS) y se seteó `NEXT_PUBLIC_APP_URL` en Railway (env var que faltaba y rompía magic links OTP).
+
+---
+
 ## Riesgos y mitigaciones
 
 | Riesgo | Probabilidad | Mitigación |
