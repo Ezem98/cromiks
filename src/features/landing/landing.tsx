@@ -52,9 +52,6 @@ export function Landing() {
         <Button variant="primary" size="lg" asChild>
           <Link href="/signup">Sumate</Link>
         </Button>
-        <Button variant="ghost" size="lg" asChild>
-          <Link href="/about">Conocé el proyecto</Link>
-        </Button>
       </div>
     </div>
   )

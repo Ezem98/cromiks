@@ -1,6 +1,6 @@
 'use client'
 
-import { HomeIcon, LayoutGridIcon, TargetIcon } from 'lucide-react'
+import { HomeIcon, LayoutGridIcon } from 'lucide-react'
 import Link from 'next/link'
 import {
   Sheet,
@@ -25,7 +25,6 @@ type MobileNavProps = {
 const navItems = [
   { href: '/', label: 'Inicio', icon: HomeIcon },
   { href: '/album', label: 'Álbum', icon: LayoutGridIcon },
-  { href: '/missions', label: 'Misiones', icon: TargetIcon },
 ] as const
 
 export function MobileNav({ open, onOpenChange }: MobileNavProps) {
