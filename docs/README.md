@@ -50,6 +50,8 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | Archivo | Contenido |
 |---|---|
 | [`assets/3d-pack.md`](./assets/3d-pack.md) | Modelo GLTF del sobre, rebrand, créditos |
+| [`assets/photos.md`](./assets/photos.md) | Dónde sacar fotos para los cromos + hosting + AI prompts |
+| [`assets/visual-references.md`](./assets/visual-references.md) | Referencias de diseño (Pokemon CSS cards, NBA Top Shot, etc.) |
 
 ### Roadmap
 | Archivo | Contenido |

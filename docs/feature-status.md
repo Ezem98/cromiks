@@ -193,7 +193,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 9.1 | Catalog YAML `eterno-diciembre.yaml` | ✅ | ~155 cromos definidos |
 | 9.2 | Placeholders generados para llegar a 205 | ✅ | `placeholder-N` IDs |
 | 9.3 | Completar ~50 cromos restantes (descriptions, metadata) | 🟡 | Hay placeholders, falta data real |
-| 9.4 | Photo URLs reales (HTTPS públicas) | 🚧 | Hoy `content.photo.source: TODO` en la mayoría |
+| 9.4 | Photo URLs reales (HTTPS públicas) | 🚧 | Hoy `content.photo.source: TODO` en la mayoría. Workflow + fuentes en [`assets/photos.md`](./assets/photos.md) |
 | 9.5 | Audio assets para legendaries (futuro) | 🚧 | Idea original del producto |
 
 ---
