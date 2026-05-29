@@ -103,13 +103,13 @@ export const openPack = defineAction({
 
     const coinsEarned = first.coins_earned ?? 0
     const newCardsCount = cards.filter((c) => c.isNew).length
-    // Replay path del RPC idempotente: no se acreditaron monedas y ninguna carta
-    // es nueva (ver supabase/migrations/20260527120000_make_open_pack_idempotent.sql).
-    const wasReplay = coinsEarned === 0 && newCardsCount === 0
+    // El RPC expone explícitamente `was_replay` (ver migration
+    // supabase/migrations/20260529125447_open_pack_explicit_was_replay.sql).
+    // Antes lo inferíamos con `coinsEarned === 0 && newCardsCount === 0`, pero
+    // ese gate fallaba en la PRIMERA apertura legítima del onboarding (todas las
+    // cartas nuevas + cero monedas) y emitía dos veces.
+    const wasReplay = first.was_replay === true
 
-    // Solo emitir en la apertura real. El SC de /open/[packId] puede re-renderizarse
-    // (prefetch + navigation + refresh) → openPack se invoca varias veces, todas excepto
-    // la primera entran al replay path. Trackear esas inflaba pack_opened 2-3x por sobre.
     if (!wasReplay) {
       await track(
         'pack_opened',

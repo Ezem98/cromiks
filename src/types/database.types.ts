@@ -685,6 +685,7 @@ export type Database = {
           out_card_id: string
           out_card_number: number
           pack_type: Database['public']['Enums']['pack_type']
+          was_replay: boolean
         }[]
       }
       pin_card: { Args: { p_card_id: string }; Returns: undefined }
