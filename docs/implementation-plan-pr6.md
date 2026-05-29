@@ -434,7 +434,8 @@ Borrar el archivo. Ninguna action lo importa todavía hasta §4.
 | `onboarding_completed` | `completeOnboarding` ([`src/features/onboarding/actions.ts`](../../Documents/cromiks/src/features/onboarding/actions.ts)) | `{ username }` |
 | `daily_pack_claimed` | `claimDailyPack` ([`src/features/home/actions.ts`](../../Documents/cromiks/src/features/home/actions.ts)) | `{ streak, pack_type }` |
 | `pack_opened` | `openPack` ([`src/features/pack-opening/actions.ts`](../../Documents/cromiks/src/features/pack-opening/actions.ts)) | `{ pack_type, cards_count, new_cards_count, coins_earned, was_replay }` |
-| `card_pinned` | `pinCard` + `unpinCard` ([`src/features/album/actions.ts`](../../Documents/cromiks/src/features/album/actions.ts)) | `{ tier, action: 'pin'\|'unpin' }` |
+| `card_pinned` | `pinCard` ([`src/features/album/actions.ts`](../../Documents/cromiks/src/features/album/actions.ts)) | `{ tier }` |
+| `card_unpinned` | `unpinCard` ([`src/features/album/actions.ts`](../../Documents/cromiks/src/features/album/actions.ts)) | `{ tier }` — split del `card_pinned` original en PR7 #12 para que los funnels no cuenten unpins como pins |
 | `share_initiated` | `recordShare` ([`src/features/sharing/actions.ts`](../../Documents/cromiks/src/features/sharing/actions.ts)) | `{ channel, target_card_id }` |
 
 ### Pattern de cambio (idéntico en cada action)
@@ -463,7 +464,7 @@ export const pinCard = defineAction({
     if (error) return { ok: false, code: 'unknown', message: error.message }
     revalidatePath('/album')
 
-    await track('card_pinned', { tier, action: 'pin' }, { distinctId: userId })
+    await track('card_pinned', { tier }, { distinctId: userId })
 
     return { ok: true, data: undefined }
   },

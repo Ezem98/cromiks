@@ -49,7 +49,7 @@ export const pinCard = defineAction({
     }
     revalidatePath('/album')
 
-    await track('card_pinned', { tier, action: 'pin' }, { distinctId: userId })
+    await track('card_pinned', { tier }, { distinctId: userId })
 
     return { ok: true, data: undefined }
   },
@@ -75,7 +75,7 @@ export const unpinCard = defineAction({
     }
     revalidatePath('/album')
 
-    await track('card_pinned', { tier, action: 'unpin' }, { distinctId: userId })
+    await track('card_unpinned', { tier }, { distinctId: userId })
 
     return { ok: true, data: undefined }
   },
