@@ -58,12 +58,29 @@ export function AlbumSlot({ card, onClick }: AlbumSlotProps) {
 }
 
 /**
+ * Silueta del tier para el ghost pip — el mismo tinte que usa el pin/número
+ * del owned slot, pero desaturado. Es foreshadowing: "acá va a ir un cromo".
+ */
+const tierGhostColors: Record<AlbumCardSlot['tier'], string> = {
+  common: 'text-(--color-tier-common)',
+  uncommon: 'text-(--color-tier-uncommon)',
+  rare: 'text-(--color-tier-rare)',
+  epic: 'text-(--color-tier-epic)',
+  legendary: 'text-(--color-gold)',
+}
+
+/**
  * Slot vacío — placeholder para un cromo no obtenido aún.
  *
  * Diseño:
- *  - Background dark con border dashed
+ *  - Background dark con border dashed, tinte del tier sutil (foreshadowing)
+ *  - Silueta cromo-shaped a baja opacidad, tintada por tier
  *  - Número del cromo grande al centro (le indica al user cuál le falta)
- *  - Sutil tinte del tier en el border (foreshadowing)
+ *  - Pip de rareza fantasma (tier-tinted, desaturado) abajo a la derecha —
+ *    como el pin del owned slot pero apagado: "acá va una <tier>".
+ *
+ * Debe leerse como foreshadowing, no como ruido: todo a baja opacidad,
+ * dark/premium. El detalle sube levemente en hover.
  */
 function MissingSlot({
   cardNumber,
@@ -79,7 +96,7 @@ function MissingSlot({
       type="button"
       onClick={onClick}
       className={cn(
-        'group relative aspect-[3/4] w-full rounded-[10px]',
+        'group relative aspect-[3/4] w-full rounded-[10px] overflow-hidden',
         'border border-dashed transition-all duration-200',
         'flex items-center justify-center',
         'bg-(--color-surface-base)/40',
@@ -94,16 +111,58 @@ function MissingSlot({
       )}
       aria-label={`Cromo ${cardNumber}, no obtenido`}
     >
+      {/* Silueta cromo-shaped tintada por tier, muy baja opacidad. Sube en hover. */}
+      <MissingSilhouette tier={tier} />
+
+      {/* Número grande al centro, por encima de la silueta */}
       <span
         className={cn(
-          'text-display leading-none opacity-30 group-hover:opacity-50 transition-opacity',
+          'relative z-10 text-display leading-none opacity-30 group-hover:opacity-50 transition-opacity',
           'text-(--color-text-muted)',
           'text-[clamp(20px,4vw,28px)]',
         )}
       >
         {cardNumber}
       </span>
+
+      {/* Pip de rareza fantasma — el mismo glifo que el pin del owned, desaturado */}
+      <span
+        className={cn(
+          'absolute bottom-1.5 right-1.5 z-10',
+          'opacity-25 saturate-50 group-hover:opacity-40 transition-opacity',
+          tierGhostColors[tier],
+        )}
+        aria-hidden="true"
+      >
+        <PinIcon className="size-3" />
+      </span>
     </button>
+  )
+}
+
+/**
+ * Silueta de cromo para el slot vacío: una figura abstracta (cabeza + hombros)
+ * en `currentColor`, a opacidad muy baja, tintada por tier vía text-color.
+ * Mantenemos el SVG inline y mínimo (no reusamos CromoPlaceholder, que dibuja
+ * fondo opaco + gradients y "tapa" el estado vacío) para que lea como foreshadowing.
+ */
+function MissingSilhouette({ tier }: { tier: AlbumCardSlot['tier'] }) {
+  return (
+    <svg
+      viewBox="0 0 240 320"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      className={cn(
+        'pointer-events-none absolute inset-0 size-full',
+        'opacity-[0.07] group-hover:opacity-[0.12] transition-opacity duration-200',
+        tierGhostColors[tier],
+      )}
+    >
+      {/* Cabeza */}
+      <circle cx="120" cy="104" r="42" fill="currentColor" />
+      {/* Hombros / torso */}
+      <path d="M 36 230 Q 120 152 204 230 L 188 320 L 52 320 Z" fill="currentColor" />
+    </svg>
   )
 }
 
