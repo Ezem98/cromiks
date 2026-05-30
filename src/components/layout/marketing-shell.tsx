@@ -21,6 +21,13 @@ type MarketingShellProps = {
 export function MarketingShell({ children, showCta = true }: MarketingShellProps) {
   return (
     <div className="min-h-screen flex flex-col">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-(--color-argentina-glow) focus:px-4 focus:py-2 focus:text-(--color-surface-deep) focus:font-medium"
+      >
+        Saltar al contenido
+      </a>
+
       <header className="w-full border-b border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link href="/" className="text-display text-2xl leading-none">
@@ -46,7 +53,9 @@ export function MarketingShell({ children, showCta = true }: MarketingShellProps
         </div>
       </header>
 
-      <main className="flex-1">{children}</main>
+      <main id="main" className="flex-1">
+        {children}
+      </main>
 
       <Footer variant="full" />
     </div>

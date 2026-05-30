@@ -33,11 +33,18 @@ export function AppShell({ children, user, coinsBalance }: AppShellProps) {
   return (
     <CoinsBalanceProvider initialBalance={coinsBalance ?? 0}>
       <div className="min-h-screen flex flex-col">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-(--color-argentina-glow) focus:px-4 focus:py-2 focus:text-(--color-surface-deep) focus:font-medium"
+        >
+          Saltar al contenido
+        </a>
+
         <Navbar user={user} onMobileNavToggle={() => setMobileNavOpen(true)} />
 
         <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        <main id="main" className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10">
           {children}
         </main>
 
