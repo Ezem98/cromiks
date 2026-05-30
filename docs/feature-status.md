@@ -46,7 +46,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | **8. Gamification (badges)** | 4 | 0 | 1 | [link](./features/badges.md) |
 | **9. Content (cromos, fotos)** | 1 | 1 | 2 | [seeding](./operations/seeding.md) |
 | **10. Infrastructure & DevOps** | 3 | 0 | 4 | [migrations](./operations/migrations.md) |
-| **11. Pre-launch & marketing** | 0 | 0 | 14 | — |
+| **11. Pre-launch & marketing** | 4 | 1 | 9 | [marketing plan](./implementation-plan-pr7-marketing.md) |
 
 ---
 
@@ -221,9 +221,9 @@ Todo 🚧 — son los items críticos antes del launch público de junio 2026.
 | 11.1 | Nombre final del producto (hoy "Cromiks" es placeholder) | 🚧 |
 | 11.2 | Dominio comprado | 🚧 |
 | 11.3 | Handles sociales reservados | 🚧 |
-| 11.4 | Landing marketing real (hoy es básica) | 🚧 |
-| 11.5 | Página `/about` con créditos visibles | 🚧 |
-| 11.6 | Página `/legal` (terms + privacy) | 🚧 |
+| 11.4 | Landing marketing real (multi-sección + waitlist beta) | ✅ Falta assets reales de las 11 Legendarias (hoy teasers) |
+| 11.5 | Página `/about` con créditos visibles (cumple CC-BY del sobre) | ✅ |
+| 11.6 | Página `/legal` (terms + privacy) | ✅ Revisar con profesional antes del launch comercial |
 | 11.7 | Página `/help` (FAQ) | 🚧 |
 | 11.8 | Tip jar Mercado Pago integrado | 🚧 |
 | 11.9 | Sentry (error monitoring) | 🚧 |

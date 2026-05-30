@@ -47,6 +47,9 @@ export const ERROR_COPY: Record<string, string> = {
   invalid_format: 'Formato inválido',
   empty: 'No puede estar vacío',
 
+  // Waitlist (landing beta)
+  already_subscribed: 'Ya estás en la lista, te avisamos 👀',
+
   // Auth
   email_invalid: 'Email inválido',
   invalid_token_format: 'Código inválido',

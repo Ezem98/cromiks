@@ -22,6 +22,11 @@ export const env = createEnv({
     // para que un Railway sin la var falle el build (mails OTP).
     RESEND_API_KEY: z.string().min(1),
     RESEND_FROM_EMAIL: z.email().default('hola@cromiks.com'),
+    // Key full_access para gestionar contactos (sync de waitlist a Resend).
+    // Separada de RESEND_API_KEY (solo-envío). Opcional: si falta, el sync de
+    // waitlist es no-op (fail-open) y la tabla `waitlist` sigue siendo la fuente
+    // de verdad. La consume src/lib/resend.ts.
+    RESEND_CONTACTS_API_KEY: z.string().optional(),
     // Fail-open en dev/preview; el refine de abajo los exige en producción.
     UPSTASH_REDIS_REST_URL: z.url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
@@ -48,6 +53,7 @@ export const env = createEnv({
     SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+    RESEND_CONTACTS_API_KEY: process.env.RESEND_CONTACTS_API_KEY,
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     RAILWAY_ENVIRONMENT_NAME: process.env.RAILWAY_ENVIRONMENT_NAME,
