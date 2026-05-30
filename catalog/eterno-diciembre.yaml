@@ -1474,6 +1474,10 @@ cards:
 
   # =====================================================================
   # PÁGINA 7: CROACIA — NACE UNA LEYENDA (15 cromos, 121-135)
+  # ★ PÁGINA HÉROE DE LA SOFT-BETA (decidido 2026-05-30). Hero cromo: gambeta-gvardiol (124).
+  #   Las 2 legendarias (123, 124) tienen el video listo para embed de YouTube (type: youtube).
+  #   Para activar: pegá las URLs + fotos rights-safe, `pnpm seed`, `pnpm db:push`,
+  #   UPDATE pages SET is_active=true WHERE id='croacia';
   # =====================================================================
 
   - id: "croacia-11-inicial"
@@ -1507,9 +1511,11 @@ cards:
     card_number: 123
     description: "La Araña corre medio campo, esquiva rivales y define. Golazo eterno"
     content:
-      photo: { type: "video_capture", source: "TODO" }
-      video: { type: "extract", source: "TODO", duration: 8 }
-      relator_clip: { source: "TODO", duration: 10 }
+      photo: { type: "video_capture", source: "TODO" }  # still = frame-grab del partido → fuente rights-safe (T-01)
+      # BETA "Volvé a verlo": pegá la URL o id de YouTube del momento oficial en `source`.
+      # `type: youtube` + `start` (segundo de inicio, opcional) los lee LegendaryMoment.
+      video: { type: "youtube", source: "TODO", start: 0 }
+      relator_clip: { source: "TODO", duration: 10 }  # post-beta (T-03), no lo usa la beta
     metadata:
       minute: "39"
       legendary_brief: "Velocidad y distancia. Formato wide, líneas de velocidad estilo cómic. Crescendo de hinchada al avanzar."
@@ -1521,9 +1527,11 @@ cards:
     card_number: 124
     description: "La jugada más elegante del Mundial. Arte puro. The corner of all corners"
     content:
-      photo: { type: "video_capture", source: "TODO" }
-      video: { type: "extract", source: "TODO", duration: 8 }
-      relator_clip: { source: "TODO", duration: 8 }
+      photo: { type: "video_capture", source: "TODO" }  # still = frame-grab del partido → fuente rights-safe (T-01)
+      # BETA "Volvé a verlo" — HERO cromo. Pegá la URL o id de YouTube de la gambeta en `source`.
+      # `type: youtube` + `start` (segundo de inicio, opcional) los lee LegendaryMoment.
+      video: { type: "youtube", source: "TODO", start: 0 }
+      relator_clip: { source: "TODO", duration: 8 }  # post-beta (T-03), no lo usa la beta
     metadata:
       minute: "69"
       legendary_brief: "Técnica pura. Blanco y negro parcial (solo Messi y Gvardiol a color). Sin relator, instrumental bajito + uuuh."

@@ -4,6 +4,43 @@ Cómo y dónde conseguir las fotos de los ~150 cromos que hoy están en `content
 
 ⚠️ **Cromiks es un proyecto tributo gratuito**, no comercial. Eso amplía un poco lo permitido vs un producto comercial, pero **no excluye respeto a copyright**. Las fotos del Mundial 2022 son altamente licenciadas (Getty / AP / Reuters dominan ese mercado).
 
+> **Aclaración legal (recon 2026-05-30):** "sin lucro" NO vuelve legal usar fotos con copyright — baja el riesgo (menos probable que te demanden, menos daños), no es un permiso. Argentina no tiene "fair use" amplio estilo EEUU (Ley 11.723 solo tiene excepciones puntuales). Sumado a esto, el **derecho de imagen** del jugador es un tema aparte del copyright de la foto. Conclusión práctica: para los momentos del Mundial, ilustración propia o licencia — no frame-grabs de transmisión.
+
+---
+
+## 🎯 Página héroe de la soft-beta — croacia (recon 2026-05-30)
+
+`croacia` (página 7, semifinal Arg 3-0 Croacia) es la página héroe de la beta. 15 cromos (121-135). Recon de Wikimedia Commons hecho para esta página.
+
+**Hallazgo central:** en Commons hay fotos CC de las **personas** (Messi, Julián Álvarez ~33 archivos, Scaloni 13, Modrić, y casi todo el once) pero son retratos / acción de **otros partidos**. De los **momentos específicos de la semifinal vs Croacia no hay nada libre** — FIFA controla férreo la imagen de Qatar 2022. Como los cromos de croacia son momento-específicos por diseño, los retratos libres sirven para identidad/referencia, **no para el momento**.
+
+**La buena noticia:** DESIGN.md 12.5 ya especifica las legendarias como **ilustración estilizada**, no foto:
+- **124 gambeta-gvardiol** (hero): *"blanco y negro parcial, solo Messi y Gvardiol a color"* → ilustración.
+- **123 julian-contraataque:** *"líneas de velocidad estilo cómic"* → ilustración.
+
+O sea: para los 2 cromos que más importan en la beta, el problema de rights se evapora porque nunca fueron foto. El `content.photo.source` de esos es casi vestigial; el asset real es la ilustración + el embed de YouTube (`content.video`, ver scaffolding en el YAML).
+
+### Verdict por cromo
+
+| Cromo | Sujeto | ¿Commons libre? | Camino para la beta |
+|---|---|---|---|
+| 124 gambeta-gvardiol ⭐ | momento Messi/Gvardiol | ✗ (FIFA) | **Ilustrar** (DESIGN.md ya lo pide así) |
+| 123 julian-contraataque | momento gol | ✗ | **Ilustrar** (estilo cómic, ya spec'd) |
+| 122 messi-penal · 125 julian-gol-2 · 132 "a la final" | momentos | ✗ | Ilustrar o licenciar |
+| 126 modric · 129 scaloni · 134 messi-camara | persona | ✓ retrato CC existe | Retrato libre = identidad; el momento no |
+| 121 once · 127 plantel-festejo · 128 messi-julian-abrazo · 130 julian-festejo · 133 final · 135 familia | momentos de ese partido | ✗ | Ilustrar o licenciar |
+| 131 hinchada-muchachos | hinchada genérica | ~ parcial (hay fotos CC de hinchada Qatar) | Posible foto libre genérica |
+
+**Neto: 0 de 15 momentos están en Commons.** ~3-4 sujetos tienen retrato libre (identidad, no momento); 1 (hinchada) quizás tenga genérica.
+
+### Recomendación para croacia
+**Ilustrar la página entera** en un estilo coherente (no es workaround — es lo que el brand book ya pedía, y mata T-01 de raíz). Commons sirve como **referencia visual** de caras/dorsales para que las ilustraciones sean fieles, no como asset final. Empezá por el hero (124) y la otra legendaria (123). Los videos van como embed de YouTube oficial (rights-safe).
+
+Categorías Commons verificadas (referencia de jugadores):
+- [Julián Álvarez (footballer)](https://commons.wikimedia.org/wiki/Category:Juli%C3%A1n_%C3%81lvarez_(footballer)) (~33 archivos, ninguno de Croacia 2022)
+- [Lionel Scaloni](https://commons.wikimedia.org/wiki/Category:Lionel_Scaloni) (13) · [Luka Modrić](https://commons.wikimedia.org/wiki/Category:Luka_Modri%C4%87)
+- Del partido: solo fuentes con copyright (FIFA+, ESPN, YouTube highlights).
+
 ---
 
 ## 🚦 Niveles de riesgo
