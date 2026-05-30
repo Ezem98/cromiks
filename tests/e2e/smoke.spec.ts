@@ -15,9 +15,10 @@ import { expect, test } from '@playwright/test'
  * de truth.
  */
 test('smoke: golden path home → open pack → album', async ({ page }) => {
-  // 1. /home: user fresh, sin pack pending → botón "Reclamar sobre diario"
-  await page.goto('/home')
-  await expect(page).toHaveURL(/\/home/)
+  // 1. Home (en `/`): user fresh, sin pack pending → botón "Reclamar sobre diario".
+  // `/home` ahora redirige a `/` (home único), así que entramos por la raíz.
+  await page.goto('/')
+  await expect(page).toHaveURL(/localhost:\d+\/$/)
 
   const claimButton = page.getByRole('button', { name: /reclamar sobre diario|abrir sobre/i })
   await expect(claimButton).toBeVisible({ timeout: 10_000 })
