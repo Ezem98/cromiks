@@ -131,7 +131,7 @@ pnpm db:types             # Regenera src/types/database.types.ts desde el schema
 - **Email**: Resend
 - **Error monitoring**: Sentry (cromiks-web)
 - **Product analytics + feature flags**: PostHog Cloud (us.i.posthog.com)
-- **Uptime + logs**: Better Stack (uptime sobre `/api/health` + log drain nativo de Railway) — código en PR8, config dashboard pendiente
+- **Uptime**: Better Stack (monitor sobre `/api/health`) — endpoint en PR8, config dashboard pendiente. **Logs diferidos** (Railway no drena solo; requiere forwarder)
 - **Anti-abuso / rate limiting**: Upstash Redis (sa-east-1)
 - **Domain**: TBD pre-launch
 
@@ -143,7 +143,7 @@ pnpm db:types             # Regenera src/types/database.types.ts desde el schema
 |---|---|---|
 | Sentry | Error monitoring | ✅ Instalado (PR2) |
 | PostHog | Analytics + feature flags | ✅ Instalado (PR6) |
-| Better Stack | Uptime monitoring + logs | 🟡 Endpoint `/api/health` listo (PR8); falta config dashboard (drain + monitor + status page) |
+| Better Stack | Uptime monitoring (+ logs) | 🟡 Endpoint `/api/health` listo (PR8); falta config del monitor + status page. Logs diferidos (Railway necesita forwarder) |
 | Mercado Pago | Tip jar | 🚧 No integrado |
 | Apple Developer | iOS push notifications eventual | 🚧 TBD |
 

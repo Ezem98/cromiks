@@ -103,15 +103,15 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 ---
 
 ### TP-04 · **Better Stack** (Logs + Uptime) 🟡 ✅
-**Estado**: En implementación en PR8 — ver [`implementation-plan-pr8.md`](./implementation-plan-pr8.md). Código listo (endpoint `GET /api/health` con ping a Supabase, 200/503); falta la config de dashboard (log drain nativo Railway → Better Stack, uptime monitor, status page **privada** pre-launch).
+**Estado**: En implementación en PR8 — ver [`implementation-plan-pr8.md`](./implementation-plan-pr8.md). **Uptime**: código listo (endpoint `GET /api/health` con ping a Supabase, 200/503) + falta config del monitor + status page **privada** pre-launch. **Logs**: diferidos — ver corrección de compatibilidad abajo.
 
-**Resuelve**: log aggregation desde Railway + uptime monitoring + status page público. Free tier decente.
+**Resuelve**: uptime monitoring + status page + (logs, con un forwarder). Free tier decente.
 
-**Compatibilidad**: ✅ Railway tiene log drains nativos hacia syslog/HTTP — configurar Better Stack como destino del drain en el dashboard de Railway, sin código.
+**Compatibilidad**: ⚠️ **Corrección (2026-05-30)**: Railway **NO** tiene log drains nativos (verificado en [docs.railway.com/observability/logs](https://docs.railway.com/observability/logs): *"Railway does not have a log drain setting"*). El supuesto original ("sin código") era falso. Para mandar logs a Better Stack hace falta un **forwarder**: Vector / Fluent Bit, OpenTelemetry, el SDK de Better Stack, o [Locomotive](https://railway.com/deploy/locomotive) (servicio prearmado que se deploya en el proyecto Railway). El **uptime monitor** sí es no-code (solo pega a `/api/health`). Por eso PR8 hace uptime ahora y difiere logs.
 
-**Esfuerzo**: 30 minutos.
+**Esfuerzo**: uptime ~1 h (endpoint + config monitor). Logs: depende del forwarder elegido (no son 30 min ni no-code).
 
-**Alternativas**: Axiom (mejor para logs queryables tipo SQL — también soporta Railway drains), Datadog (caro, overkill para MVP).
+**Alternativas**: Axiom (logs queryables tipo SQL — mismo problema: necesita forwarder en Railway), Datadog (caro, overkill para MVP).
 
 ---
 

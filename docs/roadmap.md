@@ -127,7 +127,7 @@ Después del cierre de badges, los candidatos al próximo sprint son:
 | 🚧 | Tip jar Mercado Pago |
 | 🚧 | Sentry (error monitoring) |
 | 🚧 | PostHog (analytics + feature flags) |
-| 🟡 | Better Stack — `/api/health` + log drain + uptime (PR8: código listo, falta config dashboard) |
+| 🟡 | Better Stack — `/api/health` + uptime (PR8: código listo, falta config monitor; logs diferidos) |
 | 🚧 | Custom fonts (Inter + serif + mono) |
 | 🚧 | Decidir fundación tip jar (Garrahan / Conin / Refugio Sin Cadenas) |
 | 🚧 | Apple Developer (push notifications eventual) |
