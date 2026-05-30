@@ -22,6 +22,7 @@ import { env } from '@/env'
  *  - `recordShare`    30/min · tracking, no destructivo
  *  - `claimDailyPack` 5/min  · 1 vez al día
  *  - `ogCard`         60/min · por IP (público, sin user)
+ *  - `waitlist`       5/min  · por IP (público, sin user — captura de email beta)
  *
  * Si vemos abuso después de launch, bajar los números o agregar tiers. Si vemos
  * falsos positivos, subir o desactivar el limiter de esa action.
@@ -38,6 +39,7 @@ const LIMITS = {
   recordShare: { tokens: 30, window: '1 m' },
   claimDailyPack: { tokens: 5, window: '1 m' },
   ogCard: { tokens: 60, window: '1 m' },
+  waitlist: { tokens: 5, window: '1 m' },
 } as const satisfies Record<string, { tokens: number; window: `${number} ${'s' | 'm' | 'h'}` }>
 
 export type RateLimitName = keyof typeof LIMITS
