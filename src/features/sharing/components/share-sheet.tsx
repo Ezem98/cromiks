@@ -1,6 +1,6 @@
 'use client'
 
-import { CopyIcon, MessageCircleIcon, Share2Icon, XIcon } from 'lucide-react'
+import { CopyIcon, MessageCircleIcon, SendIcon, Share2Icon } from 'lucide-react'
 import { useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -99,7 +99,7 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
     )
     startTransition(async () => {
       await track('twitter')
-      toast.success('Compartido en Twitter')
+      toast.success('Compartido en X')
       onOpenChange(false)
     })
   }
@@ -160,7 +160,7 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
               className="w-full justify-start"
             >
               <Share2Icon className="size-4 mr-2" />
-              Compartir...
+              Compartir…
             </Button>
           )}
 
@@ -170,7 +170,7 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
             disabled={isPending}
             className="w-full justify-start"
           >
-            <MessageCircleIcon className="size-4 mr-2 text-green-500" />
+            <MessageCircleIcon className="size-4 mr-2 text-(--color-text-secondary)" />
             WhatsApp
           </Button>
 
@@ -180,8 +180,7 @@ export function ShareSheet({ open, onOpenChange, cardId, cardName, username }: S
             disabled={isPending}
             className="w-full justify-start"
           >
-            <XIcon className="size-4 mr-2 text-sky-400" />
-            Twitter
+            <SendIcon className="size-4 mr-2 text-(--color-text-secondary)" />X
           </Button>
 
           <Button
