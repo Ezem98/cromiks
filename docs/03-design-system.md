@@ -137,15 +137,15 @@ Drawer lateral o desde abajo (`side="bottom"`). Uso típico: ShareSheet del feat
 
 ### `Cromo` (`src/components/domain/cromo.tsx`)
 
-⭐ El componente central del producto. Renderiza un cromo con su tier-specific anatomy:
+⭐ El componente central del producto. `'use client'` — terminación tipo TCG con foil holográfico pointer-driven (tilt + glare + foil por rareza) sobre un frame con doble bisel. Detalle completo (pointer API `--cx/--cy/--rx/--ry/--glare`, fuerzas/colores del foil por tier, `prefers-reduced-motion`, holo en la grilla) en [DESIGN.md §12.7](../DESIGN.md). Anatomy por tier:
 
 | Tier | Anatomy |
 |---|---|
-| `common` | Marco neutro, foto estática |
-| `uncommon` | Marco dorado + shimmer pass 3s |
-| `rare` | Foil prismático + scanlines + glow celeste |
-| `epic` | Glow violeta + sparkles ambientes |
-| `legendary` | Prism rotating border + glow gold + ambient |
+| `common` | Marco neutro, sin foil |
+| `uncommon` | Sheen dorado sutil (`--holo-strength: 0.12`) |
+| `rare` | Foil celeste + scanlines + glow |
+| `epic` | Foil violeta/pink + glow radial |
+| `legendary` | Borde prisma rotando + glow gold + foil prismático pleno (`0.34`) |
 
 **Props**:
 ```ts
@@ -158,6 +158,7 @@ type CromoProps = {
   seed: string                     // Para CromoPlaceholder cuando no hay imageUrl
   state?: 'idle' | 'new' | 'repeated'
   size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 ```
 

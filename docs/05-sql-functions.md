@@ -208,8 +208,39 @@ Ver [`features/e2-missions.md`](./features/e2-missions.md) para roadmap.
 ### `_coin_reward_for_rarity(rarity card_rarity) → int`
 Mapping de tier → monedas al canjear/repetir.
 
-### `roll_cards(album_id text, count int) → text[]`
-Sortea N cromos del álbum con weighted random por rarity. Usado dentro de `open_pack`.
+### `roll_cards(p_album_id text, p_count int DEFAULT 4) → text[]` (reescrita — migration 20260530120200)
+
+Sortea `p_count` cromos del álbum. Usada dentro de `open_pack` para TODOS los tipos de sobre (daily / mission / referral). Es la pieza que aplica el **gate del pool de la beta**.
+
+Dos cambios de fondo respecto de la versión anterior (snapshot en 20260530120000):
+
+1. **Filtro por página activa.** Hace `join cards → pages` y solo sortea cromos de páginas con `pages.is_active = true`. Es el gate de la soft-beta: expandir el pool = `UPDATE pages SET is_active = true WHERE ...` (una línea, sin reseed). Ver [`04-database.md`](./04-database.md) para la columna.
+
+2. **Draw ponderado POR CROMO (no por bucket de rareza).** La versión vieja sorteaba primero una rareza (umbrales fijos common .55 / uncommon .27 / rare .07 / epic .06 / legendary .05) y después un cromo de esa rareza. **Bug**: si la rareza sorteada no tenía ningún cromo en el pool (caso típico al restringir a una sola página), el `if v_card_id is not null` salteaba el append → el sobre devolvía MENOS cromos de los pedidos. La versión nueva elige directamente un cromo que **existe** en el pool, ponderado por su rareza, así nunca devuelve null y el sobre siempre trae `p_count` cromos.
+
+**Pesos por cromo** (KNOB ajustable — decisión "rara y especial", 2026-05-30):
+
+| Rareza | Peso |
+|---|---|
+| common | 100 |
+| uncommon | 60 |
+| rare | 25 |
+| epic | 15 |
+| legendary | 8 |
+
+En el pool chico de la beta (~18 cromos, ~2 legendarias) esto da legendaria ~1.2%/pick (~5%/sobre de 4). Subir `legendary` (ej. 8 → 15) si casi nadie toca una en la beta; bajarlo si salen de más.
+
+La selección ponderada usa Efraimidis-Spirakis: `order by power(random(), 1.0 / peso) desc limit 1`. Peso más alto → key más cerca de 1 → más probable. El loop hace `p_count` picks independientes (CON reemplazo entre picks: un sobre puede traer la misma figu dos veces, igual que antes).
+
+**Guard:**
+
+| Errores | Significado |
+|---|---|
+| `no_active_cards` | El pool activo está vacío (ninguna página `is_active` o el álbum no tiene cromos en ellas). Falla fuerte y visible en vez de devolver un sobre de 0 cromos |
+
+> **Snapshot previo** (`20260530120000_snapshot_roll_cards.sql`): `roll_cards` vivía solo en Supabase Studio, sin versionar (igual que `claim_daily_pack` / `dismantle_card` en 20260527100000). Antes de tocarla la versionamos verbatim — output exacto de `pg_get_functiondef('public.roll_cards')` del remoto al 2026-05-30 — para tener diff y rollback. Sin cambios funcionales en ese archivo.
+
+> **Test**: `scripts/test-roll-cards.ts` ejercita la función contra el pool activo.
 
 ---
 

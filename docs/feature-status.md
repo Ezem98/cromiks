@@ -2,8 +2,8 @@
 
 Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" estructurado, ver [`roadmap.md`](./roadmap.md); para detalle de cada feature, ver [`features/`](./features/).
 
-**Snapshot date**: 26 mayo 2026
-**Target launch**: Junio 2026
+**Snapshot date**: 30 mayo 2026
+**Target launch**: Junio 2026 (soft-beta a waitlist primero — ver [`roadmap.md`](./roadmap.md))
 
 ---
 
@@ -26,9 +26,11 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 |---|---|
 | Features core implementadas | 9 / 9 ✅ |
 | Bugs conocidos sin resolver | 0 |
-| Pendientes bloqueantes para launch | 4 (re-texturizado sobre, completar cromos catalog, dominio, nombre final) |
+| Pendientes bloqueantes para soft-beta | 2 (contenido real de la página héroe `croacia`, re-texturizado del sobre 3D) |
 | Pendientes no-bloqueantes priorizados | 5 (/misiones expandida, custom fonts OG, avatar, OG perfil, paginación pineados) |
-| Estado general | ✅ MVP completo, falta pulido pre-launch |
+| Estado general | ✅ MVP completo + calidad de cromo y gate de beta listos; falta contenido real de la página héroe |
+
+> **Sesión 30 mayo 2026** (PRs #25–#29, ya en main): gate del pool de la beta (`pages.is_active` + `roll_cards` con draw ponderado por cromo), álbum scopeado al set activo (T-04), calidad de cromo tipo TCG (foil holográfico pointer-driven por rareza + holo en hover en la grilla), pulido de UX (global-error branded, voseo, CTAs, a11y) y dominios comprados (cromiks.app live + cromiks.com). Detalle abajo en cada categoría.
 
 ---
 
@@ -38,15 +40,15 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 |---|---|---|---|---|
 | **1. Auth & onboarding** | 5 | 0 | 1 | — |
 | **2. Daily loop (home)** | 4 | 0 | 0 | — |
-| **3. Pack opening 3D** | 8 | 0 | 5 | [link](./features/e1-pack-opening.md) |
-| **4. Album & detail** | 8 | 0 | 4 | [link](./features/e1-album.md) |
+| **3. Pack opening 3D** | 9 | 0 | 4 | [link](./features/e1-pack-opening.md) |
+| **4. Album & detail** | 10 | 0 | 4 | [link](./features/e1-album.md) |
 | **5. Misiones** | 7 | 0 | 4 | [link](./features/e2-missions.md) |
 | **6. Sharing** | 7 | 0 | 4 | [link](./features/e3-sharing.md) |
 | **7. Profile** | 6 | 0 | 7 | [link](./features/profile.md) |
 | **8. Gamification (badges)** | 4 | 0 | 1 | [link](./features/badges.md) |
-| **9. Content (cromos, fotos)** | 1 | 1 | 2 | [seeding](./operations/seeding.md) |
+| **9. Content (cromos, fotos)** | 1 | 2 | 2 | [seeding](./operations/seeding.md) |
 | **10. Infrastructure & DevOps** | 3 | 0 | 4 | [migrations](./operations/migrations.md) |
-| **11. Pre-launch & marketing** | 4 | 1 | 9 | [marketing plan](./implementation-plan-pr7-marketing.md) |
+| **11. Pre-launch & marketing** | 7 | 2 | 7 | [marketing plan](./implementation-plan-pr7-marketing.md) |
 
 ---
 
@@ -82,7 +84,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 3.2 | Phase anticipation (sobre flotando) | ✅ | |
 | 3.3 | Phase tear con complete espectacular | ✅ | Flash + 24 partículas + aura, ~1100ms |
 | 3.4 | Phase stack (cards reveladas) | ✅ | Stagger + flip animation |
-| 3.5 | Phase summary | ✅ | CTAs vuelta a home / álbum |
+| 3.5 | Phase summary | ✅ | CTA primario "Ver en el álbum" (album-first payoff) + CTA dorado para Epic+/Legendary (PR #28) |
 | 3.6 | Modelo GLTF del sobre | ⚠️ | Funciona pero placeholder IP Pokemon |
 | 3.7 | Cards 3D híbridas (3D + HTML overlay) | ✅ | Workaround para incompatibilidad `drei <Text>` |
 | 3.8 | Debug mode `?debug=true` | ✅ | Mock con 1 cromo de cada tier |
@@ -91,6 +93,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 3.11 | Haptic feedback (`navigator.vibrate`) | 🚧 | |
 | 3.12 | Variantes del "complete" según rareza máxima | 🚧 | Legendary → más espectacular |
 | 3.13 | Reset WebGL context si se pierde | 🚧 | Edge case raro pero existe |
+| 3.14 | Cromo con terminación tipo TCG (foil holográfico pointer-driven + tilt + glare + frame) | ✅ | `components/domain/cromo.tsx` + `.cromo*` en globals.css. Foil por rareza, respeta `prefers-reduced-motion` (PRs #27, #29). Ver [DESIGN.md §12.5](../DESIGN.md) |
 
 ---
 
@@ -111,6 +114,8 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 4.11 | Loading skeleton | 🚧 | |
 | 4.12 | Ordering options | 🚧 | |
 | 4.13 | "Saltar a página con cromos" CTA | 🚧 | UX improvement |
+| 4.14 | Álbum scopeado a `pages.is_active` (T-04) | ✅ | `getAlbumData`/`getHomeData` vía `album/scope.ts` (`resolveActivePageIds`/`getAlbumScope`). Si ninguna página está activa → ungated (muestra todo, legacy). Total/completion sobre el set activo |
+| 4.15 | Holo en hover en la grilla (legendary/epic owned) | ✅ | `.cromo-slot-holo` en `album-slot.tsx` — CSS puro, sin pointer-JS, perf-safe (PR #29) |
 
 ---
 
@@ -194,7 +199,8 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 9.2 | Placeholders generados para llegar a 205 | ✅ | `placeholder-N` IDs |
 | 9.3 | Completar ~50 cromos restantes (descriptions, metadata) | 🟡 | Hay placeholders, falta data real |
 | 9.4 | Photo URLs reales (HTTPS públicas) | 🚧 | Hoy `content.photo.source: TODO` en la mayoría. Workflow + fuentes en [`assets/photos.md`](./assets/photos.md) |
-| 9.5 | Audio assets para legendaries (futuro) | 🚧 | Idea original del producto |
+| 9.5 | Audio assets para legendaries (futuro) | 🚧 | Idea original del producto. Diferido a T-03 (ver [`TODOS.md`](../TODOS.md)) |
+| 9.6 | Contenido real de la página héroe `croacia` (~15 cromos + 2 YouTube + briefs voseo) | 🟡 | Bloqueante de la soft-beta. La mecánica del pool (`pages.is_active`) está; falta el contenido. Rama `content/croacia-beta`. Ver [`TODOS.md`](../TODOS.md) checklist beta |
 
 ---
 
@@ -214,12 +220,12 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 
 ## 11. Pre-launch & marketing
 
-Todo 🚧 — son los items críticos antes del launch público de junio 2026.
+Items críticos antes del launch público de junio 2026. La soft-beta a la waitlist va primero (página héroe `croacia`) — ver [`roadmap.md`](./roadmap.md).
 
 | # | Feature | Status |
 |---|---|---|
 | 11.1 | Nombre final del producto (hoy "Cromiks" es placeholder) | 🚧 |
-| 11.2 | Dominio comprado | 🚧 |
+| 11.2 | Dominio comprado | ✅ cromiks.app (live en Railway) + cromiks.com comprado; redirect `.com → .app` en curso |
 | 11.3 | Handles sociales reservados | 🚧 |
 | 11.4 | Landing marketing real (multi-sección + waitlist beta) | ✅ Falta assets reales de las 11 Legendarias (hoy teasers) |
 | 11.5 | Página `/about` con créditos visibles (cumple CC-BY del sobre) | ✅ |
@@ -232,6 +238,8 @@ Todo 🚧 — son los items críticos antes del launch público de junio 2026.
 | 11.12 | Custom fonts (Inter + serif display + mono) | 🚧 |
 | 11.13 | Decidir fundación tip jar (Garrahan / Conin / Refugio Sin Cadenas) | 🚧 |
 | 11.14 | Re-texturizar sobre final (sin IP) | 🟡 |
+| 11.15 | Estrategia de lanzamiento de la beta (soft-beta a waitlist, `croacia` como página héroe, gate de cohorte = unannounced-open) | ✅ Decidido (ver [`roadmap.md`](./roadmap.md) + [`TODOS.md`](../TODOS.md)) |
+| 11.16 | Pulido de UX pre-beta (global-error branded, voseo, CTAs pack, a11y skip-link/touch targets, créditos de fuentes `/about`) | ✅ PR #28 |
 
 ---
 

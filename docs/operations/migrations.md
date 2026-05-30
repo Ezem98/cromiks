@@ -25,6 +25,15 @@ Ejemplo: `20260526140000_add_mission_progress_triggers.sql`
 | `20260526140000_add_mission_progress_triggers.sql` | `_advance_missions` + 3 triggers (open_pack, collect_rarity, pin_card) + cleanup templates | 3 | ✅ |
 | `20260526150000_e3_sharing_trigger.sql` | Tabla `share_events` + trigger `share_card` + re-habilitar template | 4 | ✅ |
 | `20260526160000_badges_unlock_triggers.sql` | `_check_and_unlock_badges` + 4 triggers (user_cards, streaks insert/update, share_events) + RLS + backfill | 5 | ✅ |
+| `20260527100000_snapshot_existing_rpcs.sql` | Snapshot verbatim de `claim_daily_pack` / `dismantle_card` (vivían solo en Studio) | 6 | ✅ |
+| `20260527120000_make_open_pack_idempotent.sql` | `open_pack` idempotente (abrir un pack ya abierto no duplica) | 7 | ✅ |
+| `20260527130000_snapshot_pin_unpin_card.sql` | Snapshot verbatim de `pin_card` / `unpin_card` | 8 | ✅ |
+| `20260529030000_fix_share_event_trigger_uses_platform.sql` | Fix: el trigger de share usa la columna `platform` | 9 | ✅ |
+| `20260529125447_open_pack_explicit_was_replay.sql` | `open_pack` expone explícito `was_replay` | 10 | ✅ |
+| `20260529140000_add_waitlist.sql` | Tabla `waitlist` (soft-beta) | 11 | ✅ |
+| `20260530120000_snapshot_roll_cards.sql` | Snapshot verbatim de `roll_cards` (vivía solo en Studio) antes de tocarla | 12 | ✅ (DROP + CREATE) |
+| `20260530120100_add_pages_is_active.sql` | Columna `pages.is_active boolean NOT NULL DEFAULT false` (gate del pool de la beta) | 13 | ✅ (`ADD COLUMN IF NOT EXISTS`) |
+| `20260530120200_roll_cards_beta_weighted_draw.sql` | Reescribe `roll_cards`: filtro `is_active` + draw ponderado por cromo + guard `no_active_cards` | 14 | ✅ (`CREATE OR REPLACE`) |
 
 ⚠️ **No hay migration `00000000000000_initial_schema.sql`**. El schema base (tablas, enums, RLS inicial) vive solo en Supabase Studio. Pendiente: hacer dump y guardarlo para reproducibilidad completa.
 
