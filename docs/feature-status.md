@@ -228,7 +228,7 @@ Todo 🚧 — son los items críticos antes del launch público de junio 2026.
 | 11.8 | Tip jar Mercado Pago integrado | 🚧 |
 | 11.9 | Sentry (error monitoring) | 🚧 |
 | 11.10 | PostHog (analytics + feature flags) — 5 eventos + `useFeatureFlag` (PR6) | ✅ |
-| 11.11 | Better Stack — endpoint `/api/health` + log drain + uptime monitor (PR8) | 🟡 Código listo, falta config dashboard |
+| 11.11 | Better Stack — endpoint `/api/health` + uptime monitor (PR8) | 🟡 Código listo, falta config monitor. Logs diferidos (Railway necesita forwarder) |
 | 11.12 | Custom fonts (Inter + serif display + mono) | 🚧 |
 | 11.13 | Decidir fundación tip jar (Garrahan / Conin / Refugio Sin Cadenas) | 🚧 |
 | 11.14 | Re-texturizar sobre final (sin IP) | 🟡 |

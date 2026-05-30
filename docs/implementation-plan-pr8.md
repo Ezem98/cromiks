@@ -4,6 +4,21 @@
 
 ---
 
+> ## ⚠️ Corrección (2026-05-30)
+>
+> Este plan asumía que **Railway tiene log drains nativos** (heredado de TP-04).
+> **Es falso** — verificado en [docs.railway.com/observability/logs](https://docs.railway.com/observability/logs):
+> *"Railway does not have a log drain setting"*. Mandar logs a Better Stack requiere
+> un **forwarder** (Vector / Fluent Bit, OpenTelemetry, el SDK de Better Stack, o
+> [Locomotive](https://railway.com/deploy/locomotive)), no config de dashboard.
+>
+> **Decisión**: PR8 entrega solo **uptime monitoring** (no-code, alto valor: pega a
+> `/api/health`). La **agregación de logs queda diferida** a un follow-up donde se
+> elija e implemente el forwarder. Las secciones §2 (log drain) abajo quedan
+> marcadas como **DIFERIDAS** — no representan trabajo de PR8.
+
+---
+
 ## Context
 
 Hoy tenemos **Sentry** (errores) y **PostHog** (product analytics), pero falta lo
@@ -11,9 +26,9 @@ operativo: no sabemos si el sitio está **caído** hasta que un usuario se queja
 los logs del proceso Next viven solo en el dashboard de Railway (retención corta,
 sin búsqueda decente, sin alertas). [`docs/tech-proposals.md` §TP-04](./tech-proposals.md)
 identificó **Better Stack** (ex Better Uptime + Logtail) como la opción: uptime
-monitoring + log aggregation + status page, con free tier decente y, sobre todo,
-**casi sin código** — Railway tiene log drains nativos y Better Stack expone un
-endpoint de ingesta; el uptime monitor es config de dashboard.
+monitoring + log aggregation + status page, con free tier decente. El **uptime
+monitor** es config de dashboard (no-code); la **agregación de logs** necesita un
+forwarder en Railway y queda diferida (ver banner de corrección arriba).
 
 El incidente de PR6 (faltaba `NEXT_PUBLIC_APP_URL` en Railway y los magic links
 OTP se rompían sin que nada avisara — ver [`docs/implementation-plan-pr6.md`](./implementation-plan-pr6.md)
@@ -25,15 +40,16 @@ ataca la causa raíz en build-time; PR8 agrega la **red de seguridad en runtime*
 - Endpoint `GET /api/health` (route handler nuevo — hoy no existe `src/app/api/`)
   que devuelve **200 + JSON** con un ping barato a Supabase, **503** si la DB no
   responde. Es el target del uptime monitor (mejor señal que la landing 3D).
-- **Log drain nativo de Railway → Better Stack** configurado en el dashboard de
-  Railway (sin código): todo lo que la app escribe a stdout/stderr queda
-  buscable + retenido + alertable en Better Stack.
+- ~~**Log drain nativo de Railway → Better Stack** (sin código)~~ **DIFERIDO** —
+  Railway no tiene drain nativo (ver corrección arriba). Los logs van a un
+  follow-up con forwarder. Mientras tanto: log viewer de Railway + Sentry.
 - **Uptime monitor** en Better Stack apuntando a `https://cromiks.app/api/health`,
   con alertas por email (y Slack si está el canal), chequeo cada 1–3 min.
 - **Status page privada/interna** (solo equipo) — beta cerrado, se hace pública en
   el launch. Mapea el monitor de uptime.
-- **Cero env vars nuevas en el runtime de la app**: el token del drain vive en la
-  config del drain de Railway (platform-side), no en el bundle ni en `src/env.ts`.
+- **Cero env vars nuevas en el runtime de la app**: el uptime monitor y la status
+  page son 100% dashboard; el único código es `/api/health`. (El forwarder de logs,
+  cuando se haga, podría sumar su propia config — pero es follow-up.)
 
 > **Numeración**: env-validation (TP-11) ocupa `implementation-plan-pr7.md` +
 > `implementation-plan-pr7-followups.md` y la rama `feat-pr7-env-validation`. Este
@@ -46,22 +62,21 @@ ataca la causa raíz en build-time; PR8 agrega la **red de seguridad en runtime*
 | # | Item | Decisión | Esfuerzo (h) | Archivos clave |
 |---|---|---|---|---|
 | 1 | Health endpoint `/api/health` | Route handler nuevo, Node runtime, `force-dynamic` + `no-store`, ping a `cards` con `head:true` (admin client) y timeout 2s; 200/503 | 1 | `src/app/api/health/route.ts` (nuevo) |
-| 2 | Log drain nativo Railway → Better Stack | Config en dashboard de Railway (HTTP/syslog), **sin código**. Source "Logs" en Better Stack | 0.5 | — (Railway dashboard + Better Stack) |
+| 2 | ~~Log drain nativo Railway~~ → **DIFERIDO** | Railway no tiene drain nativo; requiere forwarder (Vector/Locomotive/OTel). Follow-up aparte | — | — |
 | 3 | Uptime monitor | Better Stack monitor → `https://cromiks.app/api/health`, intervalo 1–3 min, espera HTTP 200 + `"status":"ok"`, alertas email/Slack | 0.25 | — (Better Stack dashboard) |
 | 4 | Status page privada | Better Stack status page protegida (interna), mapea el monitor de uptime | 0.25 | — (Better Stack dashboard) |
 | 5 | E2E smoke del health endpoint | Test Playwright: `GET /api/health` → 200 + `status: 'ok'` | 0.25 | `tests/e2e/health.spec.ts` (nuevo) o assert en el smoke existente |
 | 6 | Docs | tech-stack, feature-status, TP-04 → done, roadmap "Better Uptime" → done | 0.5 | `docs/01-tech-stack.md`, `docs/feature-status.md`, `docs/tech-proposals.md`, `docs/roadmap.md` |
-| **Total** | | | **~2.75 h** | |
+| **Total** | | | **~2.25 h** (sin logs) | |
 
 | Env vars nuevas | Servicio | Dónde se setea |
 |---|---|---|
 | **(ninguna en el runtime de la app)** | — | — |
-| Token de ingesta del drain | Better Stack | **Config del log drain en Railway** (platform-side), NO en `src/env.ts` ni en el bundle |
 
-> **No tocamos `src/env.ts`.** Better Stack uptime + status page son 100% dashboard.
-> El log drain es config de Railway. El único artefacto de código es el route
-> handler, que reusa `env.*` ya existentes (`RAILWAY_*`, `SUPABASE_*`). Esto es
-> consistente con TP-04 ("integración sin código en gran parte").
+> **No tocamos `src/env.ts`.** El uptime monitor + status page son 100% dashboard.
+> El único artefacto de código de PR8 es el route handler, que reusa `env.*` ya
+> existentes (`RAILWAY_*`, `SUPABASE_*`). (Los logs, cuando se hagan, podrían sumar
+> config del forwarder — pero eso es follow-up, no PR8.)
 
 ---
 
@@ -72,10 +87,10 @@ Todo lo demás (drain, monitor, status page, alertas) es configuración en los
 dashboards de Railway y Better Stack.
 
 Razones:
-- **TP-04 es deliberadamente low-code**: Railway ya empuja stdout/stderr a un log
-  drain nativo; Better Stack ya expone ingesta HTTP/syslog. Meter un SDK de
-  logging (pino + transport) o un sidecar Vector sería trabajo y bundle para algo
-  que el platform resuelve gratis. Lo descartamos para el MVP (ver §2, alternativa).
+- **El uptime es low-code; los logs NO** (corrección 2026-05-30): el monitor solo
+  pega a `/api/health`, sin tocar Railway. Pero Railway **no** tiene drain nativo
+  (ver banner arriba), así que los logs requieren un forwarder (Vector / Locomotive
+  / OTel) — eso sí es infra/trabajo. Por eso PR8 entrega uptime y **difiere logs**.
 - **Sin SDK de cliente = sin bundle, sin kill switch nuevo**: a diferencia de
   PostHog (PR6) o Sentry, Better Stack no corre nada en el browser ni en el server
   de la app. No hay `BETTERSTACK_DISABLED` que mantener. Si querés "apagarlo",
@@ -199,16 +214,27 @@ monitor en Better Stack antes, o alertará 404.)
 
 ---
 
-## 2️⃣ Log drain nativo Railway → Better Stack
+## 2️⃣ ~~Log drain nativo Railway → Better Stack~~ · DIFERIDO
 
-### Resumen ejecutivo
-- **Objetivo**: que todo lo que la app escribe a stdout/stderr (incluidos los
-  `console.*` actuales y los logs de Next/Sentry) quede en Better Stack: buscable,
-  retenido y alertable.
-- **Outcome**: un "Source" de logs en Better Stack recibiendo el stream de Railway.
-  **Sin código.**
+> ⚠️ **DIFERIDO — fuera de scope de PR8** (corrección 2026-05-30). Railway **no**
+> tiene log drain nativo, así que los pasos de abajo (que asumían "Connect source →
+> Railway, sin código") **no aplican**. La agregación de logs requiere un forwarder
+> (Vector / Fluent Bit, OpenTelemetry, SDK de Better Stack, o
+> [Locomotive](https://railway.com/deploy/locomotive)) y se hará en un follow-up
+> dedicado, donde se elija el forwarder y se documente el setup real. Se conserva el
+> texto original abajo solo como referencia de la intención, **tachado**.
+>
+> Mientras tanto, para logs: el log viewer nativo de Railway + Sentry (errores).
 
-### Pasos (dashboard — documentar, no commitear)
+### ~~Resumen ejecutivo~~ (obsoleto)
+- ~~**Objetivo**: que todo lo que la app escribe a stdout/stderr (incluidos los
+  `console.*` actuales y los logs de Next/Sentry) quede en Better Stack.~~
+- ~~**Outcome**: un "Source" de logs en Better Stack recibiendo el stream de Railway.
+  **Sin código.**~~ ← este "sin código" era el error: Railway no drena solo.
+
+### ~~Pasos~~ (NO aplican — Railway no tiene drain nativo)
+
+~~Texto original conservado como referencia de intención:~~
 
 1. **Better Stack** → *Logs* → **Connect source** → tipo **Railway** (o HTTP/syslog
    genérico si Railway no aparece como preset). Guardar el **ingesting host/URL** y
@@ -370,17 +396,15 @@ Borrar el spec.
 ### Pasos
 
 #### 6.1 [`docs/tech-proposals.md`](./tech-proposals.md)
-- TP-04 (línea 105): ya tiene 🟡 ✅ — agregar nota "**Implementado en PR8** — ver
-  [`implementation-plan-pr8.md`](./implementation-plan-pr8.md). Health endpoint
-  `/api/health`, log drain nativo Railway → Better Stack, uptime monitor, status
-  page privada."
+- TP-04: nota de estado (uptime en PR8, logs diferidos) + **corrección** de la
+  afirmación falsa "Railway tiene log drains nativos".
 
 #### 6.2 [`docs/01-tech-stack.md`](./01-tech-stack.md)
-- Mover Better Stack / Better Uptime a la sección de servicios activos, marcar ✅.
-- Nota: sin env vars de runtime; el único código es `/api/health`.
+- Better Stack en servicios, estado 🟡 (uptime listo en código, config dashboard
+  pendiente; logs diferidos). Sin env vars de runtime.
 
 #### 6.3 [`docs/feature-status.md`](./feature-status.md)
-- Fila nueva: `Observabilidad (Better Stack) | ✅ Uptime /api/health · log drain Railway · status page privada`.
+- Fila: `Better Stack | 🟡 Endpoint /api/health (PR8) · uptime config pendiente · logs diferidos`.
 
 #### 6.4 [`docs/roadmap.md`](./roadmap.md)
 - En "Pre-launch", marcar **"Better Uptime"** (línea 130) como ✅ / hecho.
@@ -401,13 +425,13 @@ Revert de los 4 archivos.
 | AC1 | `GET /api/health` devuelve 200 + `{"status":"ok","checks":{"db":"ok"}}` con DB sana | `curl -i http://localhost:3000/api/health` en dev |
 | AC2 | `/api/health` devuelve **503** + `"db":"down"` cuando Supabase no responde | `SUPABASE_SECRET_KEY` inválida → `curl` da 503; el handler no tira |
 | AC3 | Respuesta nunca cacheada | Header `Cache-Control: no-store` presente; dos hits seguidos refrescan `timestamp` |
-| AC4 | Log drain activo: logs de prod llegan a Better Stack | Navegar prod → entradas en Better Stack *Live tail*; un `console.error` real aparece |
+| ~~AC4~~ | ~~Log drain activo~~ **DIFERIDO** — Railway no tiene drain nativo; logs van a un follow-up con forwarder | — |
 | AC5 | Uptime monitor verde sobre `/api/health` | Monitor en Better Stack en verde tras el primer chequeo |
 | AC6 | Monitor alerta en caída | Forzar 503/pausa de servicio → incidente + alerta (email/Slack) |
 | AC7 | Status page **privada** funcional | Accesible con credenciales internas; incógnito pide auth |
 | AC8 | E2E smoke del health endpoint pasa en CI | Job `e2e` verde con `tests/e2e/health.spec.ts` |
 | AC9 | Type-check + lint limpios | `pnpm type-check && pnpm lint` 0 errores |
-| AC10 | Sin env vars nuevas en runtime; `src/env.ts` intacto | Diff no toca `src/env.ts`; el token del drain vive en Railway |
+| AC10 | Sin env vars nuevas en runtime; `src/env.ts` intacto | Diff no toca `src/env.ts`; el único código es `/api/health` |
 | AC11 | Docs reflejan el estado | TP-04 → PR8, tech-stack, feature-status, roadmap actualizados |
 
 ---
@@ -420,7 +444,7 @@ Revert de los 4 archivos.
 | **El ping a `cards` agrega carga en cada chequeo** | Baja | `head:true` no transfiere rows; intervalo 1–3 min es trivial para Supabase. Si molesta, bajar frecuencia. |
 | **Free tier de Better Stack excedido** (volumen de logs) | Baja | Beta cerrado = poco tráfico/logs. Si se acerca al límite, filtrar a nivel drain o subir plan. Monitorear el uso en el dashboard. |
 | **`/api/health` queda detrás de un futuro middleware de auth** | Baja | Hoy no hay middleware. Si se agrega uno, **excluir `/api/health`** del matcher (documentado acá). |
-| **Drain mal configurado → logs no llegan y nadie se entera** | Media | AC4 valida *Live tail* en el setup. El uptime monitor (independiente del drain) sigue cubriendo disponibilidad aunque el drain falle. |
+| **Logs sin agregación hasta que se haga el follow-up del forwarder** | Media | Diferido a propósito (Railway no drena solo). Mientras tanto: log viewer de Railway + Sentry para errores. El uptime monitor cubre disponibilidad desde ya, sin depender de logs. |
 | **Status page se publica por accidente** | Baja | Crear directamente como password-protected; no asignar dominio público hasta el launch. |
 
 ---
@@ -431,6 +455,7 @@ Revert de los 4 archivos.
 2. **E2E smoke** (§5): `test(e2e): assert /api/health returns 200 ok`
 3. **Docs** (§6): `docs: PR8 Better Stack plan + status updates`
 
-> Log drain, uptime monitor y status page (§2–4) son configuración de dashboard
-> (Railway + Better Stack) — no generan commits; se documentan acá y se ejecutan en
-> el setup. Squash al merge a `main`. Branch: `feat-pr8-better-stack`.
+> El uptime monitor y la status page (§3–4) son configuración de dashboard (Better
+> Stack) — no generan commits; se ejecutan en el setup. El log drain (§2) está
+> **diferido** (Railway no drena solo). Squash al merge a `main`. Branch:
+> `feat-pr8-better-stack`.
