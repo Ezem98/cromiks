@@ -4,7 +4,7 @@ import { OnboardingForm } from '@/features/onboarding/components/onboarding-form
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
-  title: 'Setup inicial',
+  title: 'Tu perfil',
 }
 
 /**

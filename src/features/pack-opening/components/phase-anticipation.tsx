@@ -78,7 +78,7 @@ export function PhaseAnticipation({ currentStreak, packType }: PhaseAnticipation
         transition={{ delay: 1.5, duration: 0.6 }}
         className="absolute bottom-24 left-0 right-0 text-center text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) z-10 pointer-events-none"
       >
-        Abriendo...
+        Abriendo…
       </motion.p>
     </motion.div>
   )

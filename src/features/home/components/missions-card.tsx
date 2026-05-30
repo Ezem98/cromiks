@@ -47,7 +47,7 @@ export function MissionsCard({ missions }: MissionsCardProps) {
         </p>
         {missions.length === 0 ? (
           <p className="text-(--color-text-secondary) text-sm">
-            Asignando misiones... vuelvé a cargar la página en un instante.
+            Asignando misiones… volvé a cargar la página en un instante.
           </p>
         ) : (
           <p className="text-(--color-text-secondary) text-sm">
@@ -134,8 +134,8 @@ function MissionRow({ mission, onClaimed }: { mission: MissionWithReward; onClai
       if (result.data.coinsEarned > 0) parts.push(`+${result.data.coinsEarned} monedas`)
       if (result.data.packId) parts.push(`+1 sobre con ${result.data.cardsEarned} cromos`)
 
-      toast.success('Reward reclamado', {
-        description: parts.join(' · ') || 'Reward aplicado',
+      toast.success('Recompensa reclamada', {
+        description: parts.join(' · ') || 'Recompensa aplicada',
       })
 
       // Optimistic hide
@@ -184,7 +184,7 @@ function MissionRow({ mission, onClaimed }: { mission: MissionWithReward; onClai
               variant="primary"
               onClick={handleClaim}
               disabled={isPending}
-              className="ml-auto h-7 text-xs px-3"
+              className="ml-auto h-9 text-xs px-3"
             >
               {isPending ? 'Reclamando…' : 'Reclamar'}
             </Button>

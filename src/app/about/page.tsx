@@ -119,8 +119,8 @@ export default function AboutPage() {
 
           <div className="space-y-3 text-(--color-text-secondary) text-[14px] leading-relaxed">
             <p>
-              <span className="text-(--color-text-primary)">Tipografías:</span> Outfit y Roboto,
-              bajo SIL Open Font License (OFL).
+              <span className="text-(--color-text-primary)">Tipografías:</span> Anton, Geist y Geist
+              Mono, bajo SIL Open Font License (OFL).
             </p>
             <p>
               <span className="text-(--color-text-primary)">Tecnología:</span> Next.js, React,

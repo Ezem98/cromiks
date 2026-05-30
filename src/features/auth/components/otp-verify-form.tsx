@@ -106,7 +106,7 @@ export function OtpVerifyForm({ email, onChangeEmail }: OtpVerifyFormProps) {
           </p>
         )}
         {isVerifying && (
-          <p className="text-[13px] text-(--color-text-muted) text-center">Verificando...</p>
+          <p className="text-[13px] text-(--color-text-muted) text-center">Verificando…</p>
         )}
       </div>
 
@@ -119,7 +119,7 @@ export function OtpVerifyForm({ email, onChangeEmail }: OtpVerifyFormProps) {
           disabled={isLoading}
           className="w-full"
         >
-          {isResending ? 'Mandando...' : 'Mandar otro código'}
+          {isResending ? 'Mandando…' : 'Mandar otro código'}
         </Button>
         <Button
           type="button"

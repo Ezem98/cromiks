@@ -84,7 +84,7 @@ function ClaimMode({ currentStreak }: { currentStreak: number }) {
 
           <div className="mt-4 sm:mt-0">
             <Button variant="primary" size="lg" onClick={handleClaim} disabled={isPending}>
-              {isPending ? 'Reclamando...' : 'Reclamar sobre diario'}
+              {isPending ? 'Reclamando…' : 'Reclamar sobre diario'}
             </Button>
           </div>
         </div>
@@ -110,7 +110,7 @@ function PendingMode({ packId, currentStreak }: { packId: string; currentStreak:
             </p>
             <h2 className="text-display text-3xl leading-[0.95]">Tu sobre ya está listo</h2>
             <p className="text-(--color-text-secondary) text-sm mt-2 max-w-md">
-              4 cromos del Mundial te están esperando. Hacé click para abrirlo.
+              4 cromos del Mundial te están esperando. Tocá para abrirlo.
             </p>
           </div>
 

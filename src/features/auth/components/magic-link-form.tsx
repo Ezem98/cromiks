@@ -84,7 +84,7 @@ export function MagicLinkForm({
       </div>
 
       <Button type="submit" variant="primary" size="full" disabled={isPending || !email}>
-        {isPending ? 'Mandando código...' : ctaText}
+        {isPending ? 'Mandando código…' : ctaText}
       </Button>
 
       <p className="text-mono text-[11px] uppercase tracking-[0.1em] text-(--color-text-muted) text-center">
