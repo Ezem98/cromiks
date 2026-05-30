@@ -22,6 +22,10 @@ export function PhaseSummary({ result, onContinue }: PhaseSummaryProps) {
   const newCount = result.cards.filter((c) => c.isNew).length
   const repeatedCount = result.cards.length - newCount
 
+  // Si el sobre trajo una Epic o Legendary, el momento es de celebración —
+  // el CTA al álbum va en gold (DESIGN.md §11.1 reserva gold para legendary/celebración).
+  const hasCelebration = result.cards.some((c) => c.tier === 'epic' || c.tier === 'legendary')
+
   return (
     <motion.div
       key="summary"
@@ -77,11 +81,11 @@ export function PhaseSummary({ result, onContinue }: PhaseSummaryProps) {
         transition={{ delay: 0.8, duration: 0.4 }}
         className="flex flex-col gap-2 w-full"
       >
-        <Button variant="primary" size="lg" onClick={onContinue}>
-          Continuar
-        </Button>
-        <Button variant="ghost" size="md" asChild>
+        <Button variant={hasCelebration ? 'gold' : 'primary'} size="lg" asChild>
           <Link href="/album">Ver en el álbum</Link>
+        </Button>
+        <Button variant="ghost" size="md" onClick={onContinue}>
+          Continuar
         </Button>
       </motion.div>
     </motion.div>

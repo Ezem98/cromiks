@@ -279,6 +279,8 @@ function RevealedView({
   const reducedMotion = useReducedMotion()
   // El "Siguiente" en la última card se reemplaza por el flow natural al summary
   const ctaText = isLast ? 'Ver resumen' : 'Siguiente'
+  // Reveal de una Epic o Legendary = celebración → CTA en gold (DESIGN.md §11.1).
+  const isCelebration = revealedCard.tier === 'epic' || revealedCard.tier === 'legendary'
 
   return (
     <motion.div
@@ -364,7 +366,7 @@ function RevealedView({
         transition={{ delay: 0.9, duration: 0.5 }}
         className="z-10"
       >
-        <Button variant="primary" size="lg" onClick={onContinue}>
+        <Button variant={isCelebration ? 'gold' : 'primary'} size="lg" onClick={onContinue}>
           {ctaText}
         </Button>
       </motion.div>
