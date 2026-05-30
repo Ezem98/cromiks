@@ -164,7 +164,7 @@ export default async function CardPublicPage({ params, searchParams }: PageProps
 
         <div className="max-w-md text-center space-y-3">
           <p className="text-mono text-[10px] uppercase tracking-[0.2em] text-(--color-text-muted)">
-            Cromo #{card.card_number} · {card.card_number} de 205
+            Cromo #{card.card_number} · 205 cromos
           </p>
           <h1 className="text-display text-3xl text-(--color-text-primary) leading-tight">
             {card.name}

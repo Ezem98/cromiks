@@ -31,7 +31,7 @@ export function OAuthButtons({ ctaText = 'Continuar con Google' }: OAuthButtonsP
     <div className="space-y-2">
       <Button type="button" variant="ghost" size="full" onClick={handleGoogle} disabled={isPending}>
         <GoogleIcon className="size-5" />
-        {isPending ? 'Conectando...' : ctaText}
+        {isPending ? 'Conectando…' : ctaText}
       </Button>
     </div>
   )

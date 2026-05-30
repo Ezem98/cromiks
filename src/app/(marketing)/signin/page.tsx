@@ -27,7 +27,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-gold)">
-            Bienvenido de vuelta
+            Te estábamos esperando
           </p>
           <h1 className="text-display text-5xl leading-[0.9]">Entrar a Cromiks</h1>
           <p className="text-(--color-text-secondary) text-[15px] leading-relaxed pt-2">

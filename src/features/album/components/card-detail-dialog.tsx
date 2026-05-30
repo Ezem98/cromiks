@@ -51,7 +51,7 @@ type CardDetailDialogProps = {
 
 const tierLabels: Record<AlbumCardSlot['tier'], string> = {
   common: 'Común',
-  uncommon: 'Inusual',
+  uncommon: 'Poco común',
   rare: 'Rara',
   epic: 'Épica',
   legendary: 'Legendaria',

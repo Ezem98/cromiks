@@ -48,7 +48,7 @@ export async function Home() {
       {/* Hero — saludo */}
       <div>
         <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-gold) mb-1">
-          Bienvenido de vuelta
+          Te estábamos esperando
         </p>
         <h1 className="text-display text-5xl leading-[0.9]">Tu álbum eterno</h1>
       </div>

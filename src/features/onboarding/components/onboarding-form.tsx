@@ -45,8 +45,8 @@ const popularCountries = [
 
 const usernameErrorMessages: Record<string, string> = {
   invalid_format: 'Solo minúsculas, números y guión bajo. 3 a 20 caracteres.',
-  taken: 'Ese username ya está tomado.',
-  empty: 'Elegí un username.',
+  taken: 'Ese usuario ya está tomado.',
+  empty: 'Elegí un usuario.',
 }
 
 export function OnboardingForm({ initialUsername = '', email }: OnboardingFormProps) {
@@ -104,7 +104,7 @@ export function OnboardingForm({ initialUsername = '', email }: OnboardingFormPr
       if (!result.ok) {
         if (result.code === 'username_taken') {
           setUsernameStatus({ state: 'unavailable', error: 'taken' })
-          toast.error('Ese username ya fue tomado', {
+          toast.error('Ese usuario ya fue tomado', {
             description: 'Probá con otro.',
           })
         } else {
@@ -140,7 +140,7 @@ export function OnboardingForm({ initialUsername = '', email }: OnboardingFormPr
           htmlFor="ob-username"
           className="block text-mono text-[11px] uppercase tracking-[0.1em] text-(--color-text-muted)"
         >
-          Username
+          Usuario
         </label>
         <div className="relative">
           <Input
@@ -263,7 +263,7 @@ export function OnboardingForm({ initialUsername = '', email }: OnboardingFormPr
       </div>
 
       <Button type="submit" variant="primary" size="full" disabled={!canSubmit}>
-        {isPending ? 'Completando...' : 'Empezar mi álbum'}
+        {isPending ? 'Completando…' : 'Empezar mi álbum'}
       </Button>
     </form>
   )
