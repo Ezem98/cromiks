@@ -13,7 +13,8 @@ type AlbumProgressCardProps = {
 }
 
 export function AlbumProgressCard({ cardsOwned, totalCards }: AlbumProgressCardProps) {
-  const percentage = totalCards === 0 ? 0 : Math.round((cardsOwned / totalCards) * 100)
+  const percentage =
+    totalCards === 0 ? 0 : Math.min(100, Math.round((cardsOwned / totalCards) * 100))
 
   return (
     <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6 h-full flex flex-col">
@@ -47,7 +48,7 @@ export function AlbumProgressCard({ cardsOwned, totalCards }: AlbumProgressCardP
         <p className="text-(--color-text-secondary) text-sm flex-1">
           Te faltan{' '}
           <span className="text-(--color-text-primary) font-medium">
-            {totalCards - cardsOwned} cromos
+            {Math.max(0, totalCards - cardsOwned)} cromos
           </span>{' '}
           para completar el álbum.
         </p>

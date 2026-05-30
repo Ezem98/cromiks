@@ -132,10 +132,11 @@ export function AlbumView({ data, username }: AlbumViewProps) {
  * Header con info global del álbum.
  *
  * - Título "Tu álbum"
- * - Progreso global X / 205 + barra
+ * - Progreso global X / N + barra (N = scope activo del álbum)
  */
 function AlbumHeader({ totalOwned, totalCards }: { totalOwned: number; totalCards: number }) {
-  const percentage = totalCards === 0 ? 0 : Math.round((totalOwned / totalCards) * 100)
+  const percentage =
+    totalCards === 0 ? 0 : Math.min(100, Math.round((totalOwned / totalCards) * 100))
 
   return (
     <div className="sticky top-0 z-30 backdrop-blur-md bg-(--color-surface-deep)/85 border-b border-white/[0.06]">

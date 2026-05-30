@@ -1,5 +1,6 @@
 import 'server-only'
 import { createClient } from '@/lib/supabase/server'
+import { resolveActivePageIds } from './scope'
 
 /**
  * Data fetchers para el álbum.
@@ -12,7 +13,6 @@ import { createClient } from '@/lib/supabase/server'
  */
 
 const ALBUM_ID = 'eterno-diciembre'
-const TOTAL_PAGES = 10
 
 export type AlbumPage = {
   id: string
@@ -56,7 +56,7 @@ export type AlbumData = {
   pages: AlbumPage[]
   currentPage: AlbumPage
   cards: AlbumCardSlot[]
-  /** Total de cards únicas del álbum (siempre 205) */
+  /** Total de cromos obtenibles (del scope activo; 205 si el álbum no está gateado) */
   totalCards: number
   /** Total de cards únicas que tiene el user (across all pages) */
   totalOwned: number
@@ -92,48 +92,51 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
 
   if (!user) return null
 
-  // Normalizar pageNumber al rango válido
-  const targetPage = Math.min(Math.max(1, pageNumber), TOTAL_PAGES)
-
-  // 4 fetches en paralelo
-  const [pagesRes, currentPageRes, userCardsRes, allAlbumCardsRes] = await Promise.all([
+  // 3 fetches en paralelo. La página actual se resuelve DESPUÉS de saber qué
+  // páginas están activas (el pageNumber pedido puede caer en una inactiva).
+  const [pagesRes, userCardsRes, allAlbumCardsRes] = await Promise.all([
     supabase
       .from('pages')
-      .select('id, page_number, title, subtitle, card_range_start, card_range_end')
+      .select('id, page_number, title, subtitle, card_range_start, card_range_end, is_active')
       .eq('album_id', ALBUM_ID)
       .order('page_number', { ascending: true }),
 
-    supabase
-      .from('pages')
-      .select('id, page_number, title, subtitle, card_range_start, card_range_end')
-      .eq('album_id', ALBUM_ID)
-      .eq('page_number', targetPage)
-      .single(),
-
     // Inner join a `cards` filtrando por album_id. Esto evita que user_cards
     // huérfanos (card_ids que no existen en cards, o de otro álbum) inflen
-    // el contador o ensucien el lookup. Cualquier user_card cuyo card_id no
-    // matchee con una card del álbum eterno-diciembre se descarta acá.
+    // el contador o ensucien el lookup.
     supabase
       .from('user_cards')
       .select('card_id, copies, is_pinned, first_obtained_at, cards!inner(album_id)')
       .eq('user_id', user.id)
       .eq('cards.album_id', ALBUM_ID),
 
-    // Light query: todas las cards del álbum con su page_id.
-    // Solo 205 rows, 2 columns. Sirve para calcular completion por página
-    // sin necesidad de fetchear cards de cada página por separado.
+    // Light query: todas las cards del álbum con su page_id. Sirve para calcular
+    // completion por página y los totales del scope activo.
     supabase.from('cards').select('id, page_id').eq('album_id', ALBUM_ID),
   ])
 
-  if (!currentPageRes.data) return null
+  const allPages = pagesRes.data ?? []
+  if (allPages.length === 0) return null
+
+  // Scope activo: pages.is_active gatea la beta (roll_cards solo sortea de páginas
+  // activas). El álbum refleja el mismo set para no mostrar páginas que el usuario
+  // nunca va a poder llenar (T-04). Si ninguna está activa → no gateado, mostrar todo.
+  const activePageIds = resolveActivePageIds(allPages)
+  const activeIdSet = activePageIds ? new Set(activePageIds) : null
+  const effectivePages = activeIdSet ? allPages.filter((p) => activeIdSet.has(p.id)) : allPages
+
+  // Página actual: normalizar el pageNumber pedido al set efectivo. Si pidió una
+  // página inactiva (ej. /album?page=1 con solo croacia live), caemos a la primera.
+  const currentPageRow =
+    effectivePages.find((p) => p.page_number === pageNumber) ?? effectivePages[0]
+  if (!currentPageRow) return null
 
   // Cards de la página actual (join por page_id)
   const cardsRes = await supabase
     .from('cards')
     .select('id, card_number, name, description, rarity, metadata, content, legendary_brief')
     .eq('album_id', ALBUM_ID)
-    .eq('page_id', currentPageRes.data.id)
+    .eq('page_id', currentPageRow.id)
     .order('card_number', { ascending: true })
 
   // Mapa de user_cards para lookup O(1)
@@ -193,7 +196,7 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
     }
   })
 
-  const pages: AlbumPage[] = (pagesRes.data ?? []).map((p) => ({
+  const pages: AlbumPage[] = effectivePages.map((p) => ({
     id: p.id,
     pageNumber: p.page_number,
     title: p.title,
@@ -203,41 +206,46 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
   }))
 
   const currentPage: AlbumPage = {
-    id: currentPageRes.data.id,
-    pageNumber: currentPageRes.data.page_number,
-    title: currentPageRes.data.title,
-    subtitle: currentPageRes.data.subtitle,
-    cardRangeStart: currentPageRes.data.card_range_start,
-    cardRangeEnd: currentPageRes.data.card_range_end,
+    id: currentPageRow.id,
+    pageNumber: currentPageRow.page_number,
+    title: currentPageRow.title,
+    subtitle: currentPageRow.subtitle,
+    cardRangeStart: currentPageRow.card_range_start,
+    cardRangeEnd: currentPageRow.card_range_end,
   }
 
   const pageOwned = cards.filter((c) => c.owned).length
 
-  // Calcular completion por página: para cada page_id contar cuántas cards
-  // tiene el user vs el total. Después convertir page_id → page_number para
-  // que el nav pueda matchearlo por número (más conveniente que por uuid).
-  const pageIdToNumber = new Map(pages.map((p) => [p.id, p.pageNumber]))
+  // Completion por página + totales del SCOPE ACTIVO. Si el álbum está gateado,
+  // ignoramos cromos fuera del set activo: así "X / N" refleja lo obtenible y un
+  // test user con inventario viejo (cromos de páginas inactivas) no infla el total.
+  const pageIdToNumber = new Map(effectivePages.map((p) => [p.id, p.page_number]))
   const pageCompletion: PageCompletionMap = new Map()
+  let totalCards = 0
+  let totalOwned = 0
 
   for (const card of allAlbumCardsRes.data ?? []) {
     if (!card.page_id) continue // card sin página asignada, raro pero defensivo
-    const pageNumber = pageIdToNumber.get(card.page_id)
-    if (pageNumber === undefined) continue
+    if (activeIdSet && !activeIdSet.has(card.page_id)) continue // fuera del scope activo
 
-    const entry = pageCompletion.get(pageNumber) ?? { owned: 0, total: 0 }
+    totalCards += 1
+    const owned = userCardsMap.has(card.id)
+    if (owned) totalOwned += 1
+
+    const pageNum = pageIdToNumber.get(card.page_id)
+    if (pageNum === undefined) continue
+    const entry = pageCompletion.get(pageNum) ?? { owned: 0, total: 0 }
     entry.total += 1
-    if (userCardsMap.has(card.id)) {
-      entry.owned += 1
-    }
-    pageCompletion.set(pageNumber, entry)
+    if (owned) entry.owned += 1
+    pageCompletion.set(pageNum, entry)
   }
 
   return {
     pages,
     currentPage,
     cards,
-    totalCards: 205,
-    totalOwned: userCardsMap.size,
+    totalCards,
+    totalOwned,
     pageOwned,
     pageTotalCards: cards.length,
     pageCompletion,
