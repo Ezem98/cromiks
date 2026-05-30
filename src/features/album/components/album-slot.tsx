@@ -137,6 +137,12 @@ function OwnedSlot({ card, onClick }: { card: AlbumCardSlot; onClick?: () => voi
       {/* Background del cromo: imagen si tiene, sino gradient tier-coded */}
       <SlotBackground card={card} />
 
+      {/* Foil holográfico en hover — solo legendary/epic (P4). CSS puro, sin
+          pointer-JS, así la grilla no pierde perf con 20 cartas. */}
+      {(card.tier === 'legendary' || card.tier === 'epic') && (
+        <div className="cromo-slot-holo" data-tier={card.tier} aria-hidden="true" />
+      )}
+
       {/* Número arriba a la derecha */}
       <div
         className={cn(
