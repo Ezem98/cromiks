@@ -1,9 +1,11 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { useState } from 'react'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
-import type { AlbumCardSlot, AlbumData } from '../queries'
+import type { AlbumCardSlot, AlbumData, PageCompletionMap } from '../queries'
+import { AlbumFilterBar, type AlbumFilters, applyFilters, defaultFilters } from './album-filter-bar'
 import { AlbumPageNav } from './album-page-nav'
 import { AlbumSlot } from './album-slot'
 import { CardDetailDialog } from './card-detail-dialog'
@@ -47,6 +49,17 @@ export function AlbumView({ data, username }: AlbumViewProps) {
   } = data
   const [selectedCard, setSelectedCard] = useState<AlbumCardSlot | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [filters, setFilters] = useState<AlbumFilters>(defaultFilters)
+
+  // Filtrado client-side de la página actual. useMemo así no recalcula en
+  // cada render (ej. al abrir el dialog).
+  const visibleCards = useMemo(() => applyFilters(cards, filters), [cards, filters])
+
+  // CTA: primera página (≠ la actual) donde el user tiene ≥1 cromo.
+  const jumpToPage = useMemo(
+    () => findPageWithOwned(pageCompletion, currentPage.pageNumber),
+    [pageCompletion, currentPage.pageNumber],
+  )
 
   const handleSlotClick = (card: AlbumCardSlot) => {
     setSelectedCard(card)
@@ -68,37 +81,76 @@ export function AlbumView({ data, username }: AlbumViewProps) {
           total={pageTotalCards}
         />
 
+        {/* === CTA: saltar a una página con cromos tuyos === */}
+        {jumpToPage !== null && (
+          <Link
+            href={`/album?page=${jumpToPage}`}
+            scroll={false}
+            className={cn(
+              'group inline-flex min-h-11 items-center gap-2 rounded-md px-4 py-2.5',
+              'bg-(--color-surface-raised) border border-white/[0.08]',
+              'text-(--color-text-secondary) text-sm',
+              'transition-all duration-200',
+              'hover:bg-(--color-surface-elevated) hover:border-white/[0.18] hover:text-(--color-text-primary)',
+              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
+            )}
+          >
+            <span className="text-(--color-gold)" aria-hidden="true">
+              →
+            </span>
+            Ir a una página con cromos tuyos
+            <span className="text-mono text-[11px] text-(--color-text-muted)">P{jumpToPage}</span>
+          </Link>
+        )}
+
+        {/* === Filtros de la página actual === */}
+        <AlbumFilterBar
+          filters={filters}
+          onChange={setFilters}
+          resultCount={visibleCards.length}
+          totalCount={cards.length}
+        />
+
         {/* === Grid de cromos === */}
-        <motion.div
-          // key fuerza re-mount al cambiar de página → stagger fade-in
-          key={currentPage.pageNumber}
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.03 },
-            },
-          }}
-          className={cn(
-            'grid gap-2.5 sm:gap-3',
-            // Responsive: 4 cols mobile → 5 sm → 6 md → 7 lg
-            'grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7',
-          )}
-        >
-          {cards.map((card) => (
-            <motion.div
-              key={card.id}
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-              }}
-            >
-              <AlbumSlot card={card} onClick={() => handleSlotClick(card)} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {visibleCards.length > 0 ? (
+          <motion.div
+            // key fuerza re-mount al cambiar de página/filtro → stagger fade-in
+            key={`${currentPage.pageNumber}-${filters.tiers.join(',')}-${filters.ownership}-${filters.pinnedOnly}`}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.03 },
+              },
+            }}
+            className={cn(
+              'grid gap-2.5 sm:gap-3',
+              // Responsive: 4 cols mobile → 5 sm → 6 md → 7 lg
+              'grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7',
+            )}
+          >
+            {visibleCards.map((card) => (
+              <motion.div
+                key={card.id}
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+                }}
+              >
+                <AlbumSlot card={card} onClick={() => handleSlotClick(card)} />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="py-10 text-center">
+            <p className="text-(--color-text-secondary) text-sm">No hay cromos con ese filtro.</p>
+            <p className="text-(--color-text-muted) text-xs mt-1">
+              Aflojá un poco los filtros y fijate de nuevo.
+            </p>
+          </div>
+        )}
 
         {/* === Page nav === */}
         <div className="pt-6">
@@ -109,7 +161,7 @@ export function AlbumView({ data, username }: AlbumViewProps) {
           />
         </div>
 
-        {/* === Empty state, opcional === */}
+        {/* === Empty state, opcional (página sin cromos, sin filtros activos) === */}
         {pageOwned === 0 && (
           <p className="text-center text-(--color-text-muted) text-sm pt-2">
             Aún no tenés cromos de esta página. Seguí abriendo sobres.
@@ -172,6 +224,31 @@ function AlbumHeader({ totalOwned, totalCards }: { totalOwned: number; totalCard
       </div>
     </div>
   )
+}
+
+/**
+ * Encuentra la página a la que apuntar el CTA "ir a una página con cromos".
+ *
+ * Reglas:
+ *  - Devuelve la PRÓXIMA página (en orden de pageNumber) con ≥1 cromo owned,
+ *    arrancando después de la actual y dando la vuelta (wrap) si hace falta.
+ *  - Excluye la página actual.
+ *  - Devuelve null si ninguna otra página tiene cromos (all-or-none): nada
+ *    útil a dónde saltar → el CTA se oculta.
+ */
+function findPageWithOwned(
+  pageCompletion: PageCompletionMap,
+  currentPageNumber: number,
+): number | null {
+  const pagesWithOwned = [...pageCompletion.entries()]
+    .filter(([pageNumber, c]) => c.owned > 0 && pageNumber !== currentPageNumber)
+    .map(([pageNumber]) => pageNumber)
+    .sort((a, b) => a - b)
+
+  if (pagesWithOwned.length === 0) return null
+
+  // Próxima por orden circular: la primera mayor a la actual, sino la primera.
+  return pagesWithOwned.find((p) => p > currentPageNumber) ?? pagesWithOwned[0]
 }
 
 /**
