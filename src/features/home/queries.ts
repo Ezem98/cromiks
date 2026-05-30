@@ -1,4 +1,5 @@
 import 'server-only'
+import { getAlbumScope } from '@/features/album/scope'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -21,7 +22,7 @@ export async function getHomeData() {
   const today = new Date().toISOString().slice(0, 10)
 
   // Fetch en paralelo todo lo que necesita el home
-  const [packsRes, streakRes, missionsRes, cardsCountRes, totalCardsRes] = await Promise.all([
+  const [packsRes, streakRes, missionsRes, cardsCountRes, albumScope] = await Promise.all([
     // Sobres pendientes (todos los tipos)
     supabase
       .from('packs')
@@ -49,8 +50,9 @@ export async function getHomeData() {
       .eq('user_id', user.id)
       .eq('cards.album_id', ALBUM_ID),
 
-    // Total de cromos del álbum
-    supabase.from('cards').select('id', { count: 'exact', head: true }).eq('album_id', ALBUM_ID),
+    // Total de cromos OBTENIBLES (scope activo: solo páginas is_active, o todo el
+    // álbum si no está gateado). Mismo helper que el álbum → progreso consistente.
+    getAlbumScope(supabase, ALBUM_ID),
   ])
 
   const pendingPacks = packsRes.data ?? []
@@ -78,7 +80,7 @@ export async function getHomeData() {
     },
     missions: missionsRes.data ?? [],
     cardsOwned: cardsCountRes.count ?? 0,
-    totalCards: totalCardsRes.count ?? 205,
+    totalCards: albumScope.totalCards,
   }
 }
 

@@ -236,6 +236,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_active: boolean
           page_number: number
           subtitle: string | null
           title: string
@@ -248,6 +249,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id: string
+          is_active?: boolean
           page_number: number
           subtitle?: string | null
           title: string
@@ -260,6 +262,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean
           page_number?: number
           subtitle?: string | null
           title?: string
