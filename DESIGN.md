@@ -433,6 +433,8 @@ Tratamiento por tier — ver sección 12.
 
 ## 12. Tier anatomy de cromos
 
+> **Estado (2026-05-30):** Las secciones 12.1–12.5 son la **spec aspiracional** original. Lo que está **construido hoy** (PRs #27, #29) es un subset reverente-mínimo, documentado en **§12.7**. El resto (parallax 3D real, partículas, audio único, relato del comentarista, diseño bespoke por legendaria) está **diferido a T-03** (ver [`TODOS.md`](./TODOS.md)). No borramos la spec: §12.7 marca qué está vivo y qué no.
+
 ### 12.1 Common (113 cromos · 55%)
 - Border: 1px solid `var(--tier-common)`
 - Fill: linear-gradient `#2A323F → #1A1F28`
@@ -490,6 +492,42 @@ Tratamiento por tier — ver sección 12.
 9. Penal Montiel
 10. Messi besando copa
 11. Levantada de copa
+
+### 12.7 Cromo construido — terminación tipo TCG (LIVE)
+
+Lo que efectivamente shippeó (PRs #27, #29). Componente `src/components/domain/cromo.tsx` (`'use client'`) + sección `.cromo*` en `src/app/globals.css`. Inspirado en pokemon-cards-css (Simon Goellner, MIT) — ver `docs/assets/visual-references.md`. Es un **subset reverente-mínimo** de §12.1–12.5: prioriza un foil holográfico de calidad sobre todas las rarezas antes que el tratamiento inmersivo completo (parallax/partículas/audio quedan en T-03).
+
+**Pointer API (CSS vars seteadas por el componente sobre `.cromo`):**
+
+| Var | Qué es |
+|---|---|
+| `--cx` / `--cy` | Posición del puntero (0–100%) — alimenta glare y foil |
+| `--rx` / `--ry` | Rotación 3D en grados (de la posición del puntero) |
+| `--glare` | 0..1 — opacidad del glare especular |
+| `data-tier` | `common`…`legendary` — selecciona fuerza/color del foil |
+| `data-interacting` | `true`/`false` — activa el holo y acorta la transición del tilt |
+
+**Tilt (perspective + rotateX/Y):** sigue el puntero, spring-back al salir. `maxTilt` por tier: common 6° · uncommon 8° · rare 10° · epic 12° · legendary 14° (NO "unlimited" como pide §12.5 — acotado por tier).
+
+**Glare:** radial-gradient blanco que sigue al puntero (`mix-blend-mode: overlay`), aparece solo al interactuar.
+
+**Foil holográfico (`.cromo-holo`):** un único barrido suave (NO `repeating` → sin baldosas) que paneal con el puntero, `background-size: 230% 230%`, `mix-blend-mode: overlay`. Fuerza (`--holo-strength`) y **color por tier**:
+
+| Tier | `--holo-strength` | Color del foil |
+|---|---|---|
+| common | 0 | (sin holo) |
+| uncommon | 0.12 | sheen dorado (`--color-tier-uncommon`) |
+| rare | 0.20 | celeste con highlight blanco |
+| epic | 0.26 | violeta/pink |
+| legendary | 0.34 | prisma de 4 colores (`--color-tier-legendary-1..4`) |
+
+**Frame / material (estático, aplica aun con arte placeholder):** doble marco con bisel interno (`inset` shadows = "espesor de cartón"), nameplate como panel con hairline superior (no solo gradiente), pip de rareza (gema rotada; estrella dorada en legendary), número en badge enmarcado. Extras por tier: rare = scanlines sutiles, epic = glow radial violeta, legendary = borde prisma rotando + glow gold radial.
+
+**Holo en la grilla del álbum (`.cromo-slot-holo`, `album-slot.tsx`):** la grilla NO usa `<Cromo>` (perf con ~20 cartas/página). En su lugar, los slots **owned** de tier legendary/epic tienen un foil liviano **solo en hover/focus** — CSS puro, sin pointer-JS, con un sweep animado. Que la página no se sienta muerta sin pagar el costo del componente completo.
+
+**`prefers-reduced-motion`:** la carta queda plana (`transform: none`), y glare + holo se ocultan (`display: none`). Cumple §13.3.
+
+**DIFERIDO (T-03 · "full legendary treatment"):** parallax 3D real de 3 capas, partículas ambientes, glow-rotation completo, tilt sin límite, audio ambiente único + relato del comentarista por legendaria, y diseño bespoke por cromo. Gated en contenido + derechos (T-01) y en el perf budget de §13.4. Ver [`TODOS.md`](./TODOS.md).
 
 ---
 
