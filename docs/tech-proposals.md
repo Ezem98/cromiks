@@ -103,6 +103,8 @@ Cada propuesta documenta: **qué resuelve · por qué · compatibilidad · esfue
 ---
 
 ### TP-04 · **Better Stack** (Logs + Uptime) 🟡 ✅
+**Estado**: En implementación en PR8 — ver [`implementation-plan-pr8.md`](./implementation-plan-pr8.md). Código listo (endpoint `GET /api/health` con ping a Supabase, 200/503); falta la config de dashboard (log drain nativo Railway → Better Stack, uptime monitor, status page **privada** pre-launch).
+
 **Resuelve**: log aggregation desde Railway + uptime monitoring + status page público. Free tier decente.
 
 **Compatibilidad**: ✅ Railway tiene log drains nativos hacia syslog/HTTP — configurar Better Stack como destino del drain en el dashboard de Railway, sin código.
