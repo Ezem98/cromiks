@@ -348,3 +348,95 @@
     transform: translateY(0);
   }
 }
+
+/* ===========================================
+   CROMO — foil holográfico + glare + tilt (pointer-driven)
+   El componente setea --cx/--cy (posición del puntero, %), --rx/--ry
+   (rotación, deg) y --glare (0..1) sobre .cromo. Inspirado en
+   pokemon-cards-css (Simon Goellner, MIT) — ver docs/assets/visual-references.md.
+   =========================================== */
+
+.cromo {
+  --cx: 50%;
+  --cy: 50%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --glare: 0;
+  transform: perspective(800px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform var(--duration-moderate) var(--ease-out);
+  will-change: transform;
+}
+
+.cromo[data-interacting="true"] {
+  transition: transform 90ms linear;
+}
+
+/* Glare: brillo especular que sigue al puntero. */
+.cromo-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--cx) var(--cy),
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 22%,
+    transparent 55%
+  );
+  mix-blend-mode: overlay;
+  opacity: var(--glare);
+  transition: opacity var(--duration-quick) var(--ease-ui);
+  pointer-events: none;
+}
+
+/* Holo: foil prismático que se corre con el puntero. Intensidad por tier. */
+.cromo-holo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: repeating-linear-gradient(
+    115deg,
+    var(--color-tier-legendary-1),
+    var(--color-tier-legendary-2),
+    var(--color-tier-legendary-3),
+    var(--color-tier-legendary-4),
+    var(--color-tier-legendary-1) 28%
+  );
+  background-size: 300% 300%;
+  background-position: calc(var(--cx) * -1) calc(var(--cy) * -1);
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  transition: opacity var(--duration-quick) var(--ease-ui);
+  pointer-events: none;
+}
+
+.cromo[data-interacting="true"] .cromo-holo {
+  opacity: var(--holo-strength, 0);
+}
+
+.cromo[data-tier="common"] {
+  --holo-strength: 0;
+}
+.cromo[data-tier="uncommon"] {
+  --holo-strength: 0.12;
+}
+.cromo[data-tier="rare"] {
+  --holo-strength: 0.2;
+}
+.cromo[data-tier="epic"] {
+  --holo-strength: 0.26;
+}
+.cromo[data-tier="legendary"] {
+  --holo-strength: 0.34;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cromo {
+    transform: none !important;
+    transition: none;
+  }
+  .cromo-glare,
+  .cromo-holo {
+    display: none;
+  }
+}
