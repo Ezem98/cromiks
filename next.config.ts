@@ -17,6 +17,25 @@ const config: NextConfig = {
   //   - Tenemos rutas planificadas que aún no existen (/album, /missions, /settings, /about, /u/[username])
   //   - Cuando todas estén implementadas, lo podemos re-activar para validación estricta de URLs.
   typedRoutes: false,
+  // cromiks.com (+ www) → cromiks.app (dominio primario). Preserva el path.
+  // Requiere que cromiks.com esté agregado como dominio del servicio en Railway
+  // y su DNS apunte ahí; recién entonces el host llega acá y se redirige.
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'cromiks.com' }],
+        destination: 'https://cromiks.app/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.cromiks.com' }],
+        destination: 'https://cromiks.app/:path*',
+        permanent: true,
+      },
+    ]
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
