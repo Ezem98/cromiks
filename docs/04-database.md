@@ -27,7 +27,10 @@ description text NULL
 card_range_start int     -- e.g. 1
 card_range_end int       -- e.g. 20
 bonus_card_ids text[] NULL
+is_active boolean NOT NULL DEFAULT false  -- gate del pool de la beta
 ```
+
+> `is_active` (migration `20260530120100`): gate del pool de la soft-beta. `roll_cards` solo sortea cromos de páginas activas (o falla con `no_active_cards`); el álbum/home reflejan el mismo set vía `features/album/scope.ts`. Default `false` — se activa la página héroe recién cuando su contenido es 100% real. Si NINGUNA página está activa, el álbum no está gateado (muestra todo, legacy). Ver [`05-sql-functions.md`](./05-sql-functions.md).
 
 ### `cards`
 Los 205 cromos del álbum.
