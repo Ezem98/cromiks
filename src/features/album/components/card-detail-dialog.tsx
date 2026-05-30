@@ -19,6 +19,7 @@ import { errorCopy } from '@/lib/errors'
 import { cn } from '@/lib/utils'
 import { dismantleCard, pinCard, unpinCard } from '../actions'
 import type { AlbumCardSlot } from '../queries'
+import { LegendaryMoment } from './legendary-moment'
 
 /**
  * Modal de detalle del cromo.
@@ -112,6 +113,13 @@ export function CardDetailDialog({ card, open, onOpenChange, username }: CardDet
 
           {card.owned ? (
             <>
+              {card.tier === 'legendary' && card.momentVideoUrl && (
+                <LegendaryMoment
+                  videoUrl={card.momentVideoUrl}
+                  start={card.momentVideoStart}
+                  cardName={card.name}
+                />
+              )}
               <OwnershipStats copies={card.copies} firstObtainedAt={card.firstObtainedAt} />
               <CardActions card={card} username={username} />
             </>

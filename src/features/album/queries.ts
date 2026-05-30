@@ -35,6 +35,10 @@ export type AlbumCardSlot = {
   imageUrl: string | null
   /** Solo para legendaries: data del momento histórico (jsonb raw) */
   legendaryBrief: Record<string, unknown> | null
+  /** URL/id de YouTube del momento oficial (content.video.source). null si es TODO/vacío. */
+  momentVideoUrl: string | null
+  /** Segundo de inicio del clip (content.video.start), si está. */
+  momentVideoStart: number | null
   /** Si el user tiene esta carta */
   owned: boolean
   /** Cuántas copias tiene (0 si no la tiene) */
@@ -153,9 +157,15 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
       club?: string
       number?: string | number
     }
-    const content = (card.content ?? {}) as { photo?: { source?: string } }
+    const content = (card.content ?? {}) as {
+      photo?: { source?: string }
+      video?: { source?: string; start?: number }
+    }
     const photoSource = content?.photo?.source
     const hasRealPhoto = !!photoSource && photoSource !== '' && photoSource !== 'TODO'
+
+    const videoSource = content?.video?.source
+    const hasMoment = !!videoSource && videoSource !== '' && videoSource !== 'TODO'
 
     return {
       id: card.id,
@@ -173,6 +183,9 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
         card.legendary_brief && typeof card.legendary_brief === 'object'
           ? (card.legendary_brief as Record<string, unknown>)
           : null,
+      momentVideoUrl: hasMoment ? (videoSource as string) : null,
+      momentVideoStart:
+        hasMoment && typeof content.video?.start === 'number' ? content.video.start : null,
       owned: !!ownership,
       copies: ownership?.copies ?? 0,
       isPinned: ownership?.isPinned ?? false,
