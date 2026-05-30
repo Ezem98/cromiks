@@ -118,6 +118,7 @@ export function CardDetailDialog({ card, open, onOpenChange, username }: CardDet
                   videoUrl={card.momentVideoUrl}
                   start={card.momentVideoStart}
                   cardName={card.name}
+                  imageUrl={card.imageUrl}
                 />
               )}
               <OwnershipStats copies={card.copies} firstObtainedAt={card.firstObtainedAt} />

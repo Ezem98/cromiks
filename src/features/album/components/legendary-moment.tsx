@@ -41,9 +41,11 @@ type LegendaryMomentProps = {
   /** content.video.start — segundo de inicio del clip (opcional) */
   start?: number | null
   cardName: string
+  /** Foto/still del cromo (content.photo.source). Es el poster preferido. */
+  imageUrl?: string | null
 }
 
-export function LegendaryMoment({ videoUrl, start, cardName }: LegendaryMomentProps) {
+export function LegendaryMoment({ videoUrl, start, cardName, imageUrl }: LegendaryMomentProps) {
   const [playing, setPlaying] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
@@ -51,6 +53,13 @@ export function LegendaryMoment({ videoUrl, start, cardName }: LegendaryMomentPr
   const watchUrl = videoId
     ? `https://www.youtube.com/watch?v=${videoId}${start ? `&t=${start}` : ''}`
     : videoUrl
+
+  // Poster detrás del botón de play. Preferimos el still del cromo (rights-safe).
+  // Fallback: thumbnail de YouTube (hqdefault). OJO: el thumbnail es IP del
+  // broadcaster (FIFA/canal) → es SOLO fallback temporal. El poster real debe ser
+  // la ilustración rights-safe cuando llegue el contenido (TODO T-03).
+  const posterUrl =
+    imageUrl ?? (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null)
 
   // Error / id no parseable: link-out reverente en vez de un player roto.
   if (!videoId) {
@@ -70,6 +79,17 @@ export function LegendaryMoment({ videoUrl, start, cardName }: LegendaryMomentPr
   }
 
   if (!playing) {
+    // Sin poster: caemos al botón gold sólido de siempre.
+    if (!posterUrl) {
+      return (
+        <MomentShell>
+          <PlayButton cardName={cardName} onPlay={() => setPlaying(true)} />
+        </MomentShell>
+      )
+    }
+
+    // Con poster: el still (o el thumbnail YT de fallback) de fondo, el botón
+    // de play encima. Click en cualquier parte del poster reproduce.
     return (
       <MomentShell>
         <button
@@ -77,15 +97,39 @@ export function LegendaryMoment({ videoUrl, start, cardName }: LegendaryMomentPr
           onClick={() => setPlaying(true)}
           aria-label={`Volvé a ver el momento: ${cardName}`}
           className={cn(
-            'group flex w-full min-h-11 items-center justify-center gap-2',
-            'rounded-md px-4 py-3 font-semibold',
-            'bg-(--color-gold) text-(--color-surface-deep)',
-            'transition-transform hover:-translate-y-px',
+            'group relative block aspect-video w-full overflow-hidden rounded-md bg-black',
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
           )}
         >
-          <PlayIcon className="size-4" />
-          Volvé a verlo
+          {/* biome-ignore lint/performance/noImgElement: poster simple, evitamos overhead de next/image en el dialog */}
+          <img
+            src={posterUrl}
+            alt=""
+            className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+          {/* Scrim para legibilidad del botón sobre cualquier still */}
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.65)_100%)]"
+            aria-hidden="true"
+          />
+          {/* Botón de play overlay */}
+          <span
+            className={cn(
+              'absolute inset-0 flex items-center justify-center gap-2',
+              'text-(--color-surface-deep) font-semibold',
+            )}
+          >
+            <span
+              className={cn(
+                'inline-flex items-center gap-2 rounded-md px-4 py-3',
+                'bg-(--color-gold) transition-transform group-hover:-translate-y-px',
+              )}
+            >
+              <PlayIcon className="size-4" />
+              Volvé a verlo
+            </span>
+          </span>
         </button>
       </MomentShell>
     )
@@ -129,6 +173,27 @@ function MomentShell({ children }: { children: React.ReactNode }) {
     >
       {children}
     </div>
+  )
+}
+
+/** Botón gold sólido — fallback cuando no hay poster (ni still ni thumbnail YT). */
+function PlayButton({ cardName, onPlay }: { cardName: string; onPlay: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onPlay}
+      aria-label={`Volvé a ver el momento: ${cardName}`}
+      className={cn(
+        'group flex w-full min-h-11 items-center justify-center gap-2',
+        'rounded-md px-4 py-3 font-semibold',
+        'bg-(--color-gold) text-(--color-surface-deep)',
+        'transition-transform hover:-translate-y-px',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
+      )}
+    >
+      <PlayIcon className="size-4" />
+      Volvé a verlo
+    </button>
   )
 }
 
