@@ -368,7 +368,7 @@
   will-change: transform;
 }
 
-.cromo[data-interacting='true'] {
+.cromo[data-interacting="true"] {
   transition: transform 90ms linear;
 }
 
@@ -410,23 +410,23 @@
   pointer-events: none;
 }
 
-.cromo[data-interacting='true'] .cromo-holo {
+.cromo[data-interacting="true"] .cromo-holo {
   opacity: var(--holo-strength, 0);
 }
 
-.cromo[data-tier='common'] {
+.cromo[data-tier="common"] {
   --holo-strength: 0;
 }
-.cromo[data-tier='uncommon'] {
+.cromo[data-tier="uncommon"] {
   --holo-strength: 0.12;
 }
-.cromo[data-tier='rare'] {
+.cromo[data-tier="rare"] {
   --holo-strength: 0.2;
 }
-.cromo[data-tier='epic'] {
+.cromo[data-tier="epic"] {
   --holo-strength: 0.26;
 }
-.cromo[data-tier='legendary'] {
+.cromo[data-tier="legendary"] {
   --holo-strength: 0.34;
 }
 
