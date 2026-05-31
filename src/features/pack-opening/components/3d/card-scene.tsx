@@ -29,9 +29,11 @@ const RAD_TO_DEG = 180 / Math.PI
 type CardScene3DProps = {
   card: RevealedCard
   autoFlip?: boolean
+  /** Se llama si WebGL pierde el contexto → la fase degrada al fallback 2D. */
+  onContextLost?: () => void
 }
 
-export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
+export function CardScene3D({ card, autoFlip = true, onContextLost }: CardScene3DProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [rotateY, setRotateY] = useState(autoFlip ? Math.PI : 0)
 
@@ -79,12 +81,12 @@ export function CardScene3D({ card, autoFlip = true }: CardScene3DProps) {
             }}
             style={{ background: 'transparent' }}
             // Si WebGL pierde el contexto (GPU pressure, otro WebGL en otra app),
-            // tiramos el error para que lo capture el ErrorBoundary y muestre
-            // el fallback en lugar de canvas en blanco (B-14).
+            // degradamos al fallback 2D en caliente vía onContextLost en lugar de
+            // tirar al ErrorBoundary (que mostraba "recargá la página"). B-14 / 3.13.
             onCreated={({ gl }) => {
               gl.domElement.addEventListener('webglcontextlost', (e) => {
                 e.preventDefault()
-                throw new Error('webgl_context_lost')
+                onContextLost?.()
               })
             }}
           >

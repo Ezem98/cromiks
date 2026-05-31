@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Cromo } from '@/components/domain/cromo'
 import { TierLabel } from '@/components/domain/tier-label'
 import { Button } from '@/components/ui/button'
-import { useReducedMotion } from '@/lib/hooks/use-reduced-motion'
+import { useRenderTier } from '@/lib/hooks/use-render-tier'
 import { cn } from '@/lib/utils'
 import type { RevealedCard, Tier } from '../types'
 
@@ -276,7 +276,7 @@ function RevealedView({
   onContinue: () => void
   isLast: boolean
 }) {
-  const reducedMotion = useReducedMotion()
+  const { tier, degradeToLite } = useRenderTier()
   // El "Siguiente" en la última card se reemplaza por el flow natural al summary
   const ctaText = isLast ? 'Ver resumen' : 'Siguiente'
   // Reveal de una Epic o Legendary = celebración → CTA en gold (DESIGN.md §11.1).
@@ -294,8 +294,8 @@ function RevealedView({
       {/* Tier burst de fondo */}
       <TierBurst tier={revealedCard.tier} />
 
-      {/* Card revelada al centro — 3D si motion ok, CSS si reduced */}
-      {reducedMotion ? (
+      {/* Card revelada al centro — 3D en tier full, CSS en tier lite */}
+      {tier === 'lite' ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
           animate={{ opacity: 1, scale: 1, rotateY: 0 }}
@@ -336,7 +336,7 @@ function RevealedView({
             minHeight: 380,
           }}
         >
-          <CardScene3D card={revealedCard} autoFlip />
+          <CardScene3D card={revealedCard} autoFlip onContextLost={degradeToLite} />
         </motion.div>
       )}
 

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { Sobre } from '@/components/domain/sobre'
-import { useReducedMotion } from '@/lib/hooks/use-reduced-motion'
+import { useRenderTier } from '@/lib/hooks/use-render-tier'
 
 // Lazy load del 3D scene
 const SobreScene = dynamic(() => import('./3d/sobre-scene').then((mod) => mod.SobreScene), {
@@ -19,7 +19,7 @@ const SobreScene = dynamic(() => import('./3d/sobre-scene').then((mod) => mod.So
  *  - La tira de tear vive DENTRO del canvas (anclada al sobre vía drei <Html>)
  *  - Hint text arriba como overlay HTML
  *
- * Fallback (reduced-motion): sobre CSS con botón "Abrir sobre".
+ * Fallback (tier 'lite'): sobre CSS con botón "Abrir sobre".
  */
 
 type PhaseTearProps = {
@@ -27,16 +27,16 @@ type PhaseTearProps = {
 }
 
 export function PhaseTear({ onComplete }: PhaseTearProps) {
-  const reducedMotion = useReducedMotion()
+  const { tier, degradeToLite } = useRenderTier()
 
-  if (reducedMotion) {
+  if (tier === 'lite') {
     return <PhaseTearFallback onComplete={onComplete} />
   }
 
-  return <PhaseTear3D onComplete={onComplete} />
+  return <PhaseTear3D onComplete={onComplete} onDegrade={degradeToLite} />
 }
 
-function PhaseTear3D({ onComplete }: PhaseTearProps) {
+function PhaseTear3D({ onComplete, onDegrade }: PhaseTearProps & { onDegrade: () => void }) {
   const [isCompleted, setIsCompleted] = useState(false)
   const [tearProgress, setTearProgress] = useState(0)
 
@@ -67,6 +67,7 @@ function PhaseTear3D({ onComplete }: PhaseTearProps) {
           isCompleting={isCompleted}
           onTearProgressChange={handleProgressChange}
           onTearComplete={handleTearComplete}
+          onContextLost={onDegrade}
         />
       </div>
 
