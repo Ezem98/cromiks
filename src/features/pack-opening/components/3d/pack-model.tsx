@@ -99,18 +99,24 @@ export function PackModel3D({
   // Clone para evitar mutaciones del cache compartido.
   const clonedScene = useMemo(() => scene.clone(true), [scene])
 
-  // Habilitamos shadows + emissive en materiales para animar el glow.
+  /**
+   * Materiales emissive cacheados. Antes recorríamos TODO el scene graph con
+   * `traverse()` dentro del useFrame (60×/seg) solo para animar el glow. Ahora
+   * juntamos los MeshStandardMaterial una sola vez acá y en el frame loop
+   * iteramos este array chico.
+   */
+  const emissiveMaterials = useRef<THREE.MeshStandardMaterial[]>([])
+
   useEffect(() => {
+    const mats: THREE.MeshStandardMaterial[] = []
     clonedScene.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
-        obj.castShadow = true
-        obj.receiveShadow = true
-        if (obj.material instanceof THREE.MeshStandardMaterial) {
-          obj.material.emissive = new THREE.Color(GOLD)
-          obj.material.emissiveIntensity = 0
-        }
+      if (obj instanceof THREE.Mesh && obj.material instanceof THREE.MeshStandardMaterial) {
+        obj.material.emissive = new THREE.Color(GOLD)
+        obj.material.emissiveIntensity = 0
+        mats.push(obj.material)
       }
     })
+    emissiveMaterials.current = mats
   }, [clonedScene])
 
   const [isDragging, setIsDragging] = useState(false)
@@ -158,15 +164,9 @@ export function PackModel3D({
       groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, 4, 0.08)
 
       // Emissive al máximo (todo brillando dorado)
-      clonedScene.traverse((obj) => {
-        if (obj instanceof THREE.Mesh && obj.material instanceof THREE.MeshStandardMaterial) {
-          obj.material.emissiveIntensity = THREE.MathUtils.lerp(
-            obj.material.emissiveIntensity,
-            1.5,
-            0.15,
-          )
-        }
-      })
+      for (const mat of emissiveMaterials.current) {
+        mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, 1.5, 0.15)
+      }
 
       return // Early return: ignoramos toda la lógica de tilt/idle
     }
@@ -204,16 +204,10 @@ export function PackModel3D({
     innerRef.current.scale.z = THREE.MathUtils.lerp(innerRef.current.scale.z, targetScale, 0.15)
 
     // Emissive buildup (parece cargarse de luz por dentro)
-    clonedScene.traverse((obj) => {
-      if (obj instanceof THREE.Mesh && obj.material instanceof THREE.MeshStandardMaterial) {
-        const targetEmissive = tearProgress * 0.6
-        obj.material.emissiveIntensity = THREE.MathUtils.lerp(
-          obj.material.emissiveIntensity,
-          targetEmissive,
-          0.15,
-        )
-      }
-    })
+    const targetEmissive = tearProgress * 0.6
+    for (const mat of emissiveMaterials.current) {
+      mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, targetEmissive, 0.15)
+    }
 
     /**
      * Shake del modelo durante el drag — intensifica con tearProgress.

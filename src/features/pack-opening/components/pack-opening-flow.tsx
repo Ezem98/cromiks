@@ -4,7 +4,7 @@ import { XIcon } from 'lucide-react'
 import { AnimatePresence } from 'motion/react'
 import { useEffect } from 'react'
 import { revalidateHomeAfterOpen } from '../actions'
-import type { OpenPackResult } from '../types'
+import { maxTierOf, type OpenPackResult } from '../types'
 import { usePackOpening } from '../use-pack-opening'
 import { PhaseAnticipation } from './phase-anticipation'
 import { PhaseStack } from './phase-stack'
@@ -28,6 +28,11 @@ type PackOpeningFlowProps = {
 
 export function PackOpeningFlow({ result, currentStreak }: PackOpeningFlowProps) {
   const { phase, cardsRevealed, skip, completeTear, revealNextCard, next } = usePackOpening(true)
+
+  // La rareza más alta del sobre escala la intensidad del "complete" del tear
+  // (legendary → estallido más grande). Es un telegraph intencional de hype
+  // tipo "golden pack" antes de revelar las cards (feature 3.12).
+  const maxTier = maxTierOf(result.cards)
 
   // Cuando llegamos al outro, revalidamos el home en background
   useEffect(() => {
@@ -59,7 +64,7 @@ export function PackOpeningFlow({ result, currentStreak }: PackOpeningFlowProps)
           <PhaseAnticipation currentStreak={currentStreak} packType={result.packType} />
         )}
 
-        {phase === 'tear' && <PhaseTear onComplete={completeTear} />}
+        {phase === 'tear' && <PhaseTear onComplete={completeTear} maxTier={maxTier} />}
 
         {phase === 'stack' && (
           <PhaseStack

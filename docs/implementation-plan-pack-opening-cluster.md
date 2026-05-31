@@ -2,7 +2,7 @@
 
 **Sesión**: 31 mayo 2026
 **Rama**: `feat/pack-opening-render-tier`
-**Estado**: F1 + F2 completas (type-check + biome OK) · checkpoint de revisión · F3 + F4 pendientes
+**Estado**: F1 + F2 + F3 + F4 completas (type-check + biome OK). Sonido (3.10) diferido (sin asset).
 
 Refinamiento del cluster de pack-opening que quedó pendiente. Tres sub-metas:
 
@@ -89,23 +89,29 @@ binario full/lite.
 
 ---
 
-## F3 — optimizar el path full (pendiente)
+## F3 — optimizar el path full ✅
 
-- `pack-model.tsx`: cachear los `MeshStandardMaterial` en un ref en el effect de
-  `clonedScene`; iterar ese array en `useFrame` en vez de `traverse()`. Ganancia de CPU
-  más clara.
-- `dpr={[1, 1.5]}` en mobile (derivado de size/tier).
-- Limpieza: sacar `castShadow`/`receiveShadow` muertos. (claridad, no perf)
-- Opcional: HDRI más liviano o saltarlo en devices mid (en lite no se monta el canvas).
+- ✅ `pack-model.tsx`: los `MeshStandardMaterial` se cachean en `emissiveMaterials` (ref)
+  en el effect de `clonedScene`; el `useFrame` itera ese array en vez de `traverse()`
+  60×/seg. Ganancia de CPU más clara.
+- ✅ `dpr={[1, 1.5]}` en mobile (`< 600px`) en ambos canvas (sobre + card), 2 en desktop.
+- ✅ Limpieza: sacados los `castShadow`/`receiveShadow` muertos + `castShadow` de la key
+  light (ningún `<Canvas>` tiene `shadows`).
+- Opcional (no hecho): HDRI más liviano en devices mid. En lite el canvas no se monta.
 
 ---
 
-## F4 — reveal polish barato (pendiente)
+## F4 — reveal polish barato ✅
 
-- **Complete escalado por rareza máxima** (3.12): pasar `maxTier` (de `result.cards`) a
-  `PhaseTear`; legendary → flash más grande/largo + más partículas.
-- **Haptics** (3.11): `navigator.vibrate` en tear-complete y en cada reveal, guardado.
-- **Sonido** (3.10): diferido (no hay asset). Dejar punto de enganche.
+- ✅ **Complete escalado por rareza máxima** (3.12): `pack-opening-flow.tsx` calcula
+  `maxTierOf(result.cards)` y lo pasa a `PhaseTear`. El flash, las partículas (20→48),
+  el aura y la duración (1.1s→1.7s) escalan por `tierRank`. Telegraph de hype tipo
+  "golden pack" antes del reveal — decisión deliberada (no spoiler accidental).
+- ✅ **Haptics** (3.11): `src/lib/haptics.ts` (`vibrate`, no-op sin soporte o con
+  reduced-motion). Patrón escalado por rareza en el tear-complete y un tick por card en
+  el reveal. También en el botón del path lite.
+- 🚧 **Sonido** (3.10): diferido (no hay asset). Puntos de enganche marcados con
+  `TODO(3.10)` en `phase-tear.tsx` y `phase-stack.tsx`.
 
 ---
 

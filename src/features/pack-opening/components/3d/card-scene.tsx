@@ -57,6 +57,9 @@ export function CardScene3D({ card, autoFlip = true, onContextLost }: CardScene3
     setMousePosition({ x: 0, y: 0 })
   }
 
+  // Cap de dpr en mobile (1.5 vs 2) — misma razón que en SobreScene.
+  const maxDpr = typeof window !== 'undefined' && window.innerWidth < 600 ? 1.5 : 2
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -71,7 +74,7 @@ export function CardScene3D({ card, autoFlip = true, onContextLost }: CardScene3
         <Suspense fallback={<Canvas3DSkeleton />}>
           <Canvas
             camera={{ position: [0, 0, 5], fov: 45 }}
-            dpr={[1, 2]}
+            dpr={[1, maxDpr]}
             gl={{
               antialias: true,
               alpha: true,

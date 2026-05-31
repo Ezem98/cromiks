@@ -4,7 +4,9 @@ import { AnimatePresence, motion } from 'motion/react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { Sobre } from '@/components/domain/sobre'
+import { vibrate } from '@/lib/haptics'
 import { useRenderTier } from '@/lib/hooks/use-render-tier'
+import { type Tier, tierRank } from '../types'
 
 // Lazy load del 3D scene
 const SobreScene = dynamic(() => import('./3d/sobre-scene').then((mod) => mod.SobreScene), {
@@ -24,21 +26,44 @@ const SobreScene = dynamic(() => import('./3d/sobre-scene').then((mod) => mod.So
 
 type PhaseTearProps = {
   onComplete: () => void
+  /** Rareza más alta del sobre — escala el estallido del "complete". */
+  maxTier?: Tier
 }
 
-export function PhaseTear({ onComplete }: PhaseTearProps) {
+/**
+ * Patrones de vibración del tear-complete por rank de rareza (0..4).
+ * Mejor rareza → patrón más largo e intenso.
+ */
+const TEAR_HAPTICS: Record<number, number | number[]> = {
+  0: 30,
+  1: 45,
+  2: [0, 40, 40, 40],
+  3: [0, 50, 30, 50, 30, 60],
+  4: [0, 70, 40, 70, 40, 90],
+}
+
+export function PhaseTear({ onComplete, maxTier = 'common' }: PhaseTearProps) {
   const { tier, degradeToLite } = useRenderTier()
 
   if (tier === 'lite') {
-    return <PhaseTearFallback onComplete={onComplete} />
+    return <PhaseTearFallback onComplete={onComplete} maxTier={maxTier} />
   }
 
-  return <PhaseTear3D onComplete={onComplete} onDegrade={degradeToLite} />
+  return <PhaseTear3D onComplete={onComplete} onDegrade={degradeToLite} maxTier={maxTier} />
 }
 
-function PhaseTear3D({ onComplete, onDegrade }: PhaseTearProps & { onDegrade: () => void }) {
+function PhaseTear3D({
+  onComplete,
+  onDegrade,
+  maxTier = 'common',
+}: PhaseTearProps & { onDegrade: () => void }) {
   const [isCompleted, setIsCompleted] = useState(false)
   const [tearProgress, setTearProgress] = useState(0)
+
+  const rank = tierRank(maxTier)
+  // El estallido dura más cuanto mejor la rareza (1.1s común … 1.7s legendary).
+  const completeMs = 1100 + rank * 150
+  const completeS = completeMs / 1000
 
   const handleProgressChange = (progress: number) => {
     setTearProgress(progress)
@@ -47,7 +72,9 @@ function PhaseTear3D({ onComplete, onDegrade }: PhaseTearProps & { onDegrade: ()
   const handleTearComplete = () => {
     setIsCompleted(true)
     setTearProgress(1)
-    setTimeout(() => onComplete(), 1100)
+    vibrate(TEAR_HAPTICS[rank] ?? 30)
+    // TODO(3.10): disparar sonido del "complete" acá cuando exista el asset.
+    setTimeout(() => onComplete(), completeMs)
   }
 
   return (
@@ -88,9 +115,9 @@ function PhaseTear3D({ onComplete, onDegrade }: PhaseTearProps & { onDegrade: ()
       <AnimatePresence>
         {isCompleted && (
           <>
-            <CompleteFlash />
-            <CompleteParticles />
-            <CompleteAura />
+            <CompleteFlash rank={rank} durationS={completeS} />
+            <CompleteParticles rank={rank} durationS={completeS} />
+            <CompleteAura rank={rank} durationS={completeS} />
           </>
         )}
       </AnimatePresence>
@@ -102,17 +129,19 @@ function PhaseTear3D({ onComplete, onDegrade }: PhaseTearProps & { onDegrade: ()
  * Flash radial dorado fullscreen.
  * Empieza pequeño y se expande hasta cubrir toda la pantalla.
  * Gradient: blanco → dorado → transparente. Sensación de luz cegadora.
+ * `rank` escala el pico de expansión (legendary llena más la pantalla).
  */
-function CompleteFlash() {
+function CompleteFlash({ rank, durationS }: { rank: number; durationS: number }) {
+  const peak = 1.4 * (1 + rank * 0.08) // common 1.4 … legendary ~1.85
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.1 }}
       animate={{
         opacity: [0, 1, 1, 0],
-        scale: [0.1, 1, 1.2, 1.4],
+        scale: [0.1, 1, peak * 0.85, peak],
       }}
       transition={{
-        duration: 1.1,
+        duration: durationS,
         times: [0, 0.35, 0.8, 1],
         ease: 'easeOut',
       }}
@@ -133,13 +162,15 @@ function CompleteFlash() {
 /**
  * Aura dorada sutil que perdura más tiempo que el flash. Da continuidad
  * visual mientras el sobre desaparece y antes de que aparezcan las cards.
+ * `rank` sube el pico de opacidad (legendary se siente más cargado).
  */
-function CompleteAura() {
+function CompleteAura({ rank, durationS }: { rank: number; durationS: number }) {
+  const peakOpacity = Math.min(0.6 + rank * 0.08, 0.95)
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      animate={{ opacity: [0, 0.6, 0.4, 0] }}
-      transition={{ duration: 1.1, times: [0, 0.3, 0.7, 1] }}
+      animate={{ opacity: [0, peakOpacity, peakOpacity * 0.66, 0] }}
+      transition={{ duration: durationS, times: [0, 0.3, 0.7, 1] }}
       className="fixed inset-0 z-20 pointer-events-none"
       style={{
         background:
@@ -150,19 +181,21 @@ function CompleteAura() {
 }
 
 /**
- * 24 partículas doradas que explotan radialmente desde el centro.
+ * Partículas doradas que explotan radialmente desde el centro.
  * Ángulos distribuidos en 360° con jitter para no quedar simétrico.
+ * `rank` escala cantidad, distancia y tamaño (legendary = estallido más denso).
  */
-function CompleteParticles() {
+function CompleteParticles({ rank, durationS }: { rank: number; durationS: number }) {
+  const count = 20 + rank * 7 // común 20 … legendary 48
   return (
     <div className="fixed inset-0 z-40 pointer-events-none flex items-center justify-center">
-      {Array.from({ length: 24 }).map((_, i) => {
-        const baseAngle = (i / 24) * Math.PI * 2
+      {Array.from({ length: count }).map((_, i) => {
+        const baseAngle = (i / count) * Math.PI * 2
         const angle = baseAngle + (Math.random() - 0.5) * 0.6
-        const distance = 150 + Math.random() * 250
+        const distance = 150 + rank * 30 + Math.random() * 250
         const px = Math.cos(angle) * distance
         const py = Math.sin(angle) * distance
-        const size = 4 + Math.random() * 6
+        const size = 4 + rank * 0.8 + Math.random() * 6
         const delay = Math.random() * 0.1
 
         return (
@@ -177,7 +210,7 @@ function CompleteParticles() {
               scale: [0, 1.2, 1, 0.5],
             }}
             transition={{
-              duration: 1.1,
+              duration: durationS,
               delay,
               times: [0, 0.15, 0.7, 1],
               ease: 'easeOut',
@@ -196,7 +229,12 @@ function CompleteParticles() {
   )
 }
 
-function PhaseTearFallback({ onComplete }: PhaseTearProps) {
+function PhaseTearFallback({ onComplete, maxTier = 'common' }: PhaseTearProps) {
+  const handleOpen = () => {
+    vibrate(TEAR_HAPTICS[tierRank(maxTier)] ?? 30)
+    onComplete()
+  }
+
   return (
     <motion.div
       key="tear-fallback"
@@ -208,7 +246,7 @@ function PhaseTearFallback({ onComplete }: PhaseTearProps) {
       <Sobre type="daily" state="closed" size="lg" showTypeLabel={false} />
       <button
         type="button"
-        onClick={onComplete}
+        onClick={handleOpen}
         className="px-6 py-3 rounded-md bg-(--color-argentina-glow) text-(--color-surface-deep) font-medium"
       >
         Abrir sobre
