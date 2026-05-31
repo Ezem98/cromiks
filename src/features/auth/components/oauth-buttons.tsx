@@ -1,14 +1,19 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { signInWithGoogle } from '@/features/auth/actions'
 
 /**
  * Botones de OAuth providers.
  *
  * Por ahora: solo Google.
  * Apple lo agregamos cuando tengamos Apple Developer activo.
+ *
+ * El flow lo inicia el Route Handler /auth/login (ver route.ts). Navegamos ahí
+ * con `window.location` —NO con <Link>— a propósito: <Link> prefetchea la ruta,
+ * lo que dispararía un /authorize huérfano (crea un flow_state + cookie PKCE que
+ * nadie consume) → riesgo de bad_oauth_state. Un GET full-page es idempotente:
+ * un doble-click solo recarga.
  *
  * El botón usa la SVG oficial del logo de Google que Google permite
  * usar bajo sus brand guidelines.
@@ -19,19 +24,25 @@ type OAuthButtonsProps = {
 }
 
 export function OAuthButtons({ ctaText = 'Continuar con Google' }: OAuthButtonsProps) {
-  const [isPending, startTransition] = useTransition()
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   const handleGoogle = () => {
-    startTransition(async () => {
-      await signInWithGoogle()
-    })
+    if (isRedirecting) return
+    setIsRedirecting(true)
+    window.location.href = '/auth/login?provider=google'
   }
 
   return (
     <div className="space-y-2">
-      <Button type="button" variant="ghost" size="full" onClick={handleGoogle} disabled={isPending}>
+      <Button
+        type="button"
+        variant="ghost"
+        size="full"
+        onClick={handleGoogle}
+        disabled={isRedirecting}
+      >
         <GoogleIcon className="size-5" />
-        {isPending ? 'Conectando…' : ctaText}
+        {isRedirecting ? 'Conectando…' : ctaText}
       </Button>
     </div>
   )

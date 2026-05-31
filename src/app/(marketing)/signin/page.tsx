@@ -16,6 +16,7 @@ const errorMessages: Record<string, string> = {
   invalid_code: 'El link venció o ya fue usado. Probá pedir un código nuevo.',
   oauth_failed: 'No pudimos conectar con Google. Probá con email.',
   oauth_no_url: 'Algo salió mal con el login. Probá con email.',
+  oauth_retry: 'Se venció el intento de login. Volvé a tocar “Continuar con Google”.',
 }
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
