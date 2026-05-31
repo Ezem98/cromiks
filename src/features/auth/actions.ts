@@ -111,38 +111,6 @@ export async function signOut(): Promise<void> {
   redirect('/signin')
 }
 
-/**
- * Inicia el flow de OAuth con Google.
- *
- * Genera una URL de autorización con Google y redirige al user ahí.
- * Cuando Google termina (acepta o rechaza), redirige de vuelta a
- * /auth/callback?code=... que intercambia el code por una sesión.
- *
- * Este action no retorna AuthResult — directamente hace redirect.
- */
-export async function signInWithGoogle(): Promise<void> {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      queryParams: {
-        access_type: 'offline',
-        prompt: 'consent',
-      },
-    },
-  })
-
-  if (error) {
-    console.error('[auth] signInWithGoogle:', error.message)
-    redirect('/signin?error=oauth_failed')
-  }
-
-  if (!data.url) {
-    redirect('/signin?error=oauth_no_url')
-  }
-
-  // Redirigir al user a Google para que se loguee
-  redirect(data.url)
-}
+// El flow de OAuth con Google vive ahora en el Route Handler /auth/login
+// (src/app/auth/login/route.ts). Se movió desde acá para evitar las carreras de
+// cookie PKCE / doble-invoke de iniciarlo en un server action → bad_oauth_state.

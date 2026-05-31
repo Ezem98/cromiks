@@ -15,6 +15,23 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/'
 
+  // El provider (Supabase) puede redirigir acá con error en vez de code: p.ej.
+  // ?error=invalid_request&error_code=bad_oauth_state cuando el state venció o
+  // fue replayado (back, refresh, doble intento). Lo tratamos como "reintentá",
+  // no como link inválido.
+  const providerError = searchParams.get('error')
+  if (providerError) {
+    const errorCode = searchParams.get('error_code')
+    console.error(
+      '[auth/callback] provider error:',
+      providerError,
+      errorCode,
+      searchParams.get('error_description'),
+    )
+    const signinError = errorCode === 'bad_oauth_state' ? 'oauth_retry' : 'oauth_failed'
+    return NextResponse.redirect(`${origin}/signin?error=${signinError}`)
+  }
+
   if (!code) {
     return NextResponse.redirect(`${origin}/signin?error=missing_code`)
   }
