@@ -25,7 +25,7 @@
 #           license:       cc-by | cc-by-sa | cc0 | all-rights-reserved | ai-generated | "TODO"
 #           legal_posture: licensed | takedown  (≠ license: si va por baja-a-pedido)
 #           # --- OUTPUT (lo completa la CLI, NO editar a mano) ---
-#           asset:         key R2 = cromos/<album>/<card_id>.webp (la URL servida es ${R2_PUBLIC_BASE}/${asset})
+#           asset:         key R2 = cromos/<album>/<card_id>.<hash>.webp (la URL servida es ${R2_PUBLIC_BASE}/${asset})
 #           credit:        string armado de author+license+source para alt/caption
 #           fetched_at:    fecha de obtención
 #           content_hash:  sha256 del asset (change-detection en --force, no dedup cross-card)

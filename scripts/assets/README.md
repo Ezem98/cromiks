@@ -2,7 +2,7 @@
 
 Toma `content.photo.source_url` de cada cromo del catálogo, baja la imagen, la
 normaliza (3:4 · 800x1066 · WebP <200KB), la sube a Cloudflare R2 con key
-determinístico (`cromos/<album>/<card_id>.webp`) y escribe la provenance de vuelta
+con hash de versión (`cromos/<album>/<card_id>.<hash>.webp`) y escribe la provenance de vuelta
 en el YAML (`asset`, `credit`, `author`, `license`, `status=published`,
 `fetched_at`, `content_hash`). Después un `pnpm seed` proyecta eso a `card_assets`.
 

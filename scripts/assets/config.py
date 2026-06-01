@@ -5,7 +5,7 @@ Lee credenciales del entorno (.env.local). Separa los dos mundos de R2:
   - SUBIR (privado): R2_ENDPOINT (S3 API) + keys → boto3.
   - SERVIR (público): assets.cromiks.app → lo arma el resolver TS, NO se usa acá.
 
-La CLI escribe en el YAML solo la `r2_key` (cromos/<album>/<card_id>.webp); la URL
+La CLI escribe en el YAML solo la `r2_key` (cromos/<album>/<card_id>.<hash>.webp); la URL
 servida se compone en runtime como ${NEXT_PUBLIC_R2_PUBLIC_BASE}/${r2_key}.
 """
 
@@ -109,9 +109,17 @@ def make_s3_client(settings: Settings):
     )
 
 
-def build_key(album_id: str, card_id: str) -> str:
-    """Key determinístico del asset. Un asset por cromo."""
-    return f"cromos/{album_id}/{card_id}.webp"
+def build_key(album_id: str, card_id: str, content_hash: str) -> str:
+    """
+    Key del asset, con un hash de versión: cromos/<album>/<card_id>.<hash8>.webp.
+
+    El hash (primeros 8 hex del sha256 del WebP) hace que cada imagen DISTINTA tenga
+    su propia URL → el `Cache-Control: immutable` es correcto y reemplazar una foto
+    (re-curar + --force) genera una URL nueva sin caché vieja pegada. El objeto viejo
+    queda huérfano (GC = F2). Misma imagen → mismo hash → misma key (idempotente).
+    """
+    h = content_hash.split(":", 1)[-1][:8]
+    return f"cromos/{album_id}/{card_id}.{h}.webp"
 
 
 def upload_webp(client, bucket: str, key: str, data: bytes) -> None:

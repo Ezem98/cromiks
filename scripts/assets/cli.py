@@ -122,7 +122,7 @@ def main() -> int:
                 skipped.append((cid, "sin cambios (hash igual)"))
                 continue
 
-            key = build_key(catalog.album_id, cid)
+            key = build_key(catalog.album_id, cid, digest)
             size_kb = len(webp) // 1024
             notes = list(src_res.notes) + list(warns)
 
