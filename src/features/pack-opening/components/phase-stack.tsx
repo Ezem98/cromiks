@@ -8,6 +8,7 @@ import { TierLabel } from '@/components/domain/tier-label'
 import { Button } from '@/components/ui/button'
 import { vibrate } from '@/lib/haptics'
 import { useRenderTier } from '@/lib/hooks/use-render-tier'
+import { playReveal } from '@/lib/sound'
 import { cn } from '@/lib/utils'
 import { type RevealedCard, type Tier, tierRank } from '../types'
 
@@ -294,8 +295,9 @@ function RevealedView({
   // Tick háptico al revelar la card, escalado por rareza. RevealedView se
   // re-montea por card (key en el AnimatePresence), así que corre una vez c/u.
   useEffect(() => {
-    vibrate(REVEAL_HAPTICS[tierRank(revealedCard.tier)] ?? 15)
-    // TODO(3.10): sonido del reveal por tier acá cuando exista el asset.
+    const rank = tierRank(revealedCard.tier)
+    vibrate(REVEAL_HAPTICS[rank] ?? 15)
+    playReveal(rank)
   }, [revealedCard.tier])
 
   // El "Siguiente" en la última card se reemplaza por el flow natural al summary

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { Sobre } from '@/components/domain/sobre'
 import { vibrate } from '@/lib/haptics'
 import { useRenderTier } from '@/lib/hooks/use-render-tier'
+import { playComplete } from '@/lib/sound'
 import { type Tier, tierRank } from '../types'
 
 // Lazy load del 3D scene
@@ -73,7 +74,7 @@ function PhaseTear3D({
     setIsCompleted(true)
     setTearProgress(1)
     vibrate(TEAR_HAPTICS[rank] ?? 30)
-    // TODO(3.10): disparar sonido del "complete" acá cuando exista el asset.
+    playComplete(rank)
     setTimeout(() => onComplete(), completeMs)
   }
 
@@ -231,7 +232,9 @@ function CompleteParticles({ rank, durationS }: { rank: number; durationS: numbe
 
 function PhaseTearFallback({ onComplete, maxTier = 'common' }: PhaseTearProps) {
   const handleOpen = () => {
-    vibrate(TEAR_HAPTICS[tierRank(maxTier)] ?? 30)
+    const rank = tierRank(maxTier)
+    vibrate(TEAR_HAPTICS[rank] ?? 30)
+    playComplete(rank)
     onComplete()
   }
 

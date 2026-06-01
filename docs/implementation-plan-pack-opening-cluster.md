@@ -2,7 +2,7 @@
 
 **Sesión**: 31 mayo 2026
 **Rama**: `feat/pack-opening-render-tier`
-**Estado**: F1 + F2 + F3 + F4 completas (type-check + biome OK). Sonido (3.10) diferido (sin asset).
+**Estado**: F1 + F2 + F3 + F4 completas (type-check + biome OK), incluido sonido (3.10) sintetizado con Web Audio.
 
 Refinamiento del cluster de pack-opening que quedó pendiente. Tres sub-metas:
 
@@ -110,8 +110,11 @@ binario full/lite.
 - ✅ **Haptics** (3.11): `src/lib/haptics.ts` (`vibrate`, no-op sin soporte o con
   reduced-motion). Patrón escalado por rareza en el tear-complete y un tick por card en
   el reveal. También en el botón del path lite.
-- 🚧 **Sonido** (3.10): diferido (no hay asset). Puntos de enganche marcados con
-  `TODO(3.10)` en `phase-tear.tsx` y `phase-stack.tsx`.
+- ✅ **Sonido** (3.10): `src/lib/sound.ts` sintetiza SFX con Web Audio API
+  (arpegio que escala por rareza), sin assets ni licencia. `playComplete(rank)` en
+  el tear-complete (full + lite) y `playReveal(rank)` por card. Guards: no-op en
+  SSR / sin Web Audio / con mute (`localStorage['cromiks:muted']`). Swap a samples
+  reales = reemplazar `playArpeggio` por un loader de AudioBuffer desde `public/sounds/`.
 
 ---
 
