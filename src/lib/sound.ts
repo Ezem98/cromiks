@@ -25,12 +25,26 @@ function getCtx(): AudioContext | null {
   return ctx
 }
 
-function isMuted(): boolean {
-  if (typeof window === 'undefined') return true
+const MUTED_KEY = 'cromiks:muted'
+
+/** Lee la preferencia de mute persistida. Default: con sonido (false). */
+export function getMuted(): boolean {
+  if (typeof window === 'undefined') return false
   try {
-    return window.localStorage.getItem('cromiks:muted') === 'true'
+    return window.localStorage.getItem(MUTED_KEY) === 'true'
   } catch {
     return false
+  }
+}
+
+/** Setea/limpia la preferencia de mute. */
+export function setMuted(value: boolean): void {
+  if (typeof window === 'undefined') return
+  try {
+    if (value) window.localStorage.setItem(MUTED_KEY, 'true')
+    else window.localStorage.removeItem(MUTED_KEY)
+  } catch {
+    // localStorage bloqueado — lo ignoramos
   }
 }
 
@@ -82,12 +96,12 @@ function clampRank(rank: number): number {
 
 /** Tick del reveal de una card. Corto; escala con la rareza (rank 0..4). */
 export function playReveal(rank = 0): void {
-  if (isMuted()) return
+  if (getMuted()) return
   playArpeggio(TIER_NOTES[clampRank(rank)], { gap: 0.04, dur: 0.18, gain: 0.12 })
 }
 
 /** Estallido del "complete" del tear. Más grande y sostenido; escala con la rareza máxima. */
 export function playComplete(rank = 0): void {
-  if (isMuted()) return
+  if (getMuted()) return
   playArpeggio(TIER_NOTES[clampRank(rank)], { gap: 0.07, dur: 0.5, gain: 0.2 })
 }

@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { revalidateHomeAfterOpen } from '../actions'
 import { maxTierOf, type OpenPackResult } from '../types'
 import { usePackOpening } from '../use-pack-opening'
+import { MuteToggle } from './mute-toggle'
 import { PhaseAnticipation } from './phase-anticipation'
 import { PhaseStack } from './phase-stack'
 import { PhaseOutro, PhaseSummary } from './phase-summary'
@@ -47,6 +48,9 @@ export function PackOpeningFlow({ result, currentStreak }: PackOpeningFlowProps)
 
   return (
     <div className="relative">
+      {/* Mute toggle — fijo arriba izquierda durante las fases con sonido */}
+      {phase !== 'outro' && phase !== 'summary' && <MuteToggle />}
+
       {/* Skip button — fijo arriba derecha durante fases interactivas */}
       {phase !== 'outro' && phase !== 'summary' && (
         <button
