@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs'
 import { headers } from 'next/headers'
 import { ImageResponse } from 'next/og'
+import { getCardImage } from '@/lib/cards/card-image-map'
 import { getRateLimiter } from '@/lib/ratelimit'
 import { createClient } from '@/lib/supabase/server'
 
@@ -29,11 +30,11 @@ import { createClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 
-// Cache de 1h. La imagen es determinística por (cardId, username), pero si
-// cambia la foto/nombre/rareza del cromo en DB necesitamos que se regenere
-// eventualmente. Sin esto Vercel cachea para siempre y los posts viejos
-// muestran data vieja (B-07). 1h es un balance razonable.
-export const revalidate = 3600
+// Cache de 5min (ISR). La imagen embebe la foto del cromo desde card_assets, así
+// que un TAKEDOWN tiene que caer del preview rápido (no en 1h). Las otras 4
+// superficies (album/cromo/u, dinámicas) reflejan la baja al instante; la OG es la
+// única cacheada, y 5min equilibra eso contra el costo de re-render de Satori.
+export const revalidate = 300
 
 type RouteParams = {
   params: Promise<{ cardId: string }>
@@ -117,7 +118,7 @@ async function buildCardImage(request: Request, params: RouteParams['params']) {
   const supabase = await createClient()
   const { data: card } = await supabase
     .from('cards')
-    .select('id, card_number, name, rarity, metadata, content')
+    .select('id, card_number, name, rarity, metadata')
     .eq('id', cardId)
     .single()
 
@@ -130,10 +131,9 @@ async function buildCardImage(request: Request, params: RouteParams['params']) {
     club?: string
     number?: string | number
   }
-  const content = (card.content ?? {}) as { photo?: { source?: string } }
-  const photoSource = content?.photo?.source
-  const hasRealPhoto =
-    !!photoSource && photoSource !== '' && photoSource !== 'TODO' && photoSource.startsWith('http')
+  // Imagen desde card_assets vía el resolver (gate de takedown). Satori la
+  // fetchea server-side; si es null, CromoBlock cae al gradient + número.
+  const imageUrl = await getCardImage(supabase, card.id)
 
   const playerRole = [metadata.position, metadata.club].filter(Boolean).join(' · ')
   const isLegendary = card.rarity === 'legendary'
@@ -210,7 +210,7 @@ async function buildCardImage(request: Request, params: RouteParams['params']) {
           name={card.name}
           number={metadata.number != null ? String(metadata.number) : ''}
           cardNumber={card.card_number}
-          imageUrl={hasRealPhoto ? photoSource : undefined}
+          imageUrl={imageUrl ?? undefined}
           palette={palette}
         />
 

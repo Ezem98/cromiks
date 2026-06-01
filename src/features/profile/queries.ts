@@ -1,4 +1,5 @@
 import 'server-only'
+import { getCardImageMap } from '@/lib/cards/card-image-map'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -137,7 +138,6 @@ export async function getProfileByUsername(username: string): Promise<ProfilePub
           name,
           rarity,
           metadata,
-          content,
           album_id
         )
       `)
@@ -147,25 +147,31 @@ export async function getProfileByUsername(username: string): Promise<ProfilePub
       .limit(12), // máximo 12 pineados en el perfil público
   ])
 
+  // Normalizamos las filas del join (TS lo tipea raro) antes de mapear.
+  const pinnedRows = (pinnedRes.data ?? []).map(
+    (row) =>
+      row.cards as unknown as {
+        id: string
+        card_number: number
+        name: string
+        rarity: ProfilePinnedCard['tier']
+        metadata: Record<string, unknown> | null
+      },
+  )
+
+  // Imagen de cada pineado desde card_assets vía el resolver (gate de takedown).
+  const cardImageMap = await getCardImageMap(
+    supabase,
+    pinnedRows.map((c) => c.id),
+  )
+
   // Mapeo de cards pineadas al shape del componente
-  const pinnedCards: ProfilePinnedCard[] = (pinnedRes.data ?? []).map((row) => {
-    // El join inline retorna como objeto. TS lo tipea raro a veces.
-    const card = row.cards as unknown as {
-      id: string
-      card_number: number
-      name: string
-      rarity: ProfilePinnedCard['tier']
-      metadata: Record<string, unknown> | null
-      content: Record<string, unknown> | null
-    }
+  const pinnedCards: ProfilePinnedCard[] = pinnedRows.map((card) => {
     const metadata = (card.metadata ?? {}) as {
       position?: string
       club?: string
       number?: string | number
     }
-    const content = (card.content ?? {}) as { photo?: { source?: string } }
-    const photoSource = content?.photo?.source
-    const hasRealPhoto = !!photoSource && photoSource !== '' && photoSource !== 'TODO'
 
     return {
       id: card.id,
@@ -177,7 +183,7 @@ export async function getProfileByUsername(username: string): Promise<ProfilePub
           ? [metadata.position, metadata.club].filter(Boolean).join(' · ')
           : null,
       number: metadata.number != null ? String(metadata.number) : null,
-      imageUrl: hasRealPhoto ? photoSource : null,
+      imageUrl: cardImageMap.get(card.id) ?? null,
     }
   })
 

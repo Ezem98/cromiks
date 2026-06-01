@@ -10,6 +10,21 @@ import type { NextConfig } from 'next'
 const jiti = createJiti(import.meta.url)
 jiti('./src/env')
 
+// Host del CDN de assets (R2 bindeado a dominio propio). Lo derivamos de
+// NEXT_PUBLIC_R2_PUBLIC_BASE para no hardcodear el dominio: seteás la env var y
+// remotePatterns la sigue. Si no está (R2 sin cablear), queda vacío y el resolver
+// devuelve null igual. El cromo igual sirve la imagen con `unoptimized` (la CLI ya
+// entrega el WebP en tamaño final), así que no pasa por el optimizer de Next.
+const r2Host = (() => {
+  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_BASE
+  if (!base) return null
+  try {
+    return new URL(base).hostname
+  } catch {
+    return null
+  }
+})()
+
 const config: NextConfig = {
   reactStrictMode: true,
   // typedRoutes desactivado por ahora.
@@ -38,10 +53,10 @@ const config: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    remotePatterns: [
-      // Cloudflare R2 (configurar cuando esté el bucket)
-      // { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
-    ],
+    // Solo el host de R2 (dominio propio bindeado). El cromo sirve con
+    // `unoptimized`, así que esto es defensa en profundidad por si algún
+    // next/image optimizado consume R2 en el futuro.
+    remotePatterns: r2Host ? [{ protocol: 'https', hostname: r2Host }] : [],
   },
   // Exponer envs de Railway al cliente. Railway no las auto-injecta como
   // NEXT_PUBLIC_ (Vercel sí). Esto inlinea los valores en el bundle client al

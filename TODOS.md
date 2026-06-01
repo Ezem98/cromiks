@@ -17,6 +17,8 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 **Depends on:** Which hero page is chosen for the beta (determines which legendaries' stills are needed first). croacia was floated (Gvardiol gambeta + Julián run).
 
+**Estado (2026-05-31):** Se consideró resolverlo con ilustración de firma para los héroes (cero IP en los stills) pero el usuario **descartó la ilustración: el álbum va foto real en los 205**. Por lo tanto T-01 **sigue ABIERTO** — los stills de legendarios van por la postura foto + crédito + takedown del pipeline de imágenes (design doc `~/.gstack/projects/Ezem98-cromiks/emachado-feat-pack-opening-render-tier-design-*.md`), que es la máxima exposición legal del álbum. Si la postura takedown no alcanza para los momentos más litigados, este TODO es dónde reconsiderarlo.
+
 ---
 
 ## T-02 · Beta lifespan / page-2 expansion lever
@@ -63,6 +65,23 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 **Depends on:** pack-pool (ya en main). Hacer ANTES de invitar la cohorte.
 
 **Priority:** P1
+
+---
+
+## T-05 · CI de validación del catálogo (crédito obligatorio)
+
+**What:** GitHub Action que parsea `catalog/*.yaml` y falla el PR si algún asset con `status: published` no tiene `credit` + `author` + `license`.
+
+**Why:** La postura legal del álbum (scrape-anything con crédito + takedown, decidida 2026-05-31 con asesoría legal) depende de que NINGUNA foto se publique sin atribución. La CLI ya valida al escribir, pero una edición a mano del YAML que se saltee la CLI puede publicar sin crédito y nadie lo atrapa. Surgido en /plan-eng-review (2026-05-31).
+
+**Pros:** Enforced a nivel CI el invariante "published ⇒ tiene crédito"; red de seguridad contra ediciones manuales.
+**Cons:** No bloquea la beta (la CLI ya cubre el caso normal); scope extra de workflow.
+
+**Context:** Punto de cambio: `.github/workflows/`. El validador puede reusar el parse del catálogo. Va de la mano del schema nuevo del bloque `photo` (`source_url`/`asset`/`credit`/`author`/`license`/`legal_posture`/`status`). Ver design doc `~/.gstack/projects/Ezem98-cromiks/emachado-feat-pack-opening-render-tier-design-*.md`.
+
+**Depends on:** Pipeline de imágenes (schema nuevo + `card_assets`) shipped.
+
+**Priority:** P3 (post-beta)
 
 ---
 

@@ -1,210 +1,162 @@
 # Assets · Fotos para los cromos
 
-Cómo y dónde conseguir las fotos de los ~150 cromos que hoy están en `content.photo.source: TODO`.
+Cómo curar y publicar las fotos de los cromos. **Foto real en los 205** (la
+ilustración custom se evaluó y se descartó). Postura: imágenes de cualquier fuente
+pública HQ + **crédito + takedown a pedido** (decisión con asesoría legal).
 
-⚠️ **Cromiks es un proyecto tributo gratuito**, no comercial. Eso amplía un poco lo permitido vs un producto comercial, pero **no excluye respeto a copyright**. Las fotos del Mundial 2022 son altamente licenciadas (Getty / AP / Reuters dominan ese mercado).
+> ⚠️ Cromiks es un homenaje **no comercial**. Eso amplía lo permitido vs un producto
+> comercial, pero no excluye copyright. El régimen es: rehosteamos a R2, acreditamos,
+> y bajamos a pedido en < 1 min (un `UPDATE` de SQL, sin redeploy).
+
+El "cómo" mecánico vive en **[`scripts/assets/README.md`](../../scripts/assets/README.md)**.
+Acá está el "qué fuente, con qué riesgo, y el flujo de punta a punta".
 
 ---
 
-## 🚦 Niveles de riesgo
+## 🔁 El flujo (de punta a punta)
 
-### ✅ SAFE — Usar libremente
+```
+1. Curás en el YAML        →   2. Corrés la CLI         →   3. pnpm seed        →  4. Se ve
+   content.photo.source_url     fetch → normalize 3:4        proyecta a              en las 5
+   + source_kind                → upload R2 → write_back     card_assets             superficies
+```
 
-| Fuente | Pros | Contras | URL |
-|---|---|---|---|
-| **Wikimedia Commons** | Casi todos los jugadores tienen 1+ foto CC-BY o CC0. Búsqueda por nombre del jugador → página tiene "Media in this category" | Las fotos no son siempre del Mundial 2022 específico (a veces son de partidos de club previos) | https://commons.wikimedia.org/ |
-| **Flickr (filtro CC)** | Fotógrafos amateurs profesionales suben acá con CC-BY. Hay material del Mundial | Requiere atribución estricta + variable calidad | https://www.flickr.com/search/?license=2%2C3%2C4%2C5%2C6%2C9 |
-| **Unsplash** | Genéricas de fútbol — útiles para fondos / placeholders / cromos secundarios "estadio", "afición", etc. | Poco material específico del Mundial 2022 | https://unsplash.com/s/photos/soccer |
-| **Pexels** | Similar a Unsplash | Mismo issue | https://www.pexels.com/search/football/ |
-| **Pixabay** | Similar | Mismo issue | https://pixabay.com/images/search/football/ |
+1. **Curar** (a mano, en `catalog/eterno-diciembre.yaml`): pegás `source_url` y
+   `source_kind` en el cromo. Para `direct`, completá también `author` + `license`.
+2. **CLI** (`python scripts/assets/cli.py --only <card_id>`): baja la imagen, la
+   normaliza (3:4 · 800x1066 · WebP <200KB), la sube a R2 con key versionado por hash,
+   y escribe `asset`/`credit`/`author`/`license`/`status=published`/`content_hash` de
+   vuelta en el YAML. Probá primero con `--dry-run`.
+3. **`pnpm seed`**: proyecta el bloque `photo` a la tabla `card_assets`.
+4. La app sirve `${NEXT_PUBLIC_R2_PUBLIC_BASE}/${r2_key}` (= `assets.cromiks.app/...`).
 
-### ⚠️ GREY ZONE — Usar con cuidado
+El catálogo (YAML) es la **fuente de verdad**; `card_assets` es su proyección.
 
+### Schema del bloque `photo`
+
+```yaml
+content:
+  photo:
+    # --- INPUT (curado a mano) ---
+    type:          official | video_capture | collage | social-media
+    source_url:    URL de la fuente (o "TODO")
+    source_kind:   wikimedia | direct | x | instagram | manual | "TODO"
+    author:        autor/fotógrafo (para crédito)   # direct/x: a mano
+    license:       cc-by | cc-by-sa | cc0 | all-rights-reserved | ai-generated
+    legal_posture: licensed | takedown
+    # --- OUTPUT (lo completa la CLI, no editar a mano) ---
+    asset:         cromos/<album>/<card_id>.<hash>.webp
+    credit:        string armado para alt/caption
+    fetched_at:    fecha de obtención
+    content_hash:  sha256 del WebP
+    status:        pending | published | takedown
+```
+
+---
+
+## 🔌 Adapters (qué `source_kind` funciona)
+
+| source_kind | Qué pegás | Notas |
+|---|---|---|
+| **wikimedia** | link de Commons (file page o thumb) | **el más sólido**: saca autor + licencia solo (CC-BY/CC-BY-SA/CC0) |
+| **direct** | URL directa de la imagen (`.../foto.jpg`) | `author`/`license` a mano en el YAML |
+| **x** | link del tweet (`x.com/.../status/123`) | syndication API (sin login); foto full-res + @autor; `all-rights-reserved` |
+| **instagram** | link del post (`instagram.com/p/...`) | **best-effort** (suele requerir login: `IG_USERNAME` + `instaloader --login`). Alto riesgo legal |
+
+YouTube (frames de video para los momentos legendarios) y `self-capture` quedan para F2.
+
+---
+
+## 🚦 Niveles de riesgo por fuente
+
+### ✅ SAFE — libre, con atribución
 | Fuente | Notas |
 |---|---|
-| **AI generation** (Midjourney, Gemini, DALL-E, Flux) | Generar "portraits estilizados" de jugadores. Legalmente raro (la IA puede haberse entrenado con fotos licenciadas), pero **para tributo no comercial** es lo que muchos proyectos similares hacen. Importante: declarar que son AI en `/about` |
-| **YouTube oficial FIFA highlights** | Hay highlight reels en HD. Capturar frame + editar. Técnicamente fair use para tributo, pero no es "safe" — FIFA puede mandar takedown |
-| **AFA media kit** | Press materials de la AFA. Para uso no comercial / editorial puede ir. Ideal: contactarlos explicando el proyecto |
-| **Press / news photos en webs públicas** | Las fotos que aparecen en clarin.com, lanacion.com, etc son casi todas Getty/AP. **Cuidado** |
+| **Wikimedia Commons** | Casi todos los jugadores tienen 1+ foto CC-BY/CC0. `source_kind: wikimedia` resuelve autor/licencia solo. |
+| **Flickr (filtro CC)** | CC-BY, requiere atribución estricta. Pegás la URL directa de la imagen (`source_kind: direct`). |
+| **Unsplash / Pexels / Pixabay** | Genéricas (estadios, hinchada, fondos). `direct`. |
 
-### ❌ AVOID — Riesgo legal real
-
-| Fuente | Por qué evitar |
+### ⚠️ GREY ZONE — con cuidado, crédito + takedown
+| Fuente | Notas |
 |---|---|
-| **Getty Images / AP / Reuters / AFP** | Detectan automáticamente. Sus marcas de agua se ven en el 90% de los resultados de Google Images del Mundial 2022 |
-| **Instagram de medios** | Mismas fotos licenciadas, redistribuir es violación clara |
-| **Sitios de Panini Adrenalyn / álbumes físicos competidores** | IP propia + competencia directa |
-| **Fotos taggueadas como "official FIFA"** | FIFA es agresivo con copyright |
+| **AI generation** (Midjourney/Flux/DALL-E) | Para gaps sin foto buena. `license: ai-generated` y declarado como tal. Prompts abajo. |
+| **X / posts públicos** | `source_kind: x`. Copyright del autor → `all-rights-reserved` + takedown. |
+| **AFA media kit / prensa pública** | Mejor pedir permiso. La mayoría son Getty/AP por abajo. |
 
-### 🎨 ALTERNATIVA — Ilustración custom
+### ❌ AVOID — riesgo legal real (los más litigantes)
+| Fuente | Por qué |
+|---|---|
+| **Getty / AP / Reuters / AFP** | Detección automática + watermarks. |
+| **Instagram de medios** | Mismas fotos licenciadas; redistribuir es violación clara. (El adapter `instagram` existe, pero es la fuente más caliente — usalo sabiendo el costo.) |
+| **Panini / álbumes competidores** | IP propia + competencia directa. |
+| **"official FIFA"** | FIFA es agresivo con copyright. |
 
-Probablemente la mejor opción para los **11 legendaries** y los **20-30 jugadores estrella**:
+---
 
-| Approach | Costo aproximado | Plazo |
+## 📐 Specs (las garantiza la CLI — no comprimas a mano)
+
+| Spec | Valor | Quién lo hace |
 |---|---|---|
-| **Fiverr** — buscar "trading card illustration" / "sports portrait" | USD 15-50 por cromo | 3-5 días por cromo |
-| **Behance / Instagram** — DM a ilustradores que te gusten | USD 30-150 por cromo | 1-2 semanas |
-| **Estilo "tribute illustration"** tipo cómic / semi-realista / esquemático | Más barato + más distintivo | — |
-| **Pack deal con ilustrador único** — el mismo estilo para todos los legendaries (paquete de 11) | USD 200-800 total | 2-4 semanas |
+| Ratio | 3:4 (vertical) | CLI: cover-crop centrado |
+| Resolución | 800x1066 | CLI: resize (NO upscalea; si la fuente es chica, flaggea y skip) |
+| Formato | WebP | CLI |
+| Tamaño | < 200KB | CLI: loop de calidad descendente (piso q≈60) |
+| Composición | sujeto centrado, fondo limpio | al curar: elegí una foto que crashee bien a 3:4 |
 
-### Ventajas de ir 100% ilustración
-
-- ✅ Cero IP issues (la ilustración es original)
-- ✅ Coherencia estética del álbum (todos los cromos con el mismo "feel")
-- ✅ Diferenciación del producto vs álbumes con fotos
-- ✅ Podemos pedir "exactamente el momento" que queremos (no depender de lo que hay disponible)
-- ❌ Mucho más caro y lento que usar fotos existentes
-- ❌ Si el ilustrador es malo, el álbum entero se ve amateur
+Si la CLI flaggea "resolución insuficiente", buscá una fuente más grande (el original
+de Commons suele ser más grande que el thumb `500px-`).
 
 ---
 
-## 📐 Recomendación por tier
+## 📦 Hosting — Cloudflare R2 (cableado)
 
-Mi sugerencia para repartir el catálogo:
+- Bucket **`cromiks-assets`**, dominio público **`assets.cromiks.app`** (R2 Custom Domain).
+- La CLI sube con boto3 (S3-compat). La app sirve por el dominio bindeado, con cert de
+  Cloudflare y `Cache-Control: immutable` (por eso el key lleva hash de versión).
+- Setup completo: **[`../r2-setup.md`](../r2-setup.md)**.
 
-| Tier | # cards | Fuente recomendada | Costo aprox |
-|---|---|---|---|
-| **Common** (130) | Estadios, aficionados, momentos secundarios, jugadores rotación | Wikimedia + Unsplash + Pexels | $0 |
-| **Uncommon** (40) | Jugadores titulares no-estrella, momentos del torneo | Wikimedia + Flickr CC | $0 |
-| **Rare** (20) | Goles secundarios, escenas icónicas | Wikimedia ediciones + AI generation | $0-100 (AI subs) |
-| **Epic** (14) | Jugadores estrella (Messi, Mbappé, Modric, Lloris) | Ilustración custom o AI premium | $200-700 |
-| **Legendary** (11) | LOS 11 momentos icónicos del Mundial | ⭐ **Ilustración custom obligatorio** | $500-1500 |
-
-**Total estimado**: USD 700-2300 si querés calidad pro en los legendaries + epics.
-
-**Mínimo viable**: USD 0 si usás Wikimedia para todo + AI para los legendaries.
+> Histórico: se evaluó Supabase Storage y se descartó en favor de R2 (TP-16).
 
 ---
 
-## 📋 Workflow recomendado
+## 📜 Créditos + takedown (automático)
 
-### Paso 1 — Inventariar
-Listar los 205 cromos del YAML y marcar qué cromos son:
-- A) Tienen jugador específico → necesitan foto del jugador
-- B) Son "momento" → necesitan ilustración del momento O foto del partido
-- C) Son ambiente / aficionados / estadios → fotos genéricas OK
-
-### Paso 2 — Sweep Wikimedia
-Para los del tipo A:
-1. Buscar nombre del jugador en https://commons.wikimedia.org/
-2. Filtrar por "Quality images" si hay
-3. Anotar URL + autor (atribución obligatoria)
-4. Descargar en alta resolución
-
-### Paso 3 — Llenar gaps con AI
-Para jugadores que no tienen foto buena en Wikimedia:
-- Prompt tipo: *"Portrait photo of [jugador], Argentina national team jersey blue and white stripes, professional sports photography, soft studio lighting, neutral background, photorealistic, high detail"*
-- Tools: Midjourney v6+, Flux, DALL-E 3
-- Iterar hasta que la cara se parezca al jugador real
-
-### Paso 4 — Ilustraciones para legendaries
-- Hacer brief con el momento específico (minuto, descripción, emoción)
-- Buscar ilustrador con estilo "sports tribute" / "cinematic illustration"
-- Pedir muestra antes de contratar pack completo
-
-### Paso 5 — Optimizar y hostear
-- Comprimir a JPG/WebP de **800x1066** (ratio 3:4 que matchea el cromo)
-- Subir a **Supabase Storage** o **Cloudinary** (CDN gratis hasta cierto límite)
-- Actualizar `catalog/eterno-diciembre.yaml` con la URL HTTPS pública
-- Re-correr `pnpm seed` (idempotente, updatea content.photo.source)
+- **Créditos:** `/about` lista autor · fuente · licencia de **cada foto publicada**,
+  leído de `card_assets` (no se mantiene a mano). Un cromo en `takedown` desaparece
+  también de los créditos.
+- **Takedown:** llega un pedido a `bajas@cromiks.app` →
+  `UPDATE card_assets SET status='takedown' WHERE card_id='...'` → la foto cae en las
+  5 superficies en < 1 min, sin redeploy. Es **terminal**: el reseed NUNCA la revive.
 
 ---
 
-## 📦 Hosting de imágenes
+## 🤖 Prompts para AI (gaps sin foto buena)
 
-| Opción | Pros | Contras | URL |
-|---|---|---|---|
-| **Supabase Storage** | Ya está integrado al proyecto. Free tier 1GB. CDN incluido | Bandwidth limitado en free | https://supabase.com/docs/guides/storage |
-| **Cloudinary** | Optimización automática (resize, format) | Setup adicional | https://cloudinary.com/ |
-| **Vercel Blob** | Si deployamos en Vercel, integración perfecta | Más caro que Supabase | https://vercel.com/docs/storage/vercel-blob |
-| **S3 / R2** (Cloudflare) | El más barato a escala | Setup más complejo | https://www.cloudflare.com/developer-platform/r2/ |
-
-⭐ **Mi recomendación**: Supabase Storage para arrancar. Ya está. Migrar a R2 si crecemos.
-
----
-
-## 🔧 Specs técnicos de las fotos
-
-Para que se vean bien en el componente `Cromo`:
-
-| Spec | Valor recomendado |
-|---|---|
-| Ratio | 3:4 (vertical) o 4:5 |
-| Resolución | 800x1066 px mínimo (para retina) |
-| Formato | WebP (con JPG fallback) |
-| Tamaño máx | ~200KB por imagen comprimida |
-| Composición | Sujeto centrado, fondo limpio (la card lo "enmarca") |
-| Color | Más punchy que aburrido — la card es dark, las fotos pop |
-| Crop | Cabeza + torso para jugadores. Wide shot para "momentos" |
-
----
-
-## 📜 Atribución y créditos
-
-Si usás fuentes CC-BY (Wikimedia, Flickr), hay que **acreditar al autor**. Plan:
-
-1. Página `/about` con sección "Créditos de imágenes" listando cada foto, autor, fuente, licencia
-2. Eventualmente, tooltip en el cromo en `/u/[username]` que muestre fuente (opcional)
-3. `CREDITS.md` actualizado con bloque de fotos
-
-Template de atribución:
-```
-[Nombre del cromo] · Foto: [Autor] · [Fuente] · [Licencia]
-Ej: "Messi celebra el segundo gol" · Foto: Tasnim News Agency · 
-    Wikimedia Commons · CC BY 4.0
-```
-
----
-
-## 🤖 Prompts para AI generation (templates)
-
-Para usar con Midjourney / Flux / DALL-E si vas por la vía AI:
+`license: ai-generated`, declarado en /about.
 
 **Portrait de jugador**:
 ```
-Portrait photo of professional footballer, Argentina national team jersey 
-white and light blue vertical stripes, intense focused expression, 
-professional sports photography, soft studio lighting, neutral dark background, 
+Portrait photo of professional footballer, Argentina national team jersey
+white and light blue vertical stripes, intense focused expression,
+professional sports photography, soft studio lighting, neutral dark background,
 photorealistic, high detail, depth of field, --ar 3:4 --v 6
 ```
 
 **Momento dramático**:
 ```
-Cinematic still of a football moment, dramatic lighting, 
-[describir momento específico], shallow depth of field, 
-golden hour, photorealistic, emotion in focus, --ar 3:4 --v 6
+Cinematic still of a football moment, dramatic lighting,
+[describir momento], shallow depth of field, golden hour,
+photorealistic, emotion in focus, --ar 3:4 --v 6
 ```
 
-**Estadio / aficionados**:
-```
-Wide shot of football stadium crowd celebrating, blue and white flags, 
-dramatic floodlights, atmospheric haze, photorealistic, 
-documentary style --ar 3:4 --v 6
-```
-
-⚠️ Importante: las AIs **no garantizan parecido facial** al jugador real. Para jugadores estrella vas a iterar mucho. Para "fans genéricos" o "momento dramático" funciona mejor.
-
----
-
-## 📈 Roadmap sugerido
-
-Si querés completar las fotos en orden de impacto:
-
-| Sprint | Foco | Estimación |
-|---|---|---|
-| 1 | Wikimedia sweep para los 11 legendaries + 14 epics (25 cards) | 4-6 hs |
-| 2 | Wikimedia/Flickr para 20 rares (jugadores titulares) | 3-4 hs |
-| 3 | Fotos genéricas (Unsplash/Pexels) para 50 commons (estadios, aficionados) | 2 hs |
-| 4 | AI generation para los 80 commons restantes (jugadores rotación) | 6-8 hs |
-| 5 | Ilustración custom para los 11 legendaries (reemplazar Wikimedia) | 2-4 semanas elapsed (espera del ilustrador) |
-
-Total ≈ 15-20 hs de trabajo propio + espera del ilustrador.
+⚠️ Las AIs no garantizan parecido facial. Para estrellas vas a iterar; para
+"momento" o "hinchada genérica" funciona mejor.
 
 ---
 
 ## Referencias
 
-- [`./visual-references.md`](./visual-references.md) — Inspiración de cómo deben verse las cards
-- [`./3d-pack.md`](./3d-pack.md) — El sobre tiene el mismo issue de "asset placeholder"
-- [`../operations/seeding.md`](../operations/seeding.md) — Cómo correr `pnpm seed` después de actualizar las URLs
-- [`../feature-status.md`](../feature-status.md) — Item 9.4 (photo URLs reales)
+- [`../../scripts/assets/README.md`](../../scripts/assets/README.md) — cómo correr la CLI
+- [`../r2-setup.md`](../r2-setup.md) — setup de Cloudflare R2 + Railway
+- [`./visual-references.md`](./visual-references.md) — cómo deben verse las cards
+- [`../operations/seeding.md`](../operations/seeding.md) — `pnpm seed` (proyecta el YAML a la DB)

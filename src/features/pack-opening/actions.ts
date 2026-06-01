@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { defineAction } from '@/lib/actions'
 import { track } from '@/lib/analytics'
+import { getCardImageMap } from '@/lib/cards/card-image-map'
 import type { RevealedCard } from './types'
 import { parseTier } from './types'
 
@@ -76,6 +77,15 @@ export const openPack = defineAction({
     // de la función SQL. Ver supabase/migrations/20260526120000_fix_open_pack_ambiguous_column.sql
     const first = data[0]
 
+    // Imagen de cada cromo revelado: desde card_assets vía el resolver. open_pack
+    // ya NO devuelve image_url (T6) — así pack-opening pasa por el MISMO gate de
+    // takedown que las otras 4 superficies y un cromo en takedown no se filtra al
+    // abrir el sobre. La RLS solo trae filas published → el resto cae a placeholder.
+    const cardImageMap = await getCardImageMap(
+      supabase,
+      data.map((row) => row.out_card_id).filter((id): id is string => !!id),
+    )
+
     // Filtrar rows con campos críticos null (join roto del lado del RPC) — sin esto
     // un cardId null rompe key={card.cardId} y la animación de stack (B-10).
     // parseTier también descarta tiers desconocidos (B-11).
@@ -91,7 +101,7 @@ export const openPack = defineAction({
           tier,
           isNew: row.is_new,
           reward: row.coin_reward,
-          imageUrl: row.image_url ?? null,
+          imageUrl: cardImageMap.get(row.out_card_id) ?? null,
           seed: row.out_card_id, // usar cardId como seed determinístico
         }
       })

@@ -12,8 +12,13 @@ import { z } from 'zod'
  *   NEXT_PUBLIC_SENTRY_DISABLED, RATELIMIT_DISABLED.
  * Tooling (fuera del runtime de la app, crudos): PLAYWRIGHT_*, CI, NEXT_RUNTIME,
  *   SENTRY_AUTH_TOKEN (webpack plugin).
- * No wired / dashboard-configured (fuera de scope): R2_*, GOOGLE_CLIENT_*,
- *   APPLE_*, NEXT_PUBLIC_APP_NAME.
+ * Pipeline R2: NEXT_PUBLIC_R2_PUBLIC_BASE (base pública del CDN) está abajo como
+ *   client opcional — la usa el resolver de imágenes (src/lib/cards). Las
+ *   CREDENCIALES R2 (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY /
+ *   R2_BUCKET) NO van acá: las consume la CLI Python (boto3); la app Next nunca
+ *   sube a R2, así que no debe gatear su build con esos secretos.
+ * No wired / dashboard-configured (fuera de scope): GOOGLE_CLIENT_*, APPLE_*,
+ *   NEXT_PUBLIC_APP_NAME.
  */
 export const env = createEnv({
   server: {
@@ -38,6 +43,10 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: z.url(),
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_APP_URL: z.url(),
+    // Base pública del CDN de assets (R2 bindeado a dominio propio, ej.
+    // https://assets.cromiks.app). Sin barra final. Opcional: hasta que R2 esté
+    // cableado el resolver de imágenes devuelve null (placeholder), no rompe.
+    NEXT_PUBLIC_R2_PUBLIC_BASE: z.url().optional(),
     // PostHog: opcional (SDK no manda eventos si está vacía). Mantiene el
     // comportamiento actual (`?? ''` en config.ts).
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
@@ -61,6 +70,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_R2_PUBLIC_BASE: process.env.NEXT_PUBLIC_R2_PUBLIC_BASE,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME: process.env.NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME,
     NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA: process.env.NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA,

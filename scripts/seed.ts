@@ -4,8 +4,9 @@
  *
  * Lee el catálogo YAML y popula la DB con:
  *  - 10 páginas del álbum "eterno-diciembre"
- *  - ~155 cromos definidos en el YAML
- *  - Placeholders para llegar a 205 cromos exactos
+ *  - Los cromos definidos en el YAML (+ placeholders si faltan para llegar a 205)
+ *  - card_assets: provenance + estado del asset de cada cromo (vía upsert_card_asset).
+ *    Respeta el takedown: una baja hecha por SQL NO se revive al reseed.
  *  - Mission templates iniciales
  *  - Badges iniciales
  *
@@ -102,6 +103,14 @@ function ok(msg: string) {
 
 function warn(msg: string) {
   console.info(`${yellow}⚠${reset} ${msg}`)
+}
+
+// El catálogo usa "TODO" como sentinel de "sin curar". En DB eso es NULL
+// (no guardamos URLs/autores falsos). Strings vacíos también → NULL.
+function nullIfTodo(v: unknown): string | null {
+  if (typeof v !== 'string') return null
+  const t = v.trim()
+  return t === '' || t === 'TODO' ? null : t
 }
 
 // ============================================================
@@ -281,6 +290,91 @@ async function seedCards(catalog: YamlCatalog) {
   } else {
     ok(`distribución correcta: ${totalCount} cromos en total`)
   }
+}
+
+// ============================================================
+// Step 3.5: Seed card_assets (provenance + estado del asset)
+// ============================================================
+//
+// Proyecta el bloque content.photo de cada cromo a la tabla card_assets vía la
+// RPC upsert_card_asset. Idempotente (la RPC hace upsert por card_id) y respeta
+// el INVARIANTE LEGAL: si una fila ya está en 'takedown', el guard de la RPC NO
+// la revive — el reseed la deja como está. Los cromos sin bloque photo (placeholders
+// generados por el seed) se saltean.
+
+interface YamlPhoto {
+  type?: string | null
+  source_url?: string | null
+  source_kind?: string | null
+  author?: string | null
+  license?: string | null
+  legal_posture?: string | null
+  status?: string | null
+  asset?: string | null
+  credit?: string | null
+  fetched_at?: string | null
+  content_hash?: string | null
+}
+
+function getPhoto(card: YamlCard): YamlPhoto | null {
+  const content = card.content
+  if (!content || typeof content !== 'object' || Array.isArray(content)) return null
+  const photo = (content as Record<string, unknown>).photo
+  if (!photo || typeof photo !== 'object') return null
+  return photo as YamlPhoto
+}
+
+async function seedCardAssets(catalog: YamlCatalog) {
+  log('assets', 'proyectando card_assets vía upsert_card_asset…')
+
+  const withPhoto = catalog.cards
+    .map((c) => ({ id: c.id, photo: getPhoto(c) }))
+    .filter((x): x is { id: string; photo: YamlPhoto } => x.photo !== null)
+
+  const tally: Record<string, number> = { pending: 0, published: 0, takedown: 0 }
+  let preserved = 0
+  let failed = 0
+
+  for (const { id, photo } of withPhoto) {
+    const requestedStatus = nullIfTodo(photo.status) ?? 'pending'
+
+    const { data, error } = await supabase.rpc('upsert_card_asset', {
+      p_card_id: id,
+      p_source_url: nullIfTodo(photo.source_url),
+      p_source_kind: nullIfTodo(photo.source_kind),
+      p_photo_type: nullIfTodo(photo.type),
+      p_author: nullIfTodo(photo.author),
+      p_license: nullIfTodo(photo.license),
+      p_legal_posture: nullIfTodo(photo.legal_posture) ?? 'takedown',
+      p_credit: nullIfTodo(photo.credit),
+      p_r2_key: nullIfTodo(photo.asset),
+      p_status: requestedStatus,
+      p_fetched_at: photo.fetched_at ?? null,
+      p_content_hash: nullIfTodo(photo.content_hash),
+    })
+
+    if (error) {
+      console.error(`${red}✗${reset} upsert_card_asset(${id}) falló:`, error.message)
+      failed++
+      continue
+    }
+
+    // La RPC devuelve la fila resultante (incluso la preservada en takedown).
+    const finalStatus = (data as { status?: string } | null)?.status ?? requestedStatus
+    tally[finalStatus] = (tally[finalStatus] ?? 0) + 1
+    // Pediste publicar/pending pero quedó en takedown → el guard preservó una baja.
+    if (finalStatus === 'takedown' && requestedStatus !== 'takedown') preserved++
+  }
+
+  if (failed > 0) {
+    warn(`${failed} upserts de card_assets fallaron (ver arriba)`)
+  }
+  ok(
+    `card_assets: ${withPhoto.length} proyectados ` +
+      `(${tally.published} published, ${tally.pending} pending, ${tally.takedown} takedown` +
+      (preserved > 0 ? `; ${preserved} takedown preservados por el guard` : '') +
+      ')',
+  )
 }
 
 // ============================================================
@@ -569,6 +663,7 @@ async function main() {
 
   await seedPages(catalog)
   await seedCards(catalog)
+  await seedCardAssets(catalog)
   await seedMissionTemplates()
   await seedBadges()
 
