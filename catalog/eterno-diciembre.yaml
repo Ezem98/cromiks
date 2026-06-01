@@ -14,7 +14,10 @@
 #   - card_number: 1-205, único en el álbum
 #   - description: copy corto para el detalle del cromo
 #   - content: definición de assets a procesar
-#       photo: { type, source_url, capture_frame? }
+#       photo: { type, source, author, license, capture_frame? }
+#         - author: autor/fotógrafo original (para dar crédito). "TODO" si falta.
+#         - license: cc-by | cc-by-sa | cc0 | all-rights-reserved | "TODO"
+#         - credit: NO se escribe a mano. Lo arma la CLI a partir de author+license+source.
 #       video: { type, source_url, start, duration } (rare+ solo)
 #       audio: { source_url, start, duration } (cromos de audio)
 #       relator_clip: { source_url, start, duration, relator } (epic+ solo)
@@ -143,7 +146,7 @@ cards:
     card_number: 1
     description: "Arquero histórico de River. La experiencia bajo los tres palos"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Palestino_-_River_Plate_20190424_08.jpg/500px-Palestino_-_River_Plate_20190424_08.jpg", author: "TODO", license: "TODO" }
     metadata:
       position: "Arquero"
       number: 1
@@ -156,11 +159,11 @@ cards:
     card_number: 2
     description: "El tercer arquero, siempre listo"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/GAE_-_Ajax_-_52787523707_%28Ger%C3%B3nimo_Rulli%29.jpg/500px-GAE_-_Ajax_-_52787523707_%28Ger%C3%B3nimo_Rulli%29.jpg", author: "TODO", license: "TODO" }
     metadata:
       position: "Arquero"
       number: 12
-      club: "Villarreal"
+      club: "Olympique Marseille"
       
   - id: "dibu-plantel"
     name: "Emiliano \"Dibu\" Martínez"
@@ -169,7 +172,7 @@ cards:
     card_number: 3
     description: "El arquero del Mundial. Mejor guardameta de Qatar 2022"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/St._Louis_City_vs_Aston_Villa_%28Jul_2025%29_14_%28Emiliano_Mart%C3%ADnez%29.jpg/500px-St._Louis_City_vs_Aston_Villa_%28Jul_2025%29_14_%28Emiliano_Mart%C3%ADnez%29.jpg", author: "TODO", license: "TODO" }
     metadata:
       position: "Arquero"
       number: 23
@@ -183,7 +186,7 @@ cards:
     card_number: 4
     description: "Licha. El defensor que no negocia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://upload.wikimedia.org/wikipedia/commons/6/61/Lisandro_Martinez_2022.jpg", author: "TODO", license: "TODO" }
     metadata:
       position: "Defensor"
       number: 25
@@ -194,26 +197,26 @@ cards:
     page: "plantel"
     rarity: "common"
     card_number: 5
-    description: "El Cachete. El penal que cambió la historia"
+    description: "Cachete. El penal que cambió la historia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/G9axKi6hHUfF9hY4pZtJwEHmCEbMu0EzRVmvu7x-rRA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMjIz/NDA1MDk4NS9waG90/by9ndWF5YXF1aWwt/ZWN1YWRvci1nb256/YWxvLW1vbnRpZWwt/b2YtYXJnZW50aW5h/LWxvb2tzLW9uLXBy/aW9yLXRoZS1zb3V0/aC1hbWVyaWNhbi1m/aWZhLXdvcmxkLmpw/Zz9zPTYxMng2MTIm/dz0wJms9MjAmYz03/b3A4cVl2NjQ4dl9x/NXNqU200THplUHNF/Rl8wZE0tZ1dWbDhD/dWVQTUJRPQ", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 4
-      club: "Sevilla"
+      club: "River Plate"
       
   - id: "pezzella-plantel"
     name: "Germán Pezzella"
     page: "plantel"
     rarity: "common"
     card_number: 6
-    description: "Capitán del Betis, defensor del grupo"
+    description: "Capitán de River, defensor del grupo"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/78wQWqMENMLtd4ANRlb1HuQPS3snloK32EBVUuqtBHA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTQ1/MDExNDk3MS9waG90/by9sdXNhaWwtY2l0/eS1xYXRhci1nZXJt/YW4tcGV6emVsbGEt/b2YtYXJnZW50aW5h/LWxpZnRzLXRoZS1m/aWZhLXdvcmxkLWN1/cC1xYXRhci0yMDIy/LXdpbm5lcnMuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPTVM/bG50VEJrZVZwaWFN/clRQRERzMzZDUzAt/Uk5scWpfemxKdkl2/YTFKY0U9", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 6
-      club: "Real Betis"
+      club: "River Plate"
       
   - id: "acuna-plantel"
     name: "Marcos Acuña"
@@ -222,20 +225,20 @@ cards:
     card_number: 7
     description: "El Huevo. Lateral con sangre"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/HXhgk6EjO8MRoowE_gyharor8cN9qnEeseZ3VXe5eNQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTQ0/NjU3MDg2MC9waG90/by9kb2hhLXFhdGFy/LW1hcmNvcy1hY3Vu/YS1vZi1hcmdlbnRp/bmEtZHVyaW5nLXRo/ZS1maWZhLXdvcmxk/LWN1cC1xYXRhci0y/MDIyLXJvdW5kLW9m/LTE2LW1hdGNoLmpw/Zz9zPTYxMng2MTIm/dz0wJms9MjAmYz0t/NXVmaUMtOWIySi1i/Rmh3VTFBUFNPNXJf/WUF6VEF0LWdBbkll/WmRiMDdFPQ", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 8
-      club: "Sevilla"
+      club: "River Plate"
       
   - id: "tagliafico-plantel"
     name: "Nicolás Tagliafico"
     page: "plantel"
     rarity: "common"
     card_number: 8
-    description: "Lateral izquierdo de máquina"
+    description: "Lateral izquierdo, una máquina"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/0gZajqpgC5Kiwz15fd4AUy5YUWJ99qr24Lrx6UXcSmM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTY3/Njg4Mjk0NC9waG90/by9sYS1wYXotYm9s/aXZpYS1uaWNvbGFz/LXRhZ2xpYWZpY28t/b2YtYXJnZW50aW5h/LWNlbGVicmF0ZXMt/YWZ0ZXItc2Nvcmlu/Zy10aGUtc2Vjb25k/LWdvYWwtb2YuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPU9R/SUxMUjhOSDU1SE9w/M3NlLU5lc1RLZE5o/bFRlSk53Q3BjQlBK/VjVUOU09", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 3
@@ -248,11 +251,11 @@ cards:
     card_number: 9
     description: "El defensor más temido. Cero respeto a los rivales"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/jFpA5Mj716XWRJCKUG5R9PQst-k3p7_GBPi5-n_D-EY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvbGVn/ZW5kYXJ5LWNyaXN0/aWFuLXJvbWVyby1n/cWVva25wd3p5eHl2/ZzJhLmpwZw", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 13
-      club: "Tottenham"
+      club: "Tottenham Hotspur"
       
   - id: "otamendi-plantel"
     name: "Nicolás Otamendi"
@@ -261,11 +264,11 @@ cards:
     card_number: 10
     description: "El General. Liderazgo y experiencia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/I5dpNrjZ9SEALx6NAJuXQHgFX_cg5WOf5Uac9S2eQzU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMjIz/NDA0OTc2NC9waG90/by9ndWF5YXF1aWwt/ZWN1YWRvci1uaWNv/bGFzLW90YW1lbmRp/LW9mLWFyZ2VudGlu/YS1sb29rLW9uLXBy/aW9yLXRoZS1zb3V0/aC1hbWVyaWNhbi1m/aWZhLXdvcmxkLmpw/Zz9zPTYxMng2MTIm/dz0wJms9MjAmYz1a/QjBDWG52cTV2Nkhq/cGhfYS1QRkxSRnlP/SUtWVTE0UVFVOGtO/LW5mSHNRPQ", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 19
-      club: "Benfica"
+      club: "River Plate"
       
   - id: "foyth-plantel"
     name: "Juan Foyth"
@@ -274,7 +277,7 @@ cards:
     card_number: 11
     description: "Polifuncional, defensor central o lateral"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/-tjbUJc09W7FpLSjzcUYCjrvtGfob-OdS1U_ILihQ9o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTI0/NTYwMTYwOC9waG90/by9sdXNhaWwtY2l0/eS1xYXRhci1qdWFu/LWZveXRoLW9mLWFy/Z2VudGluYS1ydW5z/LWR1cmluZy10aGUt/ZmlmYS13b3JsZC1j/dXAtcWF0YXItMjAy/Mi1zZW1pLmpwZz9z/PTYxMng2MTImdz0w/Jms9MjAmYz1raFBW/c0JFbldTRHRXdmlM/QXVkRkR0QUktVFRw/aEE4Wkx0WktfcW1L/dk1zPQ", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 25
@@ -287,7 +290,7 @@ cards:
     card_number: 12
     description: "Lateral derecho. El gol contra Países Bajos quedó en la historia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://imgs.search.brave.com/CM4A9HVQdCk8Gz_hx4f7ze5jyRbdkO6lokcyzHP-mGk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTI0/NTQ4NjY2My9waG90/by9hcmdlbnRpbmFz/LWRlZmVuZGVyLW5h/aHVlbC1tb2xpbmEt/Y2VsZWJyYXRlcy1z/Y29yaW5nLWhpcy10/ZWFtcy1maXJzdC1n/b2FsLWR1cmluZy10/aGUtcWF0YXIuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPTZx/UmF5c3RITk8tMV9h/cHBBc2xTa1ByUU1n/T3hJcy1yUV9NMmlL/SGphODg9", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Defensor"
       number: 26
@@ -301,11 +304,11 @@ cards:
     card_number: 13
     description: "El motor de la Selección. Compañero inseparable de Messi"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://tmssl.akamaized.net/images/foto/galerie/de-paul-rodrigo-argentina-2025-1762460740-182238.jpg", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Mediocampista"
       number: 7
-      club: "Atlético Madrid"
+      club: "Inter Miami"
       
   - id: "paredes-plantel"
     name: "Leandro Paredes"
@@ -314,11 +317,11 @@ cards:
     card_number: 14
     description: "El cinco que ordena el juego"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "https://tmssl.akamaized.net/images/foto/galerie/leandro-paredes-argentinien-world-cup-2022-1688980462-111101.jpg", author: "TODO", license: "all-rights-reserved" }
     metadata:
       position: "Mediocampista"
       number: 5
-      club: "Juventus"
+      club: "Boca Juniors"
       
   - id: "almada-plantel"
     name: "Thiago Almada"
@@ -327,7 +330,7 @@ cards:
     card_number: 15
     description: "El pibe que entró por Lo Celso. La nueva generación"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Mediocampista"
       number: 16
@@ -340,7 +343,7 @@ cards:
     card_number: 16
     description: "El revelación del Mundial. Mejor jugador joven del torneo"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Mediocampista"
       number: 24
@@ -353,7 +356,7 @@ cards:
     card_number: 17
     description: "Hijo del Colorado. Aportó goles, asistencias y carácter"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Mediocampista"
       number: 20
@@ -366,7 +369,7 @@ cards:
     card_number: 18
     description: "El cinco recio. Cuando hace falta marca, marca"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Mediocampista"
       number: 18
@@ -379,7 +382,7 @@ cards:
     card_number: 19
     description: "El Papu. Mediocampista creativo, parte de la familia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Mediocampista"
       number: 17
@@ -392,7 +395,7 @@ cards:
     card_number: 20
     description: "Pibe de River en Europa. Mediocampista con técnica"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Mediocampista"
       number: 14
@@ -406,7 +409,7 @@ cards:
     card_number: 21
     description: "Capitán y leyenda. El 10 que volvió eterno a Qatar"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Delantero"
       number: 10
@@ -420,7 +423,7 @@ cards:
     card_number: 22
     description: "El Fideo. El especialista en finales eternas"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Delantero"
       number: 11
@@ -433,7 +436,7 @@ cards:
     card_number: 23
     description: "El Toro. Delantero centro con corazón albiceleste"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Delantero"
       number: 22
@@ -446,7 +449,7 @@ cards:
     card_number: 24
     description: "La Araña. El pibe que se hizo grande en Qatar"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Delantero"
       number: 9
@@ -459,7 +462,7 @@ cards:
     card_number: 25
     description: "La Joya. Convirtió en la final"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Delantero"
       number: 21
@@ -472,7 +475,7 @@ cards:
     card_number: 26
     description: "Reemplazo de Joaquín Correa. Delantero versátil"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Delantero"
       number: 15
@@ -486,7 +489,7 @@ cards:
     card_number: 27
     description: "El DT que conectó al equipo con la gente. Onze d'Or 2022"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       position: "Director Técnico"
       role: "Head Coach"
@@ -498,7 +501,7 @@ cards:
     card_number: 28
     description: "El Payaso. Asistente técnico y referente emocional"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       role: "Asistente técnico"
       
@@ -509,7 +512,7 @@ cards:
     card_number: 29
     description: "El Muro. Asistente del cuerpo técnico"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       role: "Asistente técnico"
       
@@ -520,7 +523,7 @@ cards:
     card_number: 30
     description: "Otro ex-defensor leyenda en el cuerpo técnico"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       role: "Asistente técnico"
 
@@ -532,7 +535,7 @@ cards:
     card_number: 31
     description: "El 10 en su elemento. Genio puro"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -543,7 +546,7 @@ cards:
     card_number: 32
     description: "El arquero campeón en pose característica"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -554,7 +557,7 @@ cards:
     card_number: 33
     description: "El Fideo desbordando por la izquierda"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -565,7 +568,7 @@ cards:
     card_number: 34
     description: "La Araña corriendo a presionar"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -576,7 +579,7 @@ cards:
     card_number: 35
     description: "El motor del equipo en plena pelea"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -587,7 +590,7 @@ cards:
     card_number: 36
     description: "El revelación del Mundial dirigiendo el medio"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -598,7 +601,7 @@ cards:
     card_number: 37
     description: "El pibe que aportó balance al equipo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -609,7 +612,7 @@ cards:
     card_number: 38
     description: "El defensor más temible del Mundial"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -620,7 +623,7 @@ cards:
     card_number: 39
     description: "El General liderando la defensa"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
       
@@ -631,7 +634,7 @@ cards:
     card_number: 40
     description: "El lateral derecho que se vistió de gloria contra Países Bajos"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       hero_card: true
 
@@ -646,7 +649,7 @@ cards:
     card_number: 41
     description: "Argentina rompe la sequía en el Maracaná. El comienzo de todo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       date: "2021-07-10"
       tournament: "Copa América 2021"
@@ -658,7 +661,7 @@ cards:
     card_number: 42
     description: "El primer título mayor con la Selección. La emoción del 10"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       date: "2021-07-10"
       
@@ -669,7 +672,7 @@ cards:
     card_number: 43
     description: "Messi se lo dedica a Argentina después de la Copa América"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       quote: "Esto era para ustedes"
       
@@ -680,7 +683,7 @@ cards:
     card_number: 44
     description: "3-0 a Italia en Wembley. Antesala del Mundial"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       date: "2022-06-01"
       
@@ -691,7 +694,7 @@ cards:
     card_number: 45
     description: "El equipo desembarca en Doha para escribir historia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       date: "2022-11-17"
       
@@ -702,7 +705,7 @@ cards:
     card_number: 46
     description: "El lugar que el plantel hizo casa por un mes"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "primer-entrenamiento"
     name: "Primer entrenamiento en Qatar"
@@ -711,7 +714,7 @@ cards:
     card_number: 47
     description: "La concentración arranca formal"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "foto-plantel-completo"
     name: "Foto grupal del plantel"
@@ -720,7 +723,7 @@ cards:
     card_number: 48
     description: "Los 26 + cuerpo técnico antes del primer partido"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "asado-concentracion"
     name: "Asado del plantel"
@@ -729,7 +732,7 @@ cards:
     card_number: 49
     description: "El ritual argentino: asado entre amigos"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "muchachos-concentracion"
     name: "\"Muchachos\" en la concentración"
@@ -738,7 +741,7 @@ cards:
     card_number: 50
     description: "El cántico que se hizo himno empieza en la concentración"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 8 }
     metadata:
       cantito: "Muchachos, ahora nos volvimos a ilusionar"
@@ -754,7 +757,7 @@ cards:
     card_number: 51
     description: "La formación del primer partido. Nadie imaginaba lo que venía"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Argentina 1 - 2 Arabia Saudita"
       date: "2022-11-22"
@@ -766,7 +769,7 @@ cards:
     card_number: 52
     description: "El penal que abrió el partido y la ilusión"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "10"
@@ -778,7 +781,7 @@ cards:
     card_number: 53
     description: "El VAR llegó al Mundial. Off-side cuando empezaba la fiesta"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "alshehri-gol-arabia"
     name: "Gol de Saleh Al-Shehri"
@@ -787,7 +790,7 @@ cards:
     card_number: 54
     description: "El primer aviso saudita"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "48"
       
@@ -798,7 +801,7 @@ cards:
     card_number: 55
     description: "El golazo que marcó la caída"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "53"
       
@@ -809,7 +812,7 @@ cards:
     card_number: 56
     description: "La incredulidad del capitán"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "plantel-cabizbajo-arabia"
     name: "Plantel cabizbajo"
@@ -818,7 +821,7 @@ cards:
     card_number: 57
     description: "El vestuario en silencio. El golpe duro"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "tribuna-shock-arabia"
     name: "La tribuna argentina en shock"
@@ -827,7 +830,7 @@ cards:
     card_number: 58
     description: "Hinchas con las manos en la cabeza"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "festejo-arabia"
     name: "Festejo árabe"
@@ -836,7 +839,7 @@ cards:
     card_number: 59
     description: "El estadio se convirtió en verde. Histórica victoria saudí"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "scaloni-conferencia-arabia"
     name: "Conferencia de Scaloni"
@@ -845,7 +848,7 @@ cards:
     card_number: 60
     description: "El DT da la cara después del golpe"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "charla-plantel-arabia"
     name: "Charla del plantel post-Arabia"
@@ -854,7 +857,7 @@ cards:
     card_number: 61
     description: "La charla que cambió todo. Unión en la adversidad"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "frase-messi-grupo-unido"
     name: "\"El grupo está más unido que nunca\""
@@ -863,7 +866,7 @@ cards:
     card_number: 62
     description: "Las palabras del capitán que cambiaron la historia"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 6 }
     metadata:
       quote: "El grupo está más unido que nunca"
@@ -875,7 +878,7 @@ cards:
     card_number: 63
     description: "El Kun manda fuerza desde lejos"
     content:
-      photo: { type: "social-media", source: "TODO" }
+      photo: { type: "social-media", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-bronca-arabia"
     name: "Dibu pateando con bronca"
@@ -884,7 +887,7 @@ cards:
     card_number: 64
     description: "El Dibu descargándose en el banco después del partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "memes-arabia"
     name: "Memes y reacciones del país"
@@ -893,7 +896,7 @@ cards:
     card_number: 65
     description: "Argentina entera en estado de luto humorístico"
     content:
-      photo: { type: "collage", source: "TODO" }
+      photo: { type: "collage", source: "TODO", author: "TODO", license: "TODO" }
 
   # =====================================================================
   # PÁGINA 4: MÉXICO — EL DESAHOGO (15 cromos, 66-80)
@@ -906,7 +909,7 @@ cards:
     card_number: 66
     description: "La formación del partido más importante hasta ese momento"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Argentina 2 - 0 México"
       date: "2022-11-26"
@@ -918,7 +921,7 @@ cards:
     card_number: 67
     description: "El zapatazo que liberó la tensión. El gol que mantuvo la ilusión viva"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8, relator: "Sebastián Vignolo" }
     metadata:
@@ -931,7 +934,7 @@ cards:
     card_number: 68
     description: "Enzo se inventa una pintura desde afuera del área. Tranquilidad final"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -944,7 +947,7 @@ cards:
     card_number: 69
     description: "La emoción contenida explotando frente a la hinchada"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "enzo-festejo-mexico"
     name: "Festejo de Enzo con la gente"
@@ -953,7 +956,7 @@ cards:
     card_number: 70
     description: "El pibe corriendo a abrazar a los hinchas"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "plantel-celebrando-mexico"
     name: "Plantel celebrando en cancha"
@@ -962,7 +965,7 @@ cards:
     card_number: 71
     description: "Abrazos de equipo después de un partido de vida o muerte"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-salida-mexico"
     name: "Salida de Messi del campo"
@@ -971,7 +974,7 @@ cards:
     card_number: 72
     description: "Aplauso del estadio para el capitán"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dimaria-recibimiento-mexico"
     name: "Recibimiento de Di María"
@@ -980,7 +983,7 @@ cards:
     card_number: 73
     description: "El Fideo entrando desde el banco"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "mexico-11-inicial-rivales"
     name: "11 mexicano"
@@ -989,7 +992,7 @@ cards:
     card_number: 74
     description: "El equipo rival que nunca pudo descifrar a Argentina"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "memo-ochoa-mexico"
     name: "Memo Ochoa atajando"
@@ -998,7 +1001,7 @@ cards:
     card_number: 75
     description: "El arquero rival que vivió noches eternas en mundiales"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "hinchada-delirio-mexico"
     name: "Hinchada argentina en delirio"
@@ -1007,7 +1010,7 @@ cards:
     card_number: 76
     description: "El estadio Lusail tomado por argentinos"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-cielo-mexico"
     name: "Messi cabeza gacha mirando al cielo"
@@ -1016,7 +1019,7 @@ cards:
     card_number: 77
     description: "Un momento de espiritualidad después del alivio"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "conferencia-post-mexico"
     name: "Conferencia post partido"
@@ -1025,7 +1028,7 @@ cards:
     card_number: 78
     description: "Scaloni y Messi enfrentando la prensa"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "frase-equipo-vivo"
     name: "\"El equipo está vivo\""
@@ -1034,7 +1037,7 @@ cards:
     card_number: 79
     description: "El espíritu del grupo en una frase"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       quote: "El equipo está vivo"
       
@@ -1046,7 +1049,7 @@ cards:
     description: "El cántico que retumbó después del 1-0"
     content:
       audio: { source: "TODO", duration: 8 }
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
 
   # =====================================================================
   # PÁGINA 5: POLONIA + AUSTRALIA (20 cromos, 81-100)
@@ -1060,7 +1063,7 @@ cards:
     card_number: 81
     description: "El partido que necesitaba ganar para pasar"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Polonia 0 - 2 Argentina"
       date: "2022-11-30"
@@ -1072,7 +1075,7 @@ cards:
     card_number: 82
     description: "El momento de tensión. Szczęsny adivina"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "szczesny-atajada"
     name: "Szczęsny atajando"
@@ -1081,7 +1084,7 @@ cards:
     card_number: 83
     description: "El arquero polaco no dio el brazo a torcer"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "macallister-gol-polonia"
     name: "Gol de Mac Allister vs Polonia"
@@ -1090,7 +1093,7 @@ cards:
     card_number: 84
     description: "La definición tranquila para abrir el partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "46"
@@ -1102,7 +1105,7 @@ cards:
     card_number: 85
     description: "La Araña convierte por primera vez en un Mundial. Estrella en ascenso"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1115,7 +1118,7 @@ cards:
     card_number: 86
     description: "El pibe corriendo a celebrar con el equipo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "julian-festejo-polonia"
     name: "Festejo de Julián"
@@ -1124,7 +1127,7 @@ cards:
     card_number: 87
     description: "La emoción del pibe en su primer gol mundialista"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "lewandowski-cabizbajo"
     name: "Lewandowski cabizbajo"
@@ -1133,7 +1136,7 @@ cards:
     card_number: 88
     description: "El delantero polaco después de la derrota"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "pase-octavos"
     name: "Pase a octavos"
@@ -1142,7 +1145,7 @@ cards:
     card_number: 89
     description: "Argentina avanza como primera del grupo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "vamos-vamos-tribuna"
     name: "\"Vamos vamos Argentina\" tribuna"
@@ -1151,7 +1154,7 @@ cards:
     card_number: 90
     description: "El cántico clásico se escuchó toda la noche"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   # ----- Australia (91-100) -----
   - id: "australia-11-inicial"
@@ -1161,7 +1164,7 @@ cards:
     card_number: 91
     description: "Octavos de final. El partido del gol 1000"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Argentina 2 - 1 Australia"
       date: "2022-12-03"
@@ -1173,7 +1176,7 @@ cards:
     card_number: 92
     description: "El gol número 1000 en la carrera del 10. Momento histórico"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8, relator: "Sebastián Vignolo" }
     metadata:
@@ -1187,7 +1190,7 @@ cards:
     card_number: 93
     description: "Aprovechando un error del arquero australiano"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "57"
@@ -1199,7 +1202,7 @@ cards:
     card_number: 94
     description: "Un rebote desviado en el área. Suspenso final"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "77"
       
@@ -1210,7 +1213,7 @@ cards:
     card_number: 95
     description: "El primer milagro. La atajada a Goodwin en el último minuto que clasifica a cuartos"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1224,7 +1227,7 @@ cards:
     card_number: 96
     description: "El gol 1000 celebrado con la pasión de siempre"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "tribuna-llanto-australia"
     name: "Llanto en la tribuna"
@@ -1233,7 +1236,7 @@ cards:
     card_number: 97
     description: "Hinchas argentinos emocionados después del partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "pase-cuartos"
     name: "Pase a cuartos"
@@ -1242,7 +1245,7 @@ cards:
     card_number: 98
     description: "Argentina entre los 8 mejores del mundo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "plantel-celebrando-australia"
     name: "Plantel celebrando"
@@ -1251,7 +1254,7 @@ cards:
     card_number: 99
     description: "Abrazos después de un partido cardíaco"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "goodwin-australia"
     name: "Goodwin — el autor del descuento"
@@ -1260,7 +1263,7 @@ cards:
     card_number: 100
     description: "El delantero australiano que casi nos hace temblar"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
 
   # =====================================================================
   # PÁGINA 6: PAÍSES BAJOS — LA GUERRA (20 cromos, 101-120)
@@ -1273,7 +1276,7 @@ cards:
     card_number: 101
     description: "El partido más intenso del torneo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Argentina 2 (4) - (3) 2 Países Bajos"
       date: "2022-12-09"
@@ -1285,7 +1288,7 @@ cards:
     card_number: 102
     description: "El pase magistral por entre líneas. Genialidad pura"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "molina-gol-paises-bajos"
     name: "Gol de Molina"
@@ -1294,7 +1297,7 @@ cards:
     card_number: 103
     description: "El lateral derecho convierte tras el pase de Messi"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "35"
@@ -1306,7 +1309,7 @@ cards:
     card_number: 104
     description: "El penal que parecía sellar el partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "73"
@@ -1318,7 +1321,7 @@ cards:
     card_number: 105
     description: "El descuento que dio vida a Países Bajos"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "83"
       
@@ -1329,7 +1332,7 @@ cards:
     card_number: 106
     description: "El empate inventado. La jugada ensayada que dejó frío al estadio"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "90+11"
       
@@ -1340,7 +1343,7 @@ cards:
     card_number: 107
     description: "El momento cultural más viral del Mundial. Messi le manda a Weghorst"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 8 }
       audio: { source: "TODO", duration: 6 }
     metadata:
@@ -1354,7 +1357,7 @@ cards:
     card_number: 108
     description: "Mensaje claro. Las orejas de Messi mirando al DT rival"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "73"
@@ -1366,7 +1369,7 @@ cards:
     card_number: 109
     description: "El cara a cara entre el DT holandés y la 10"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "tarjetas-amarillas-record"
     name: "Tarjetas amarillas (récord histórico)"
@@ -1375,7 +1378,7 @@ cards:
     card_number: 110
     description: "Récord de tarjetas en un partido de Mundial: 17 en total"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "rina-final-paises-bajos"
     name: "Riña final del partido"
@@ -1384,7 +1387,7 @@ cards:
     card_number: 111
     description: "Tensión hasta el último segundo entre los planteles"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-ataja-van-dijk"
     name: "Dibu ataja a Van Dijk"
@@ -1393,7 +1396,7 @@ cards:
     card_number: 112
     description: "Primera atajada decisiva en los penales"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-ataja-berghuis"
     name: "Dibu ataja a Berghuis"
@@ -1402,7 +1405,7 @@ cards:
     card_number: 113
     description: "Segunda atajada. El Dibu en modo gigante"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "lautaro-penal-decisivo"
     name: "Penal decisivo de Lautaro"
@@ -1411,7 +1414,7 @@ cards:
     card_number: 114
     description: "Argentina a semifinales. Liberación pura"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1424,7 +1427,7 @@ cards:
     card_number: 115
     description: "El Toro liberándose después de tanta presión"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-dibu-canto"
     name: "\"Dibu, Dibu\" tras la atajada"
@@ -1433,7 +1436,7 @@ cards:
     card_number: 116
     description: "El estadio entero coreando al arquero"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 6 }
       
   - id: "plantel-abrazo-dibu"
@@ -1443,7 +1446,7 @@ cards:
     card_number: 117
     description: "El equipo reconociendo al héroe del partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "provocacion-banco-holandes"
     name: "Provocación al banco holandés"
@@ -1452,7 +1455,7 @@ cards:
     card_number: 118
     description: "El plantel argentino mirando provocativamente al banco rival"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "otamendi-cara-a-cara"
     name: "Otamendi cara a cara con rival"
@@ -1461,7 +1464,7 @@ cards:
     card_number: 119
     description: "El General no se achicó nunca"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "conferencia-post-paises-bajos"
     name: "Conferencia post partido"
@@ -1470,7 +1473,7 @@ cards:
     card_number: 120
     description: "Scaloni y Messi defienden el partido. \"No nos van a hacer perder la cabeza\""
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
 
   # =====================================================================
   # PÁGINA 7: CROACIA — NACE UNA LEYENDA (15 cromos, 121-135)
@@ -1483,7 +1486,7 @@ cards:
     card_number: 121
     description: "La semifinal. El partido donde nació la leyenda de Julián"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Argentina 3 - 0 Croacia"
       date: "2022-12-13"
@@ -1495,7 +1498,7 @@ cards:
     card_number: 122
     description: "El penal que abrió la semifinal"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
     metadata:
       minute: "34"
@@ -1507,7 +1510,7 @@ cards:
     card_number: 123
     description: "La Araña corre medio campo, esquiva rivales y define. Golazo eterno"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 8 }
       relator_clip: { source: "TODO", duration: 10 }
     metadata:
@@ -1521,7 +1524,7 @@ cards:
     card_number: 124
     description: "La jugada más elegante del Mundial. Arte puro. The corner of all corners"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 8 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1535,7 +1538,7 @@ cards:
     card_number: 125
     description: "La Araña convierte tras la gambeta histórica del capitán"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
     metadata:
       minute: "69"
@@ -1547,7 +1550,7 @@ cards:
     card_number: 126
     description: "El capitán croata acepta la derrota"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "plantel-celebrando-hinchada"
     name: "Plantel celebrando con la hinchada"
@@ -1556,7 +1559,7 @@ cards:
     card_number: 127
     description: "Argentina a la final del mundo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-julian-abrazados"
     name: "Messi y Julián abrazados"
@@ -1565,7 +1568,7 @@ cards:
     card_number: 128
     description: "El maestro y el pibe. Conexión generacional"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "scaloni-emocionado-croacia"
     name: "Scaloni emocionado"
@@ -1574,7 +1577,7 @@ cards:
     card_number: 129
     description: "El DT no se aguanta las lágrimas en el banco"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "julian-festejo-solo"
     name: "Julián festejando solo (rosario en mano)"
@@ -1583,7 +1586,7 @@ cards:
     card_number: 130
     description: "El rosario que su mamá le regaló. Fe y emoción"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "hinchada-muchachos-croacia"
     name: "Hinchada cantando muchachos"
@@ -1592,7 +1595,7 @@ cards:
     card_number: 131
     description: "El cántico que ya era himno del Mundial"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "argentina-a-la-final"
     name: "\"Argentina a la final del mundo\""
@@ -1601,7 +1604,7 @@ cards:
     card_number: 132
     description: "El relato que retumbó en toda la patria"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 8 }
       
   - id: "final-partido-croacia"
@@ -1611,7 +1614,7 @@ cards:
     card_number: 133
     description: "El pitazo final. Argentina a la final del Mundial"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-camara-post-croacia"
     name: "Messi a cámara post partido"
@@ -1620,7 +1623,7 @@ cards:
     card_number: 134
     description: "El capitán emocionado dirigiéndose a la gente"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "familia-pibes-cancha"
     name: "Foto familiar de los pibes en el campo"
@@ -1629,7 +1632,7 @@ cards:
     card_number: 135
     description: "Los jugadores con sus hijos en cancha. Imagen de familia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
 
   # =====================================================================
   # PÁGINA 8: FRANCIA — LA FINAL ETERNA (30 cromos, 136-165)
@@ -1642,7 +1645,7 @@ cards:
     card_number: 136
     description: "La formación de la final más dramática de la historia"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       match: "Argentina 3 (4) - (2) 3 Francia"
       date: "2022-12-18"
@@ -1654,7 +1657,7 @@ cards:
     card_number: 137
     description: "Los campeones defensores. El rival más temido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-a-dimaria"
     name: "Penal a Di María"
@@ -1663,7 +1666,7 @@ cards:
     card_number: 138
     description: "Dembélé derriba al Fideo. Penal claro"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
       
   - id: "messi-gol-penal-final"
@@ -1673,7 +1676,7 @@ cards:
     card_number: 139
     description: "El capitán no falla. Argentina abre la final"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1686,7 +1689,7 @@ cards:
     card_number: 140
     description: "El pase de gol al Fideo. La jugada perfecta"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dimaria-gol-final"
     name: "Gol de Di María (Final)"
@@ -1695,7 +1698,7 @@ cards:
     card_number: 141
     description: "El gol que toda Argentina lloraba. El Fideo se hace eterno"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 8 }
       relator_clip: { source: "TODO", duration: 10, relator: "Sebastián Vignolo" }
     metadata:
@@ -1709,7 +1712,7 @@ cards:
     card_number: 142
     description: "El Fideo no aguanta las lágrimas tras el gol"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "mbappe-empate-1"
     name: "Mbappé empate 1 (penal)"
@@ -1718,7 +1721,7 @@ cards:
     card_number: 143
     description: "Francia descuenta. El penal que cambió todo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "80"
       
@@ -1729,7 +1732,7 @@ cards:
     card_number: 144
     description: "La volea imposible. Mbappé empata el partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "81"
       
@@ -1740,7 +1743,7 @@ cards:
     card_number: 145
     description: "Messi rebota en el área y la mete. Argentina vuelve adelante"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1753,7 +1756,7 @@ cards:
     card_number: 146
     description: "Mbappé define con tranquilidad. Igualdad otra vez"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
     metadata:
       minute: "118"
       
@@ -1764,7 +1767,7 @@ cards:
     card_number: 147
     description: "Se la sacó el Dibu. El segundo milagro. El minuto 120+3"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
       relator_clip: { source: "TODO", duration: 8 }
     metadata:
@@ -1778,7 +1781,7 @@ cards:
     card_number: 148
     description: "Primer penal francés convertido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-messi-final"
     name: "Penal Messi convertido"
@@ -1787,7 +1790,7 @@ cards:
     card_number: 149
     description: "El capitán mete el primero argentino con tranquilidad"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-ataja-coman"
     name: "Dibu ataja a Coman"
@@ -1796,7 +1799,7 @@ cards:
     card_number: 150
     description: "La atajada en los penales que cambia el partido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 5 }
       
   - id: "truquito-dibu-penales"
@@ -1806,7 +1809,7 @@ cards:
     card_number: 151
     description: "El baile del Dibu para distraer a los franceses"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-paredes"
     name: "Penal Paredes convertido"
@@ -1815,7 +1818,7 @@ cards:
     card_number: 152
     description: "El cinco no falla en el momento clave"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-tchouameni"
     name: "Penal Tchouameni errado"
@@ -1824,7 +1827,7 @@ cards:
     card_number: 153
     description: "El francés tira el penal afuera. Argentina sube"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-dybala"
     name: "Penal Dybala convertido"
@@ -1833,7 +1836,7 @@ cards:
     card_number: 154
     description: "La Joya define con clase"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-kolo-muani"
     name: "Penal Kolo Muani convertido"
@@ -1842,7 +1845,7 @@ cards:
     card_number: 155
     description: "El francés mete el último de su lado"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "penal-montiel"
     name: "El penal de Montiel"
@@ -1851,7 +1854,7 @@ cards:
     card_number: 156
     description: "Argentina campeón del mundo. El gol que cierra todo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 8 }
       relator_clip: { source: "TODO", duration: 12, relator: "Sebastián Vignolo" }
     metadata:
@@ -1864,7 +1867,7 @@ cards:
     card_number: 157
     description: "El Cachete corriendo enloquecido tras meter el gol que cierra todo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "plantel-corre-dibu"
     name: "Plantel corriendo al Dibu"
@@ -1873,7 +1876,7 @@ cards:
     card_number: 158
     description: "Todos corren a abrazar al arquero héroe"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "llanto-cancha-final"
     name: "Llanto general en cancha"
@@ -1882,7 +1885,7 @@ cards:
     card_number: 159
     description: "Lágrimas de alegría por todos lados"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "mbappe-caminando-solo"
     name: "Mbappé caminando solo"
@@ -1891,7 +1894,7 @@ cards:
     card_number: 160
     description: "El francés derrotado. El otro lado de la moneda"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "macron-consolando-mbappe"
     name: "Macron consolando a Mbappé"
@@ -1900,7 +1903,7 @@ cards:
     card_number: 161
     description: "El presidente francés en cancha"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-guante-oro"
     name: "Dibu con el guante de oro"
@@ -1909,7 +1912,7 @@ cards:
     card_number: 162
     description: "Mejor arquero del Mundial. Reconocimiento merecido"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-balon-oro-mundial"
     name: "Messi con el Balón de Oro del Mundial"
@@ -1918,7 +1921,7 @@ cards:
     card_number: 163
     description: "Mejor jugador del Mundial. Otro premio a la leyenda"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-bisht"
     name: "Messi recibiendo el bisht"
@@ -1927,7 +1930,7 @@ cards:
     card_number: 164
     description: "La capa qatarí que viste al capitán"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-besando-copa"
     name: "Messi besando la copa"
@@ -1936,7 +1939,7 @@ cards:
     card_number: 165
     description: "La foto del siglo XXI según TIME. El beso eterno"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 6 }
     metadata:
       legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
@@ -1952,7 +1955,7 @@ cards:
     card_number: 166
     description: "THE momento. El capitán levanta la tercera para Argentina"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       video: { type: "extract", source: "TODO", duration: 8 }
       audio: { source: "TODO", duration: 10 }
     metadata:
@@ -1965,7 +1968,7 @@ cards:
     card_number: 167
     description: "El capitán llevado en andas por sus compañeros"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-beso-guante"
     name: "Beso de Dibu al guante de oro"
@@ -1974,7 +1977,7 @@ cards:
     card_number: 168
     description: "El arquero reconoce su premio con emoción"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "foto-grupal-copa"
     name: "Foto grupal con la copa"
@@ -1983,7 +1986,7 @@ cards:
     card_number: 169
     description: "El plantel completo con el trofeo más buscado"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "muchachos-cancha-final"
     name: "Plantel cantando Muchachos en cancha"
@@ -1992,7 +1995,7 @@ cards:
     card_number: 170
     description: "El plantel argentino canta el himno mundialista en pleno Lusail"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 8 }
       
   - id: "vuelta-olimpica"
@@ -2002,7 +2005,7 @@ cards:
     card_number: 171
     description: "Argentina dando la vuelta con la copa en Lusail"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "aimar-llorando"
     name: "Aimar llorando en el banco"
@@ -2011,7 +2014,7 @@ cards:
     card_number: 172
     description: "El payaso emocionado hasta las lágrimas"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "otamendi-llorando"
     name: "Otamendi llorando"
@@ -2020,7 +2023,7 @@ cards:
     card_number: 173
     description: "El General no se aguanta. Catársis total"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-hija-guante"
     name: "Dibu con su hija con el guante"
@@ -2029,7 +2032,7 @@ cards:
     card_number: 174
     description: "Imagen de familia. El arquero con su nena en la cancha"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "dibu-trofeo-tata"
     name: "Dibu y el \"trofeo Tata\""
@@ -2038,7 +2041,7 @@ cards:
     card_number: 175
     description: "El gesto polémico con el trofeo de guantes"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "llegada-buenos-aires"
     name: "Llegada del plantel a Buenos Aires"
@@ -2047,7 +2050,7 @@ cards:
     card_number: 176
     description: "El avión aterrizando con los campeones del mundo"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "caravana-obelisco"
     name: "Caravana hacia el Obelisco"
@@ -2056,7 +2059,7 @@ cards:
     card_number: 177
     description: "El bus de los campeones rumbo al ícono porteño"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "obelisco-lleno"
     name: "El Obelisco con 5 millones de personas"
@@ -2065,7 +2068,7 @@ cards:
     card_number: 178
     description: "La concentración más grande de la historia argentina"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "helicoptero-rescate"
     name: "El helicóptero rescatando al plantel"
@@ -2074,7 +2077,7 @@ cards:
     card_number: 179
     description: "Tuvieron que sacarlos en helicóptero. Locura total"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "hincha-puente"
     name: "Hincha tirándose desde un puente"
@@ -2083,7 +2086,7 @@ cards:
     card_number: 180
     description: "El nivel de euforia que llegó a viralizarse"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "familias-pibes-abuelos-calle"
     name: "Familias y pibes en la calle"
@@ -2092,7 +2095,7 @@ cards:
     card_number: 181
     description: "Argentinos de todas las generaciones celebrando"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "messi-llegada-rosario"
     name: "Messi llegando a Rosario"
@@ -2101,7 +2104,7 @@ cards:
     card_number: 182
     description: "El capitán vuelve a su casa con la copa"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "festejo-provincias"
     name: "Festejo en cada provincia"
@@ -2110,7 +2113,7 @@ cards:
     card_number: 183
     description: "Argentina toda en las calles. De norte a sur"
     content:
-      photo: { type: "collage", source: "TODO" }
+      photo: { type: "collage", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "paloma-messi"
     name: "La paloma sobre la cabeza de Messi"
@@ -2119,7 +2122,7 @@ cards:
     card_number: 184
     description: "La imagen mística. La paloma posándose en el campeón"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "camiseta-3-estrellas"
     name: "Camiseta con 3 estrellas"
@@ -2128,7 +2131,7 @@ cards:
     card_number: 185
     description: "La nueva camiseta con la tercera estrella ganada"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "escudo-3-estrellas"
     name: "Escudo nuevo de AFA con 3 estrellas"
@@ -2137,7 +2140,7 @@ cards:
     card_number: 186
     description: "El escudo actualizado. Marca registrada de la tercera"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "scaloni-conferencia-final"
     name: "Conferencia final de Scaloni"
@@ -2146,7 +2149,7 @@ cards:
     card_number: 187
     description: "El DT cerrando con emoción su ciclo mundialista"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "plantel-tigre-descanso"
     name: "Plantel descansando en Tigre"
@@ -2155,7 +2158,7 @@ cards:
     card_number: 188
     description: "Los campeones disfrutando con la copa en el delta"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "vamos-argentina-carajo"
     name: "\"Vamos Argentina carajo\" Messi a cámara"
@@ -2164,7 +2167,7 @@ cards:
     card_number: 189
     description: "La frase del capitán que se hizo grito patrio"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 5 }
       
   - id: "asado-campeones"
@@ -2174,7 +2177,7 @@ cards:
     card_number: 190
     description: "El asado argentino, ahora con tres estrellas"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
 
   # =====================================================================
   # PÁGINA 10: SÍMBOLOS Y CULTURA (15 cromos, 191-205)
@@ -2187,7 +2190,7 @@ cards:
     card_number: 191
     description: "El trofeo más buscado del fútbol mundial"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "camiseta-titular-qatar"
     name: "Camiseta titular Qatar 2022"
@@ -2196,7 +2199,7 @@ cards:
     card_number: 192
     description: "La celeste y blanca que vistió a los campeones"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "camiseta-suplente-violeta"
     name: "Camiseta suplente violeta"
@@ -2205,7 +2208,7 @@ cards:
     card_number: 193
     description: "La alternativa violeta de Argentina en Qatar"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "camiseta-arquero"
     name: "Camiseta arquero"
@@ -2214,7 +2217,7 @@ cards:
     card_number: 194
     description: "La que usó el Dibu para hacer historia"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "tres-estrellas-closeup"
     name: "Las 3 estrellas (close up)"
@@ -2223,7 +2226,7 @@ cards:
     card_number: 195
     description: "El símbolo de las tres copas del mundo de Argentina"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "bandera-huevos"
     name: "Bandera \"hay que ponerle huevos\""
@@ -2232,7 +2235,7 @@ cards:
     card_number: 196
     description: "La bandera que se hizo símbolo del Mundial"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "bolso-abuela"
     name: "El bolso de la abuela"
@@ -2241,7 +2244,7 @@ cards:
     card_number: 197
     description: "La abuela con el bolso celeste y blanco que se viralizó"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "cantito-macri"
     name: "Cántico \"Macri\" (audio)"
@@ -2250,7 +2253,7 @@ cards:
     card_number: 198
     description: "El cántico viral de la hinchada en Qatar"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 8 }
       
   - id: "muchachos-letra-completa"
@@ -2260,7 +2263,7 @@ cards:
     card_number: 199
     description: "El himno del Mundial. La canción que unió a un país"
     content:
-      photo: { type: "video_capture", source: "TODO" }
+      photo: { type: "video_capture", source: "TODO", author: "TODO", license: "TODO" }
       audio: { source: "TODO", duration: 15 }
       
   - id: "mascota-laeeb"
@@ -2270,7 +2273,7 @@ cards:
     card_number: 200
     description: "La mascota oficial del Mundial Qatar 2022"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "pelota-rihla"
     name: "Pelota Al Rihla"
@@ -2279,7 +2282,7 @@ cards:
     card_number: 201
     description: "La pelota oficial del Mundial 2022"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "pelota-hilm"
     name: "Pelota Al Hilm (la dorada de la final)"
@@ -2288,7 +2291,7 @@ cards:
     card_number: 202
     description: "La pelota dorada usada solo en la final"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "premio-onze-dor-scaloni"
     name: "Premio Onze d'Or 2022 (Scaloni)"
@@ -2297,7 +2300,7 @@ cards:
     card_number: 203
     description: "Scaloni elegido entrenador del año 2022"
     content:
-      photo: { type: "official", source: "TODO" }
+      photo: { type: "official", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "trofeos-torneo"
     name: "Trofeos del torneo"
@@ -2306,7 +2309,7 @@ cards:
     card_number: 204
     description: "Balón de Oro (Messi), Guante de Oro (Dibu), Jugador joven (Enzo)"
     content:
-      photo: { type: "collage", source: "TODO" }
+      photo: { type: "collage", source: "TODO", author: "TODO", license: "TODO" }
       
   - id: "meme-argentina-2-0"
     name: "Meme \"Argentina ganando 2-0 y vos...\""
@@ -2315,7 +2318,7 @@ cards:
     card_number: 205
     description: "Homenaje al folclore. El meme argentino más usado del Mundial"
     content:
-      photo: { type: "social-media", source: "TODO" }
+      photo: { type: "social-media", source: "TODO", author: "TODO", license: "TODO" }
 
 # =====================================================================
 # CROMOS BONUS — PÁGINA COMPLETA (no cuentan en los 205)

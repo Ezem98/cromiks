@@ -544,6 +544,15 @@ Lo que efectivamente shippeó (PRs #27, #29). Componente `src/components/domain/
 - Color grading: warm shadows, cool highlights — coherente con la paleta nocturna.
 - Backgrounds del cromo: nunca foto pura, siempre con overlay de gradient para legibilidad del texto sobre el cromo.
 
+### 13.2bis Ilustración de cromos — evaluada y descartada
+
+Se evaluó (2026-05-31, /plan-ceo-review + /plan-design-review) ilustrar los 25 héroes
+(legendaries + epics) para bajar el riesgo legal y diferenciar visualmente. **Descartado por
+decisión del usuario: el álbum usa foto real en los 205** (ver §13.2). Queda registrado para no
+re-proponerlo. Consecuencia: la cuestión de derechos de los stills legendarios sigue **abierta**
+(ver TODOS.md T-01); todos los cromos —héroes incluidos— van por la postura foto + crédito +
+takedown del pipeline de imágenes.
+
 ### 13.3 Accessibility (WCAG 2.1 AA target)
 - Contrast ratios mínimos cumplidos en todos los tokens de texto.
 - `prefers-reduced-motion` respetado.
