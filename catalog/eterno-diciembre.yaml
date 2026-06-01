@@ -3916,17 +3916,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUv48DLvxd/"
+        source_kind: "instagram"
+        author: "@leomessi"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/messi-besando-copa.5649a64c.webp"
+        credit: "Foto: @leomessi · Instagram"
+        fetched_at: "2026-06-01"
+        content_hash: "sha256:5649a64caca5805a816e85a9987eb98b0c22278d41629d79a4404327e276daac"
       video: { type: "extract", source: "TODO", duration: 6 }
     metadata:
       legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
