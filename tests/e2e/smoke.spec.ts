@@ -42,10 +42,12 @@ test('smoke: golden path home → open pack → album', async ({ page }) => {
   await goToAlbum.click()
 
   // 5. /album con cromos owned. Verificamos vía el contador del header
-  // ("X / 205") porque los 4 cromos sorteados caen en páginas aleatorias
-  // del álbum y la página 1 puede no tener ninguno owned por azar.
+  // ("X / N") porque los cromos sorteados caen en páginas aleatorias y la
+  // página 1 puede no tener ninguno owned por azar. NO hardcodeamos el total:
+  // es 205 si el álbum no está gateado, o los cromos de la(s) página(s)
+  // is_active durante la beta (ej. "X / 30" con francia activa).
   await expect(page).toHaveURL(/\/album/, { timeout: 10_000 })
-  const ownedCounter = page.getByText(/[1-9]\d*\s*\/\s*205/).first()
+  const ownedCounter = page.getByText(/[1-9]\d*\s*\/\s*\d+/).first()
   await expect(ownedCounter).toBeVisible({ timeout: 10_000 })
 })
 
