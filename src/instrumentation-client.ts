@@ -38,7 +38,12 @@ Sentry.init({
 
   // NEXT_PUBLIC_* crudas con process.env: este archivo corre en el cliente y el
   // guard de @t3-oss/env-nextjs rompería la hidratación. Next las inlinea igual.
-  enabled: process.env.NEXT_PUBLIC_SENTRY_DISABLED !== 'true',
+  //
+  // Solo reportamos en prod/preview (NODE_ENV=production). En localhost el dev
+  // server + HMR de Turbopack generan ruido (ej. "Router action dispatched before
+  // initialization") que comía cuota sin valor. El kill switch manual sigue activo.
+  enabled:
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SENTRY_DISABLED !== 'true',
   environment: process.env.NEXT_PUBLIC_RAILWAY_ENVIRONMENT_NAME || 'development',
   release: process.env.NEXT_PUBLIC_RAILWAY_GIT_COMMIT_SHA || undefined,
 
