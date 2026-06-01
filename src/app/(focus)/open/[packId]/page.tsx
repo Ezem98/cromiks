@@ -35,6 +35,14 @@ export default async function OpenPackPage({ params, searchParams }: Props) {
   const { packId } = await params
   const { debug } = await searchParams
 
+  // ====== DEBUG MODE ======
+  // Solo en development. Bypassa auth + DB para iterar las animaciones con
+  // todos los tiers sin sesión. Va ANTES del guard de auth a propósito: deja
+  // abrir /open/x?debug=true sin loguearse en dev (prod no se ve afectado).
+  if (debug === 'true' && process.env.NODE_ENV === 'development') {
+    return <PackOpeningFlow result={debugMockResult} currentStreak={0} />
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -52,13 +60,6 @@ export default async function OpenPackPage({ params, searchParams }: Props) {
     .single()
 
   const currentStreak = streak?.current_streak ?? 0
-
-  // ====== DEBUG MODE ======
-  // Solo activo en development. Bypassa toda la lógica de DB para
-  // mostrar las animaciones con todos los tiers.
-  if (debug === 'true' && process.env.NODE_ENV === 'development') {
-    return <PackOpeningFlow result={debugMockResult} currentStreak={currentStreak} />
-  }
 
   // ====== FLOW REAL ======
   // openPack es idempotente: primera llamada abre el sobre, llamadas
