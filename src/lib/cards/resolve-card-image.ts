@@ -27,13 +27,6 @@ export type CardImageAsset =
   | null
   | undefined
 
-/**
- * Base pública del CDN de assets (R2 bindeado a dominio propio, ej.
- * `https://assets.cromiks.app`). La cablea T7 en el entorno / env.ts. Se lee acá
- * en crudo (con fail-safe) para no acoplar T4 al wiring de T7.
- */
-const R2_PUBLIC_BASE_ENV = 'NEXT_PUBLIC_R2_PUBLIC_BASE'
-
 export function resolveCardImage(
   asset: CardImageAsset,
   baseOverride?: string | null,
@@ -44,8 +37,10 @@ export function resolveCardImage(
   if (!key) return null
 
   // baseOverride !== undefined permite que el test fuerce una base (o la ausencia
-  // de base, pasando null/''). Sin override, se lee del entorno.
-  const rawBase = baseOverride !== undefined ? baseOverride : process.env[R2_PUBLIC_BASE_ENV]
+  // de base, pasando null/''). Sin override, se lee del entorno. Acceso ESTÁTICO a
+  // process.env.NEXT_PUBLIC_* para que Next lo inline correctamente (la base es la
+  // del CDN de R2 bindeado a dominio propio; la valida env.ts como client opcional).
+  const rawBase = baseOverride !== undefined ? baseOverride : process.env.NEXT_PUBLIC_R2_PUBLIC_BASE
   const base = rawBase?.trim().replace(/\/+$/, '')
   if (!base) return null
 

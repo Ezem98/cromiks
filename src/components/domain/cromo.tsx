@@ -183,6 +183,9 @@ export function Cromo({
               sizes={`${dims.width}px`}
               className="object-cover"
               priority={isLegendary}
+              // La CLI ya entrega el WebP 3:4 en tamaño final → saltamos el
+              // optimizer de Next (CPU/sharp en Railway) para una imagen ya óptima.
+              unoptimized
               onError={() => setErroredUrl(imageUrl)}
             />
           ) : (
