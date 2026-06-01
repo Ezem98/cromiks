@@ -38,9 +38,9 @@ const EXPECTED_BUSINESS_CODES = new Set([
 Sentry.init({
   dsn: 'https://cf8810e1066dc099e235b2aeaed21f2d@o4511446656286720.ingest.us.sentry.io/4511459597352960',
 
-  // Kill switch: setear SENTRY_DISABLED=true en Vercel apaga el init al
-  // próximo deploy (sin desinstalar el paquete).
-  enabled: process.env.SENTRY_DISABLED !== 'true',
+  // Solo reportamos en prod/preview (NODE_ENV=production); en local dev es ruido.
+  // Kill switch: SENTRY_DISABLED=true apaga el init al próximo deploy.
+  enabled: env.NODE_ENV === 'production' && process.env.SENTRY_DISABLED !== 'true',
 
   environment: env.RAILWAY_ENVIRONMENT_NAME ?? env.NODE_ENV,
   release: env.RAILWAY_GIT_COMMIT_SHA,
