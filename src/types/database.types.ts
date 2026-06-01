@@ -1,10 +1,16 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.5'
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -47,6 +53,65 @@ export type Database = {
         }
         Relationships: []
       }
+      card_assets: {
+        Row: {
+          author: string | null
+          card_id: string
+          content_hash: string | null
+          created_at: string
+          credit: string | null
+          fetched_at: string | null
+          legal_posture: string
+          license: string | null
+          photo_type: string | null
+          r2_key: string | null
+          source_kind: string | null
+          source_url: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          card_id: string
+          content_hash?: string | null
+          created_at?: string
+          credit?: string | null
+          fetched_at?: string | null
+          legal_posture?: string
+          license?: string | null
+          photo_type?: string | null
+          r2_key?: string | null
+          source_kind?: string | null
+          source_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          card_id?: string
+          content_hash?: string | null
+          created_at?: string
+          credit?: string | null
+          fetched_at?: string | null
+          legal_posture?: string
+          license?: string | null
+          photo_type?: string | null
+          r2_key?: string | null
+          source_kind?: string | null
+          source_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_assets_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: true
+            referencedRelation: "cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cards: {
         Row: {
           album_id: string
@@ -59,7 +124,7 @@ export type Database = {
           metadata: Json
           name: string
           page_id: string | null
-          rarity: Database['public']['Enums']['card_rarity']
+          rarity: Database["public"]["Enums"]["card_rarity"]
           updated_at: string
         }
         Insert: {
@@ -73,7 +138,7 @@ export type Database = {
           metadata?: Json
           name: string
           page_id?: string | null
-          rarity: Database['public']['Enums']['card_rarity']
+          rarity: Database["public"]["Enums"]["card_rarity"]
           updated_at?: string
         }
         Update: {
@@ -87,16 +152,16 @@ export type Database = {
           metadata?: Json
           name?: string
           page_id?: string | null
-          rarity?: Database['public']['Enums']['card_rarity']
+          rarity?: Database["public"]["Enums"]["card_rarity"]
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'cards_page_id_fkey'
-            columns: ['page_id']
+            foreignKeyName: "cards_page_id_fkey"
+            columns: ["page_id"]
             isOneToOne: false
-            referencedRelation: 'pages'
-            referencedColumns: ['id']
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -130,11 +195,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'coin_transactions_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "coin_transactions_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -147,9 +212,9 @@ export type Database = {
           is_daily_pool: boolean
           reward_card_count: number | null
           reward_coins: number | null
-          reward_pack_type: Database['public']['Enums']['pack_type'] | null
+          reward_pack_type: Database["public"]["Enums"]["pack_type"] | null
           title: string
-          type: Database['public']['Enums']['mission_type']
+          type: Database["public"]["Enums"]["mission_type"]
           weight: number | null
         }
         Insert: {
@@ -160,9 +225,9 @@ export type Database = {
           is_daily_pool?: boolean
           reward_card_count?: number | null
           reward_coins?: number | null
-          reward_pack_type?: Database['public']['Enums']['pack_type'] | null
+          reward_pack_type?: Database["public"]["Enums"]["pack_type"] | null
           title: string
-          type: Database['public']['Enums']['mission_type']
+          type: Database["public"]["Enums"]["mission_type"]
           weight?: number | null
         }
         Update: {
@@ -173,9 +238,9 @@ export type Database = {
           is_daily_pool?: boolean
           reward_card_count?: number | null
           reward_coins?: number | null
-          reward_pack_type?: Database['public']['Enums']['pack_type'] | null
+          reward_pack_type?: Database["public"]["Enums"]["pack_type"] | null
           title?: string
-          type?: Database['public']['Enums']['mission_type']
+          type?: Database["public"]["Enums"]["mission_type"]
           weight?: number | null
         }
         Relationships: []
@@ -189,8 +254,8 @@ export type Database = {
           id: string
           opened_at: string | null
           rolled_card_ids: string[] | null
-          status: Database['public']['Enums']['pack_status']
-          type: Database['public']['Enums']['pack_type']
+          status: Database["public"]["Enums"]["pack_status"]
+          type: Database["public"]["Enums"]["pack_type"]
           user_id: string
         }
         Insert: {
@@ -201,8 +266,8 @@ export type Database = {
           id?: string
           opened_at?: string | null
           rolled_card_ids?: string[] | null
-          status?: Database['public']['Enums']['pack_status']
-          type: Database['public']['Enums']['pack_type']
+          status?: Database["public"]["Enums"]["pack_status"]
+          type: Database["public"]["Enums"]["pack_type"]
           user_id: string
         }
         Update: {
@@ -213,17 +278,17 @@ export type Database = {
           id?: string
           opened_at?: string | null
           rolled_card_ids?: string[] | null
-          status?: Database['public']['Enums']['pack_status']
-          type?: Database['public']['Enums']['pack_type']
+          status?: Database["public"]["Enums"]["pack_status"]
+          type?: Database["public"]["Enums"]["pack_type"]
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'packs_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "packs_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -278,7 +343,7 @@ export type Database = {
           display_name: string | null
           id: string
           is_public: boolean
-          language: Database['public']['Enums']['user_language']
+          language: Database["public"]["Enums"]["user_language"]
           updated_at: string
           username: string
         }
@@ -290,7 +355,7 @@ export type Database = {
           display_name?: string | null
           id: string
           is_public?: boolean
-          language?: Database['public']['Enums']['user_language']
+          language?: Database["public"]["Enums"]["user_language"]
           updated_at?: string
           username: string
         }
@@ -302,7 +367,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_public?: boolean
-          language?: Database['public']['Enums']['user_language']
+          language?: Database["public"]["Enums"]["user_language"]
           updated_at?: string
           username?: string
         }
@@ -314,7 +379,7 @@ export type Database = {
           created_at: string
           format: string | null
           id: string
-          platform: Database['public']['Enums']['share_platform']
+          platform: Database["public"]["Enums"]["share_platform"]
           referral_completed_at: string | null
           referral_token: string | null
           referred_user_id: string | null
@@ -325,7 +390,7 @@ export type Database = {
           created_at?: string
           format?: string | null
           id?: string
-          platform: Database['public']['Enums']['share_platform']
+          platform: Database["public"]["Enums"]["share_platform"]
           referral_completed_at?: string | null
           referral_token?: string | null
           referred_user_id?: string | null
@@ -336,7 +401,7 @@ export type Database = {
           created_at?: string
           format?: string | null
           id?: string
-          platform?: Database['public']['Enums']['share_platform']
+          platform?: Database["public"]["Enums"]["share_platform"]
           referral_completed_at?: string | null
           referral_token?: string | null
           referred_user_id?: string | null
@@ -344,25 +409,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'share_events_card_id_fkey'
-            columns: ['card_id']
+            foreignKeyName: "share_events_card_id_fkey"
+            columns: ["card_id"]
             isOneToOne: false
-            referencedRelation: 'cards'
-            referencedColumns: ['id']
+            referencedRelation: "cards"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'share_events_referred_user_id_fkey'
-            columns: ['referred_user_id']
+            foreignKeyName: "share_events_referred_user_id_fkey"
+            columns: ["referred_user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'share_events_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "share_events_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -393,11 +458,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'streaks_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "streaks_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: true
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -446,11 +511,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'tips_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "tips_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -475,18 +540,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'user_badges_badge_id_fkey'
-            columns: ['badge_id']
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
             isOneToOne: false
-            referencedRelation: 'badges'
-            referencedColumns: ['id']
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'user_badges_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -517,18 +582,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'user_cards_card_id_fkey'
-            columns: ['card_id']
+            foreignKeyName: "user_cards_card_id_fkey"
+            columns: ["card_id"]
             isOneToOne: false
-            referencedRelation: 'cards'
-            referencedColumns: ['id']
+            referencedRelation: "cards"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'user_cards_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "user_cards_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -556,11 +621,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'user_coins_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "user_coins_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: true
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -573,7 +638,7 @@ export type Database = {
           id: string
           mission_template_id: string
           progress: number
-          status: Database['public']['Enums']['mission_status']
+          status: Database["public"]["Enums"]["mission_status"]
           target: number
           user_id: string
         }
@@ -585,7 +650,7 @@ export type Database = {
           id?: string
           mission_template_id: string
           progress?: number
-          status?: Database['public']['Enums']['mission_status']
+          status?: Database["public"]["Enums"]["mission_status"]
           target: number
           user_id: string
         }
@@ -597,24 +662,24 @@ export type Database = {
           id?: string
           mission_template_id?: string
           progress?: number
-          status?: Database['public']['Enums']['mission_status']
+          status?: Database["public"]["Enums"]["mission_status"]
           target?: number
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'user_missions_mission_template_id_fkey'
-            columns: ['mission_template_id']
+            foreignKeyName: "user_missions_mission_template_id_fkey"
+            columns: ["mission_template_id"]
             isOneToOne: false
-            referencedRelation: 'mission_templates'
-            referencedColumns: ['id']
+            referencedRelation: "mission_templates"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'user_missions_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "user_missions_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -651,7 +716,7 @@ export type Database = {
         Args: {
           p_context?: Json
           p_increment?: number
-          p_type: Database['public']['Enums']['mission_type']
+          p_type: Database["public"]["Enums"]["mission_type"]
           p_user_id: string
         }
         Returns: undefined
@@ -661,7 +726,7 @@ export type Database = {
         Returns: undefined
       }
       _coin_reward_for_rarity: {
-        Args: { p_rarity: Database['public']['Enums']['card_rarity'] }
+        Args: { p_rarity: Database["public"]["Enums"]["card_rarity"] }
         Returns: number
       }
       claim_daily_pack: {
@@ -702,7 +767,7 @@ export type Database = {
         Returns: {
           card_name: string
           card_role: string
-          card_tier: Database['public']['Enums']['card_rarity']
+          card_tier: Database["public"]["Enums"]["card_rarity"]
           coin_reward: number
           coins_after: number
           coins_earned: number
@@ -711,7 +776,7 @@ export type Database = {
           is_new: boolean
           out_card_id: string
           out_card_number: number
-          pack_type: Database['public']['Enums']['pack_type']
+          pack_type: Database["public"]["Enums"]["pack_type"]
           was_replay: boolean
         }[]
       }
@@ -720,7 +785,7 @@ export type Database = {
         Args: {
           p_card_id: string
           p_format?: string
-          p_platform: Database['public']['Enums']['share_platform']
+          p_platform: Database["public"]["Enums"]["share_platform"]
         }
         Returns: {
           referral_token: string
@@ -732,30 +797,75 @@ export type Database = {
         Returns: string[]
       }
       unpin_card: { Args: { p_card_id: string }; Returns: undefined }
+      upsert_card_asset: {
+        Args: {
+          p_author: string
+          p_card_id: string
+          p_content_hash: string
+          p_credit: string
+          p_fetched_at: string
+          p_legal_posture: string
+          p_license: string
+          p_photo_type: string
+          p_r2_key: string
+          p_source_kind: string
+          p_source_url: string
+          p_status: string
+        }
+        Returns: {
+          author: string | null
+          card_id: string
+          content_hash: string | null
+          created_at: string
+          credit: string | null
+          fetched_at: string | null
+          legal_posture: string
+          license: string | null
+          photo_type: string | null
+          r2_key: string | null
+          source_kind: string | null
+          source_url: string | null
+          status: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "card_assets"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
-      card_rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
-      content_type: 'photo' | 'video' | 'audio' | 'relator_clip'
-      mission_status: 'active' | 'completed' | 'claimed' | 'expired'
+      card_rarity: "common" | "uncommon" | "rare" | "epic" | "legendary"
+      content_type: "photo" | "video" | "audio" | "relator_clip"
+      mission_status: "active" | "completed" | "claimed" | "expired"
       mission_type:
-        | 'open_pack'
-        | 'pin_card'
-        | 'share_card'
-        | 'collect_rarity'
-        | 'complete_page'
-        | 'login_streak'
-      pack_status: 'pending' | 'opening' | 'opened' | 'expired'
-      pack_type: 'daily' | 'mission' | 'match' | 'streak' | 'referral' | 'welcome' | 'premium'
+        | "open_pack"
+        | "pin_card"
+        | "share_card"
+        | "collect_rarity"
+        | "complete_page"
+        | "login_streak"
+      pack_status: "pending" | "opening" | "opened" | "expired"
+      pack_type:
+        | "daily"
+        | "mission"
+        | "match"
+        | "streak"
+        | "referral"
+        | "welcome"
+        | "premium"
       share_platform:
-        | 'whatsapp'
-        | 'twitter'
-        | 'instagram'
-        | 'tiktok'
-        | 'facebook'
-        | 'telegram'
-        | 'copy_link'
-        | 'other'
-      user_language: 'es' | 'en' | 'pt' | 'it'
+        | "whatsapp"
+        | "twitter"
+        | "instagram"
+        | "tiktok"
+        | "facebook"
+        | "telegram"
+        | "copy_link"
+        | "other"
+      user_language: "es" | "en" | "pt" | "it"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -763,31 +873,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -796,23 +908,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -821,23 +933,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -846,65 +958,73 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
   public: {
     Enums: {
-      card_rarity: ['common', 'uncommon', 'rare', 'epic', 'legendary'],
-      content_type: ['photo', 'video', 'audio', 'relator_clip'],
-      mission_status: ['active', 'completed', 'claimed', 'expired'],
+      card_rarity: ["common", "uncommon", "rare", "epic", "legendary"],
+      content_type: ["photo", "video", "audio", "relator_clip"],
+      mission_status: ["active", "completed", "claimed", "expired"],
       mission_type: [
-        'open_pack',
-        'pin_card',
-        'share_card',
-        'collect_rarity',
-        'complete_page',
-        'login_streak',
+        "open_pack",
+        "pin_card",
+        "share_card",
+        "collect_rarity",
+        "complete_page",
+        "login_streak",
       ],
-      pack_status: ['pending', 'opening', 'opened', 'expired'],
-      pack_type: ['daily', 'mission', 'match', 'streak', 'referral', 'welcome', 'premium'],
+      pack_status: ["pending", "opening", "opened", "expired"],
+      pack_type: [
+        "daily",
+        "mission",
+        "match",
+        "streak",
+        "referral",
+        "welcome",
+        "premium",
+      ],
       share_platform: [
-        'whatsapp',
-        'twitter',
-        'instagram',
-        'tiktok',
-        'facebook',
-        'telegram',
-        'copy_link',
-        'other',
+        "whatsapp",
+        "twitter",
+        "instagram",
+        "tiktok",
+        "facebook",
+        "telegram",
+        "copy_link",
+        "other",
       ],
-      user_language: ['es', 'en', 'pt', 'it'],
+      user_language: ["es", "en", "pt", "it"],
     },
   },
 } as const

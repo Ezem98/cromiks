@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Cromo } from '@/components/domain/cromo'
 import { Button } from '@/components/ui/button'
+import { getCardImage } from '@/lib/cards/card-image-map'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -84,7 +85,7 @@ export default async function CardPublicPage({ params, searchParams }: PageProps
   const supabase = await createClient()
   const { data: card } = await supabase
     .from('cards')
-    .select('id, card_number, name, description, rarity, metadata, content, legendary_brief')
+    .select('id, card_number, name, description, rarity, metadata, legendary_brief')
     .eq('id', cardId)
     .single()
 
@@ -97,9 +98,8 @@ export default async function CardPublicPage({ params, searchParams }: PageProps
     club?: string
     number?: string | number
   }
-  const content = (card.content ?? {}) as { photo?: { source?: string } }
-  const photoSource = content?.photo?.source
-  const hasRealPhoto = !!photoSource && photoSource !== '' && photoSource !== 'TODO'
+  // Imagen desde card_assets vía el resolver (gate de takedown). null → placeholder.
+  const imageUrl = await getCardImage(supabase, card.id)
 
   const playerRole = [metadata.position, metadata.club].filter(Boolean).join(' · ')
 
@@ -157,7 +157,7 @@ export default async function CardPublicPage({ params, searchParams }: PageProps
             playerRole={playerRole || undefined}
             number={metadata.number != null ? String(metadata.number) : undefined}
             seed={card.id}
-            imageUrl={hasRealPhoto ? photoSource : undefined}
+            imageUrl={imageUrl ?? undefined}
             size="lg"
           />
         </div>

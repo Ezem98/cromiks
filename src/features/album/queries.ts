@@ -1,4 +1,5 @@
 import 'server-only'
+import { getCardImageMap } from '@/lib/cards/card-image-map'
 import { createClient } from '@/lib/supabase/server'
 import { resolveActivePageIds } from './scope'
 
@@ -152,6 +153,13 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
     })
   }
 
+  // Imagen de cada cromo: desde card_assets vía el resolver (gate de takedown).
+  // La RLS solo trae filas published; el resto cae a placeholder.
+  const cardImageMap = await getCardImageMap(
+    supabase,
+    (cardsRes.data ?? []).map((c) => c.id),
+  )
+
   // Mergear cards con ownership info
   const cards: AlbumCardSlot[] = (cardsRes.data ?? []).map((card) => {
     const ownership = userCardsMap.get(card.id)
@@ -161,12 +169,8 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
       number?: string | number
     }
     const content = (card.content ?? {}) as {
-      photo?: { source?: string }
       video?: { source?: string; start?: number }
     }
-    const photoSource = content?.photo?.source
-    const hasRealPhoto = !!photoSource && photoSource !== '' && photoSource !== 'TODO'
-
     const videoSource = content?.video?.source
     const hasMoment = !!videoSource && videoSource !== '' && videoSource !== 'TODO'
 
@@ -181,7 +185,7 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
           ? [metadata.position, metadata.club].filter(Boolean).join(' · ')
           : null,
       number: metadata.number ? String(metadata.number) : null,
-      imageUrl: hasRealPhoto ? photoSource : null,
+      imageUrl: cardImageMap.get(card.id) ?? null,
       legendaryBrief:
         card.legendary_brief && typeof card.legendary_brief === 'object'
           ? (card.legendary_brief as Record<string, unknown>)

@@ -41,7 +41,7 @@ type LegendaryMomentProps = {
   /** content.video.start — segundo de inicio del clip (opcional) */
   start?: number | null
   cardName: string
-  /** Foto/still del cromo (content.photo.source). Es el poster preferido. */
+  /** Foto/still del cromo (resuelto desde card_assets). Es el poster preferido. */
   imageUrl?: string | null
 }
 

@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs'
 import { headers } from 'next/headers'
 import { ImageResponse } from 'next/og'
+import { getCardImage } from '@/lib/cards/card-image-map'
 import { getRateLimiter } from '@/lib/ratelimit'
 import { createClient } from '@/lib/supabase/server'
 
@@ -117,7 +118,7 @@ async function buildCardImage(request: Request, params: RouteParams['params']) {
   const supabase = await createClient()
   const { data: card } = await supabase
     .from('cards')
-    .select('id, card_number, name, rarity, metadata, content')
+    .select('id, card_number, name, rarity, metadata')
     .eq('id', cardId)
     .single()
 
@@ -130,10 +131,9 @@ async function buildCardImage(request: Request, params: RouteParams['params']) {
     club?: string
     number?: string | number
   }
-  const content = (card.content ?? {}) as { photo?: { source?: string } }
-  const photoSource = content?.photo?.source
-  const hasRealPhoto =
-    !!photoSource && photoSource !== '' && photoSource !== 'TODO' && photoSource.startsWith('http')
+  // Imagen desde card_assets vía el resolver (gate de takedown). Satori la
+  // fetchea server-side; si es null, CromoBlock cae al gradient + número.
+  const imageUrl = await getCardImage(supabase, card.id)
 
   const playerRole = [metadata.position, metadata.club].filter(Boolean).join(' · ')
   const isLegendary = card.rarity === 'legendary'
@@ -210,7 +210,7 @@ async function buildCardImage(request: Request, params: RouteParams['params']) {
           name={card.name}
           number={metadata.number != null ? String(metadata.number) : ''}
           cardNumber={card.card_number}
-          imageUrl={hasRealPhoto ? photoSource : undefined}
+          imageUrl={imageUrl ?? undefined}
           palette={palette}
         />
 
