@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { MarketingShell } from '@/components/layout/marketing-shell'
+import { getPhotoCredits } from '@/features/about/queries'
 
 export const metadata: Metadata = {
   title: 'Sobre Cromiks',
   description:
     'Qué es Cromiks, por qué existe y quién lo hace. Un homenaje no comercial al Mundial 2022.',
 }
+
+// ISR: los créditos de fotos salen de card_assets. 5 min es suficiente para que
+// una foto nueva (o un takedown) se refleje en la lista sin redeploy. El kill
+// switch real de la imagen (album/cromo/u, dinámicos) sigue siendo inmediato.
+export const revalidate = 300
 
 /**
  * /about — la historia del proyecto + créditos visibles (PR7 marketing, 11.5).
@@ -36,7 +42,35 @@ const NOT_CROMIKS = [
   'No es una red social. No hay feed ni un botón de seguir.',
 ] as const
 
-export default function AboutPage() {
+const LICENSE_LABEL: Record<string, string> = {
+  'cc-by': 'CC BY',
+  'cc-by-sa': 'CC BY-SA',
+  cc0: 'CC0 / Dominio público',
+  'all-rights-reserved': '© Todos los derechos reservados',
+  'ai-generated': 'Generada por IA',
+}
+
+const SOURCE_LABEL: Record<string, string> = {
+  wikimedia: 'Wikimedia Commons',
+  x: 'X',
+  instagram: 'Instagram',
+}
+
+function sourceLabel(kind: string | null, url: string | null): string {
+  if (kind && SOURCE_LABEL[kind]) return SOURCE_LABEL[kind]
+  if (url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, '')
+    } catch {
+      /* noop */
+    }
+  }
+  return 'fuente'
+}
+
+export default async function AboutPage() {
+  const photoCredits = await getPhotoCredits()
+
   return (
     <MarketingShell>
       <article className="max-w-2xl mx-auto px-6 py-16 sm:py-24 space-y-16">
@@ -116,6 +150,49 @@ export default function AboutPage() {
               — licencia {CREDITS_3D.license}.
             </p>
           </div>
+
+          {photoCredits.length > 0 && (
+            <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6 space-y-3">
+              <p className="text-mono text-[11px] uppercase tracking-[0.1em] text-(--color-text-muted)">
+                Fotos de los cromos
+              </p>
+              <ul className="space-y-1.5">
+                {photoCredits.map((c) => (
+                  <li
+                    key={c.cardId}
+                    className="text-(--color-text-secondary) text-[14px] leading-relaxed"
+                  >
+                    <span className="text-(--color-text-primary)">{c.cardName}</span>
+                    {' — '}
+                    {c.author ?? 'Autor desconocido'} ·{' '}
+                    {c.sourceUrl ? (
+                      <a
+                        href={c.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-(--color-argentina-glow) hover:underline underline-offset-2"
+                      >
+                        {sourceLabel(c.sourceKind, c.sourceUrl)}
+                      </a>
+                    ) : (
+                      sourceLabel(c.sourceKind, c.sourceUrl)
+                    )}
+                    {c.license ? ` · ${LICENSE_LABEL[c.license] ?? c.license}` : ''}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-mono text-[11px] leading-relaxed text-(--color-text-muted) pt-1">
+                ¿Sos el autor de una foto y querés que la bajemos? Escribinos a{' '}
+                <a
+                  href="mailto:bajas@cromiks.app"
+                  className="text-(--color-argentina-glow) hover:underline"
+                >
+                  bajas@cromiks.app
+                </a>{' '}
+                y la sacamos.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-3 text-(--color-text-secondary) text-[14px] leading-relaxed">
             <p>

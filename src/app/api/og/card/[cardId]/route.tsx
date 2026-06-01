@@ -30,11 +30,11 @@ import { createClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 
-// Cache de 1h. La imagen es determinística por (cardId, username), pero si
-// cambia la foto/nombre/rareza del cromo en DB necesitamos que se regenere
-// eventualmente. Sin esto Vercel cachea para siempre y los posts viejos
-// muestran data vieja (B-07). 1h es un balance razonable.
-export const revalidate = 3600
+// Cache de 5min (ISR). La imagen embebe la foto del cromo desde card_assets, así
+// que un TAKEDOWN tiene que caer del preview rápido (no en 1h). Las otras 4
+// superficies (album/cromo/u, dinámicas) reflejan la baja al instante; la OG es la
+// única cacheada, y 5min equilibra eso contra el costo de re-render de Satori.
+export const revalidate = 300
 
 type RouteParams = {
   params: Promise<{ cardId: string }>
