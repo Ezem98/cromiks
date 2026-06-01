@@ -40,12 +40,20 @@ type LegendaryMomentProps = {
   videoUrl: string
   /** content.video.start — segundo de inicio del clip (opcional) */
   start?: number | null
+  /** segundo de fin del clip (start + duration) — corta el embed (opcional) */
+  end?: number | null
   cardName: string
   /** Foto/still del cromo (resuelto desde card_assets). Es el poster preferido. */
   imageUrl?: string | null
 }
 
-export function LegendaryMoment({ videoUrl, start, cardName, imageUrl }: LegendaryMomentProps) {
+export function LegendaryMoment({
+  videoUrl,
+  start,
+  end,
+  cardName,
+  imageUrl,
+}: LegendaryMomentProps) {
   const [playing, setPlaying] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
@@ -148,7 +156,7 @@ export function LegendaryMoment({ videoUrl, start, cardName, imageUrl }: Legenda
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&cc_load_policy=1&rel=0&modestbranding=1${
             start ? `&start=${start}` : ''
-          }`}
+          }${end ? `&end=${end}` : ''}`}
           title={`El momento: ${cardName}`}
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
