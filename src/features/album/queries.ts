@@ -40,6 +40,8 @@ export type AlbumCardSlot = {
   momentVideoUrl: string | null
   /** Segundo de inicio del clip (content.video.start), si está. */
   momentVideoStart: number | null
+  /** Segundo de fin del clip (start + content.video.duration), para cortar el embed. */
+  momentVideoEnd: number | null
   /** Si el user tiene esta carta */
   owned: boolean
   /** Cuántas copias tiene (0 si no la tiene) */
@@ -169,10 +171,13 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
       number?: string | number
     }
     const content = (card.content ?? {}) as {
-      video?: { source?: string; start?: number }
+      video?: { source?: string; start?: number; duration?: number }
     }
     const videoSource = content?.video?.source
     const hasMoment = !!videoSource && videoSource !== '' && videoSource !== 'TODO'
+    const videoStart = typeof content.video?.start === 'number' ? content.video.start : null
+    const videoDuration =
+      typeof content.video?.duration === 'number' ? content.video.duration : null
 
     return {
       id: card.id,
@@ -191,8 +196,12 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
           ? (card.legendary_brief as Record<string, unknown>)
           : null,
       momentVideoUrl: hasMoment ? (videoSource as string) : null,
-      momentVideoStart:
-        hasMoment && typeof content.video?.start === 'number' ? content.video.start : null,
+      momentVideoStart: hasMoment ? videoStart : null,
+      // Fin = inicio + duración (para cortar el embed en un segundo específico).
+      momentVideoEnd:
+        hasMoment && videoStart !== null && videoDuration !== null
+          ? videoStart + videoDuration
+          : null,
       owned: !!ownership,
       copies: ownership?.copies ?? 0,
       isPinned: ownership?.isPinned ?? false,

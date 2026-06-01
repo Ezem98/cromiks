@@ -20,6 +20,11 @@ from config import MAX_KB, TARGET_H, TARGET_W, USER_AGENT
 
 _MAX_BYTES = 25 * 1024 * 1024  # 25MB
 _TARGET_RATIO = TARGET_W / TARGET_H  # 0.75 (3:4 retrato)
+# Tolerancia de upscale: aceptamos un crop hasta 10% más chico que el target y lo
+# subimos ese poco (imperceptible). Las fotos de IG/X suelen toparse en ~1080 y
+# caen justo abajo de 800x1066; sin esto se rechazan fotos perfectamente usables.
+# Abajo del piso, sí es upscale-basura y se rechaza.
+_MAX_UPSCALE = 1.10
 
 
 class FetchError(RuntimeError):
@@ -121,10 +126,17 @@ def normalize_to_webp(
                 crop_h, crop_w = h, round(h * _TARGET_RATIO)
             else:
                 crop_w, crop_h = w, round(w / _TARGET_RATIO)
-            if crop_w < TARGET_W or crop_h < TARGET_H:
+            floor_w, floor_h = round(TARGET_W / _MAX_UPSCALE), round(TARGET_H / _MAX_UPSCALE)
+            if crop_w < floor_w or crop_h < floor_h:
                 raise NormalizeError(
-                    f"resolución insuficiente: el crop 3:4 da {crop_w}x{crop_h} "
-                    f"< {TARGET_W}x{TARGET_H} (no upscaleamos basura)"
+                    f"resolución insuficiente: el crop 3:4 da {crop_w}x{crop_h}, debajo del piso "
+                    f"{floor_w}x{floor_h} (tolerancia {_MAX_UPSCALE:g}x sobre {TARGET_W}x{TARGET_H}; "
+                    f"no upscaleamos basura)"
+                )
+            if crop_w < TARGET_W or crop_h < TARGET_H:
+                warnings.append(
+                    f"upscale leve: crop {crop_w}x{crop_h} → {TARGET_W}x{TARGET_H} "
+                    f"({TARGET_W / crop_w:.0%})"
                 )
 
             left = (w - crop_w) // 2

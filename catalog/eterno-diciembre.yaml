@@ -155,17 +155,17 @@ cards:
     content:
       photo:
         type: "official"
-        source_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Palestino_-_River_Plate_20190424_08.jpg/500px-Palestino_-_River_Plate_20190424_08.jpg"
-        source_kind: "wikimedia"
-        author: "Carlos Figueroa Rojas"
-        license: "cc-by-sa"
+        source_url: "https://www.instagram.com/p/DN7JGPQjRbM/"
+        source_kind: "instagram"
+        author: "@riverplate"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/armani-plantel.webp"
-        credit: "Foto: Carlos Figueroa Rojas · Wikimedia Commons"
+        asset: "cromos/eterno-diciembre/armani-plantel.e43dbbe6.webp"
+        credit: "Foto: @riverplate · Instagram"
         fetched_at: "2026-06-01"
-        content_hash: "sha256:8e089abef4cba527bb95cd8f4a2b26e095760eb2e9d2c2bbeacb4473fb28abeb"
+        content_hash: "sha256:e43dbbe6700ae9969bea9dd25a471d42e1721e3c805306c51b0cb7bc2e91ab07"
     metadata:
       position: "Arquero"
       number: 1
@@ -3916,18 +3916,18 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUv48DLvxd/"
+        source_kind: "instagram"
+        author: "@leomessi"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
+        asset: "cromos/eterno-diciembre/messi-besando-copa.5649a64c.webp"
+        credit: "Foto: @leomessi · Instagram"
+        fetched_at: "2026-06-01"
+        content_hash: "sha256:5649a64caca5805a816e85a9987eb98b0c22278d41629d79a4404327e276daac"
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=P0SAzZEkQcU", start: 3, duration: 8 }
     metadata:
       legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
 

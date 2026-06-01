@@ -117,6 +117,7 @@ export function CardDetailDialog({ card, open, onOpenChange, username }: CardDet
                 <LegendaryMoment
                   videoUrl={card.momentVideoUrl}
                   start={card.momentVideoStart}
+                  end={card.momentVideoEnd}
                   cardName={card.name}
                   imageUrl={card.imageUrl}
                 />
