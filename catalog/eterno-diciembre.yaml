@@ -19,7 +19,8 @@
 #           # --- INPUT (curado a mano) ---
 #           type:          official | video_capture | collage | social-media (intent de procesamiento)
 #           source_url:    URL HQ de la fuente, o "TODO" si todavía no se curó
-#           source_kind:   adapter de la CLI → wikimedia | direct | youtube | instagram | manual | "TODO"
+#           source_kind:   adapter de la CLI → wikimedia | direct | x | instagram | manual | "TODO"
+#                          (x: pegás el link del tweet; instagram: best-effort, suele requerir login)
 #           author:        autor/fotógrafo original (para dar crédito). "TODO" si falta.
 #           license:       cc-by | cc-by-sa | cc0 | all-rights-reserved | ai-generated | "TODO"
 #           legal_posture: licensed | takedown  (≠ license: si va por baja-a-pedido)

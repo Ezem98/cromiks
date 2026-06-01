@@ -36,11 +36,19 @@ python scripts/assets/cli.py                                 # todos los curados
 3. Corré sin `--dry-run` para subir + escribir el YAML.
 4. `pnpm seed` para proyectar a `card_assets` (la app ya sirve la foto).
 
-## Adapters (v1)
+## Adapters
 
-- **direct**: `source_url` es la imagen. `author`/`license` se completan a mano en el YAML.
-- **wikimedia**: consulta la Commons API (imageinfo + extmetadata) para la URL
-  full-res + Artist/Licencia. YouTube/Instagram quedan para F2.
+- **direct**: `source_url` es la URL directa de la imagen. `author`/`license` a mano en el YAML.
+- **wikimedia**: pegás el link de Commons; la Commons API (imageinfo + extmetadata) da la
+  URL full-res + Artist/Licencia (mapea CC-BY/CC-BY-SA/CC0). Lo más sólido.
+- **x**: pegás el link del tweet (`x.com/.../status/123`). Usa la syndication API de
+  Twitter (sin login) → foto full-res (`name=orig`) + @autor. `license=all-rights-reserved`.
+- **instagram**: pegás el link del post (`instagram.com/p/...`). Vía instaloader,
+  **best-effort** — IG suele exigir login. Para que sea confiable, configurá una sesión:
+  `instaloader --login=<tu_usuario>` y exportá `IG_USERNAME=<tu_usuario>`. Si falla, pegá
+  la URL directa de la imagen como `source_kind: direct`. Fuente de **alto riesgo legal**.
+
+YouTube (frames de video) queda para más adelante.
 
 ## Invariantes
 
