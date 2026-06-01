@@ -27,9 +27,17 @@ def test_normalize_cover_crop_landscape():
 
 
 def test_normalize_rechaza_baja_resolucion():
-    # crop 3:4 daría 400x533 < 800x1066 → NO upscalea
+    # crop 3:4 daría 400x533, muy por debajo del piso de tolerancia → NO upscalea
     with pytest.raises(NormalizeError):
         normalize_to_webp(_png(400, 600))
+
+
+def test_normalize_tolera_upscale_leve():
+    # crop ~760x1013: por debajo de 800x1066 pero arriba del piso (10% de tolerancia)
+    # → upscalea ese poco y lo avisa, no lo rechaza.
+    webp, w, h, q, digest, warns = normalize_to_webp(_png(760, 1014))
+    assert (w, h) == (800, 1066)
+    assert any("upscale leve" in x for x in warns)
 
 
 def test_normalize_hash_deterministico():
