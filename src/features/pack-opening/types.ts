@@ -7,6 +7,23 @@ export type Tier = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
 const TIERS: readonly Tier[] = ['common', 'uncommon', 'rare', 'epic', 'legendary']
 
 /**
+ * Ranking ordinal de rareza: common=0 … legendary=4. Para escalar efectos
+ * visuales/hápticos según la mejor rareza del sobre.
+ */
+export function tierRank(tier: Tier): number {
+  const idx = TIERS.indexOf(tier)
+  return idx === -1 ? 0 : idx
+}
+
+/** La rareza más alta de un conjunto de cromos (default 'common' si vacío). */
+export function maxTierOf(cards: readonly { tier: Tier }[]): Tier {
+  return cards.reduce<Tier>(
+    (best, c) => (tierRank(c.tier) > tierRank(best) ? c.tier : best),
+    'common',
+  )
+}
+
+/**
  * Valida que un string sea un Tier conocido. Útil para data que viene de la DB
  * que TS solo tipea como `string` — el `as Tier` evade el check y rompe silencioso
  * si la DB introduce un tier nuevo. Si no matchea, log y null.

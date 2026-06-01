@@ -34,6 +34,8 @@ type SobreSceneProps = {
   isCompleting?: boolean
   onTearProgressChange?: (progress: number) => void
   onTearComplete?: () => void
+  /** Se llama si WebGL pierde el contexto → la fase degrada al fallback 2D. */
+  onContextLost?: () => void
 }
 
 export function SobreScene({
@@ -43,6 +45,7 @@ export function SobreScene({
   isCompleting = false,
   onTearProgressChange,
   onTearComplete,
+  onContextLost,
 }: SobreSceneProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
@@ -56,6 +59,10 @@ export function SobreScene({
   const handleMouseLeave = () => {
     setMousePosition({ x: 0, y: 0 })
   }
+
+  // En mobile capamos el dpr a 1.5 (no 2): el sobre metálico + HDRI a 2× en
+  // pantallas chicas high-DPI es caro y casi no se nota la diferencia.
+  const maxDpr = typeof window !== 'undefined' && window.innerWidth < 600 ? 1.5 : 2
 
   return (
     <motion.div
@@ -76,7 +83,7 @@ export function SobreScene({
         <Suspense fallback={<Canvas3DSkeleton />}>
           <Canvas
             camera={{ position: [0, 0, 8], fov: 45 }}
-            dpr={[1, 2]}
+            dpr={[1, maxDpr]}
             gl={{
               antialias: true,
               alpha: true,
@@ -86,12 +93,12 @@ export function SobreScene({
             }}
             style={{ background: 'transparent' }}
             // Si WebGL pierde el contexto (GPU pressure, otro WebGL en otra app),
-            // tiramos el error para que lo capture el ErrorBoundary y muestre
-            // el fallback en lugar de canvas en blanco (B-14).
+            // degradamos al fallback 2D en caliente vía onContextLost en lugar de
+            // tirar al ErrorBoundary (que mostraba "recargá la página"). B-14 / 3.13.
             onCreated={({ gl }) => {
               gl.domElement.addEventListener('webglcontextlost', (e) => {
                 e.preventDefault()
-                throw new Error('webgl_context_lost')
+                onContextLost?.()
               })
             }}
           >
@@ -103,7 +110,7 @@ export function SobreScene({
             {/* Lights: ambient + key + rim dorada + fill azul */}
             <ambientLight intensity={0.3} color="#ffffff" />
             {/* Key light blanca cálida desde arriba-izquierda */}
-            <directionalLight position={[-3, 5, 4]} intensity={0.6} color="#fff5e0" castShadow />
+            <directionalLight position={[-3, 5, 4]} intensity={0.6} color="#fff5e0" />
             {/* Rim light dorada desde atrás — perfila bordes (foil shine TCG) */}
             <directionalLight position={[3, 2, -5]} intensity={1.2} color="#D4A93C" />
             {/* Fill azul desde abajo para que la base no quede muerta */}

@@ -4,8 +4,9 @@ import { XIcon } from 'lucide-react'
 import { AnimatePresence } from 'motion/react'
 import { useEffect } from 'react'
 import { revalidateHomeAfterOpen } from '../actions'
-import type { OpenPackResult } from '../types'
+import { maxTierOf, type OpenPackResult } from '../types'
 import { usePackOpening } from '../use-pack-opening'
+import { MuteToggle } from './mute-toggle'
 import { PhaseAnticipation } from './phase-anticipation'
 import { PhaseStack } from './phase-stack'
 import { PhaseOutro, PhaseSummary } from './phase-summary'
@@ -29,6 +30,11 @@ type PackOpeningFlowProps = {
 export function PackOpeningFlow({ result, currentStreak }: PackOpeningFlowProps) {
   const { phase, cardsRevealed, skip, completeTear, revealNextCard, next } = usePackOpening(true)
 
+  // La rareza más alta del sobre escala la intensidad del "complete" del tear
+  // (legendary → estallido más grande). Es un telegraph intencional de hype
+  // tipo "golden pack" antes de revelar las cards (feature 3.12).
+  const maxTier = maxTierOf(result.cards)
+
   // Cuando llegamos al outro, revalidamos el home en background
   useEffect(() => {
     if (phase === 'outro') {
@@ -42,6 +48,9 @@ export function PackOpeningFlow({ result, currentStreak }: PackOpeningFlowProps)
 
   return (
     <div className="relative">
+      {/* Mute toggle — fijo arriba izquierda durante las fases con sonido */}
+      {phase !== 'outro' && phase !== 'summary' && <MuteToggle />}
+
       {/* Skip button — fijo arriba derecha durante fases interactivas */}
       {phase !== 'outro' && phase !== 'summary' && (
         <button
@@ -59,7 +68,7 @@ export function PackOpeningFlow({ result, currentStreak }: PackOpeningFlowProps)
           <PhaseAnticipation currentStreak={currentStreak} packType={result.packType} />
         )}
 
-        {phase === 'tear' && <PhaseTear onComplete={completeTear} />}
+        {phase === 'tear' && <PhaseTear onComplete={completeTear} maxTier={maxTier} />}
 
         {phase === 'stack' && (
           <PhaseStack

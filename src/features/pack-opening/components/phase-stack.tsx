@@ -2,13 +2,15 @@
 
 import { AnimatePresence, motion, useMotionValue, useTransform } from 'motion/react'
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Cromo } from '@/components/domain/cromo'
 import { TierLabel } from '@/components/domain/tier-label'
 import { Button } from '@/components/ui/button'
-import { useReducedMotion } from '@/lib/hooks/use-reduced-motion'
+import { vibrate } from '@/lib/haptics'
+import { useRenderTier } from '@/lib/hooks/use-render-tier'
+import { playReveal } from '@/lib/sound'
 import { cn } from '@/lib/utils'
-import type { RevealedCard, Tier } from '../types'
+import { type RevealedCard, type Tier, tierRank } from '../types'
 
 // Lazy load del 3D scene de la card — solo se carga cuando se reveal
 const CardScene3D = dynamic(() => import('./3d/card-scene').then((mod) => mod.CardScene3D), {
@@ -43,6 +45,18 @@ const SWIPE_THRESHOLD = 100
 const STACK_OFFSET = 4
 const CARD_WIDTH = 240
 const CARD_HEIGHT = 320
+
+/**
+ * Vibración por card revelada, escalada por rareza. Más suave que el tear
+ * (es por card, se repite N veces); mejor rareza = tick más marcado.
+ */
+const REVEAL_HAPTICS: Record<number, number | number[]> = {
+  0: 15,
+  1: 20,
+  2: 30,
+  3: [0, 30, 20, 30],
+  4: [0, 40, 25, 40, 25, 50],
+}
 
 type InternalState = 'stack' | 'revealed'
 
@@ -276,7 +290,16 @@ function RevealedView({
   onContinue: () => void
   isLast: boolean
 }) {
-  const reducedMotion = useReducedMotion()
+  const { tier, degradeToLite } = useRenderTier()
+
+  // Tick háptico al revelar la card, escalado por rareza. RevealedView se
+  // re-montea por card (key en el AnimatePresence), así que corre una vez c/u.
+  useEffect(() => {
+    const rank = tierRank(revealedCard.tier)
+    vibrate(REVEAL_HAPTICS[rank] ?? 15)
+    playReveal(rank)
+  }, [revealedCard.tier])
+
   // El "Siguiente" en la última card se reemplaza por el flow natural al summary
   const ctaText = isLast ? 'Ver resumen' : 'Siguiente'
   // Reveal de una Epic o Legendary = celebración → CTA en gold (DESIGN.md §11.1).
@@ -294,8 +317,8 @@ function RevealedView({
       {/* Tier burst de fondo */}
       <TierBurst tier={revealedCard.tier} />
 
-      {/* Card revelada al centro — 3D si motion ok, CSS si reduced */}
-      {reducedMotion ? (
+      {/* Card revelada al centro — 3D en tier full, CSS en tier lite */}
+      {tier === 'lite' ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
           animate={{ opacity: 1, scale: 1, rotateY: 0 }}
@@ -336,7 +359,7 @@ function RevealedView({
             minHeight: 380,
           }}
         >
-          <CardScene3D card={revealedCard} autoFlip />
+          <CardScene3D card={revealedCard} autoFlip onContextLost={degradeToLite} />
         </motion.div>
       )}
 
