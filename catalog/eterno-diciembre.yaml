@@ -156,15 +156,15 @@ cards:
         type: "official"
         source_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Palestino_-_River_Plate_20190424_08.jpg/500px-Palestino_-_River_Plate_20190424_08.jpg"
         source_kind: "wikimedia"
-        author: "TODO"
-        license: "TODO"
+        author: "Carlos Figueroa Rojas"
+        license: "cc-by-sa"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/armani-plantel.webp"
+        credit: "Foto: Carlos Figueroa Rojas · Wikimedia Commons"
+        fetched_at: "2026-06-01"
+        content_hash: "sha256:8e089abef4cba527bb95cd8f4a2b26e095760eb2e9d2c2bbeacb4473fb28abeb"
     metadata:
       position: "Arquero"
       number: 1
