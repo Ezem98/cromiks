@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { CromoPlaceholder } from './cromo-placeholder'
 
@@ -29,7 +29,8 @@ import { CromoPlaceholder } from './cromo-placeholder'
  *  - epic:      violeta, foil + glow radial
  *  - legendary: prism border rotando + gold, foil pleno
  *
- * Si no hay `imageUrl`, usa CromoPlaceholder (SVG determinístico por seed).
+ * Si no hay `imageUrl` —o si la imagen falla al cargar (objeto R2 faltante)—
+ * usa CromoPlaceholder (SVG determinístico por seed), nunca una imagen rota.
  */
 
 type Tier = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
@@ -115,6 +116,10 @@ export function Cromo({
   const isRare = tier === 'rare'
   const isEpic = tier === 'epic'
   const rootRef = useRef<HTMLDivElement>(null)
+  // Si el objeto de R2 falta (404) pese a estar `published`, caemos al placeholder
+  // en vez de mostrar una imagen rota. Guardamos la URL que falló (no un bool) para
+  // que un imageUrl nuevo no quede suprimido por el error de uno viejo.
+  const [erroredUrl, setErroredUrl] = useState<string | null>(null)
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = rootRef.current
@@ -168,9 +173,9 @@ export function Cromo({
           styles.glow,
         )}
       >
-        {/* Arte o placeholder */}
+        {/* Arte o placeholder. onError → placeholder (objeto R2 faltante, no rota). */}
         <div className="absolute inset-0">
-          {imageUrl ? (
+          {imageUrl && erroredUrl !== imageUrl ? (
             <Image
               src={imageUrl}
               alt={name}
@@ -178,6 +183,7 @@ export function Cromo({
               sizes={`${dims.width}px`}
               className="object-cover"
               priority={isLegendary}
+              onError={() => setErroredUrl(imageUrl)}
             />
           ) : (
             <CromoPlaceholder seed={seed} tier={tier} />
