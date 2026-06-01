@@ -772,7 +772,6 @@ export type Database = {
           coins_after: number
           coins_earned: number
           copies_after: number
-          image_url: string
           is_new: boolean
           out_card_id: string
           out_card_number: number
