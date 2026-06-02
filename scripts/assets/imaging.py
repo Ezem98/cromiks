@@ -63,7 +63,10 @@ def fetch_image(url: str, *, timeout: int = 20, max_redirects: int = 5, attempts
         try:
             sess = requests.Session()
             sess.max_redirects = max_redirects
-            headers = {"User-Agent": USER_AGENT, "Accept": "image/avif,image/webp,image/*"}
+            # No pedimos AVIF: el CLI no lo decodifica y los CDN-resizers (FIFA,
+            # Infobae, canal26) lo negocian si está en el Accept. Pedimos formatos
+            # que _sniff() sí soporta → el resizer cae a JPEG/WebP.
+            headers = {"User-Agent": USER_AGENT, "Accept": "image/webp,image/jpeg,image/png,image/*"}
             with sess.get(url, headers=headers, stream=True, timeout=timeout) as r:
                 r.raise_for_status()
                 ctype = r.headers.get("Content-Type", "").split(";")[0].strip().lower()
