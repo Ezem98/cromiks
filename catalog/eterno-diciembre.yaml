@@ -3601,6 +3601,9 @@ cards:
         author: "The Guardian"
         license: "all-rights-reserved"
         legal_posture: "takedown"
+        # Fuente apaisada: el Dibo vuela a la izquierda. Anclamos el crop 3:4 a la
+        # izquierda para encuadrar la atajada (default sería centrado y la corta).
+        focal: "left"
         status: "published"
         # --- completa la CLI, no editar a mano ---
         asset: "cromos/eterno-diciembre/dibu-ataja-coman.7d7821b4.webp"
