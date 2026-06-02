@@ -276,13 +276,12 @@ export function Cromo({
             </div>
           )}
 
-          {/* Nameplate: panel con hairline superior (no solo gradiente) */}
+          {/* Nameplate: panel oscurecido por gradiente. SIN border-top: ese hairline
+              (border-white/10) Chromium lo compositaba como una costura OSCURA de 1px
+              que cruzaba toda la carta sobre el gradiente transparente. El gradiente
+              solo ya separa el panel; el borde sobraba y quedaba feo. */}
           <div
-            className={cn(
-              'relative z-20 px-4 pt-7 pb-4',
-              'border-t',
-              isLegendary ? 'border-(--color-gold)/30' : 'border-white/10',
-            )}
+            className="relative z-20 px-4 pt-7 pb-4"
             style={{
               background:
                 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.92) 100%)',
