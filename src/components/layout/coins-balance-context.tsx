@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, use, useEffect, useMemo, useState } from 'react'
 
 /**
  * Context para el balance de monedas del user.
@@ -42,11 +42,11 @@ export function CoinsBalanceProvider({
     setBalance(initialBalance)
   }, [initialBalance])
 
-  return (
-    <CoinsBalanceContext.Provider value={{ balance, setBalance }}>
-      {children}
-    </CoinsBalanceContext.Provider>
-  )
+  // useMemo evita que cada render reconstruya el value y re-renderice a todos
+  // los consumidores del context.
+  const value = useMemo(() => ({ balance, setBalance }), [balance])
+
+  return <CoinsBalanceContext.Provider value={value}>{children}</CoinsBalanceContext.Provider>
 }
 
 /**
@@ -56,5 +56,5 @@ export function CoinsBalanceProvider({
  * sin layout autenticado) para que el caller pueda manejarlo con un fallback.
  */
 export function useCoinsBalance(): CoinsBalanceContextValue | null {
-  return useContext(CoinsBalanceContext)
+  return use(CoinsBalanceContext)
 }

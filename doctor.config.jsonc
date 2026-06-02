@@ -1,0 +1,39 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+
+  // El análisis de dead-code no detecta los entry points del App Router de
+  // Next.js (src/app/**) y marca ~todo src/ como "unused" (97 falsos
+  // positivos, incluido el core: lib/supabase/server, lib/utils, etc.).
+  // Inutilizable en este proyecto → apagado. La limpieza de dead-code real
+  // se hace a mano si hace falta.
+  "deadCode": false,
+
+  "ignore": {
+    "rules": [
+      // Marca `const X = new Set([...literales])` (tablas de lookup read-only
+      // de códigos de error) como "estado mutable de servidor que filtra entre
+      // requests". Son constantes inmutables, no estado. 6/6 falsos positivos.
+      "react-doctor/server-no-mutable-module-state"
+    ],
+    "overrides": [
+      {
+        // react-three-fiber usa props como position/args/castShadow/rotation
+        // que el linter valida contra el DOM HTML → "unknown property". Son
+        // props válidas de R3F. ~162 falsos positivos en los componentes 3D.
+        "files": ["src/features/pack-opening/components/3d/**"],
+        "rules": ["react-doctor/no-unknown-property"]
+      },
+      {
+        // auth boundary: signInWithOtp/verifyOtp/signOut no pueden exigir estar
+        // logueado. openPack solo hace redirect; revalidateHomeAfterOpen solo
+        // revalidatePath. Ninguno muta nada sensible sin auth.
+        "files": [
+          "src/features/auth/actions.ts",
+          "src/features/home/actions.ts",
+          "src/features/pack-opening/actions.ts"
+        ],
+        "rules": ["react-doctor/server-auth-actions"]
+      }
+    ]
+  }
+}

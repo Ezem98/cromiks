@@ -1,6 +1,7 @@
 'use client'
 
 import { MapPinIcon, Share2Icon } from 'lucide-react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { Cromo } from '@/components/domain/cromo'
 import { Button } from '@/components/ui/button'
@@ -193,11 +194,11 @@ export function ProfileView({ profile, viewerId, viewerUsername, badges }: Profi
               </p>
               {isLoggedIn && viewerUsername ? (
                 <Button asChild variant="primary">
-                  <a href={`/u/${viewerUsername}`}>Ver mi perfil</a>
+                  <Link href={`/u/${viewerUsername}`}>Ver mi perfil</Link>
                 </Button>
               ) : (
                 <Button asChild variant="primary">
-                  <a href="/signin">Empezar gratis</a>
+                  <Link href="/signin">Empezar gratis</Link>
                 </Button>
               )}
             </div>
@@ -308,9 +309,9 @@ function EmptyPinned({ isOwner }: { isOwner: boolean }) {
         {isOwner ? (
           <>
             No tenés ningún cromo destacado todavía. Andá a{' '}
-            <a href="/album" className="text-(--color-argentina-glow) underline">
+            <Link href="/album" className="text-(--color-argentina-glow) underline">
               tu álbum
-            </a>{' '}
+            </Link>{' '}
             y elegí algunos.
           </>
         ) : (
