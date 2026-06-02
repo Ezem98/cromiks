@@ -33,12 +33,13 @@ const tierBorders: Record<AlbumCardSlot['tier'], string> = {
   legendary: 'border-transparent',
 }
 
+// Glow del tier — tokens derivados de la paleta (ver --slot-glow-* en globals.css).
 const tierGlows: Record<AlbumCardSlot['tier'], string> = {
   common: '',
-  uncommon: 'shadow-[0_0_8px_rgba(212,169,60,0.15)]',
-  rare: 'shadow-[0_0_10px_rgba(91,163,224,0.25)]',
-  epic: 'shadow-[0_0_12px_rgba(185,127,227,0.25)]',
-  legendary: 'shadow-[0_0_14px_rgba(212,169,60,0.3)]',
+  uncommon: 'shadow-[var(--slot-glow-uncommon)]',
+  rare: 'shadow-[var(--slot-glow-rare)]',
+  epic: 'shadow-[var(--slot-glow-epic)]',
+  legendary: 'shadow-[var(--slot-glow-legendary)]',
 }
 
 const tierTextColors: Record<AlbumCardSlot['tier'], string> = {

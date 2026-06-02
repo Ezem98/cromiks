@@ -71,15 +71,17 @@ const sizeMap = {
   },
 } as const
 
-const tierStyles: Record<Tier, { border: string; glow: string }> = {
-  common: { border: 'border-(--color-tier-common)/50', glow: '' },
-  uncommon: {
-    border: 'border-(--color-tier-uncommon)',
-    glow: 'shadow-[0_0_16px_rgba(212,169,60,0.18)]',
-  },
-  rare: { border: 'border-(--color-tier-rare)', glow: 'shadow-[0_0_24px_rgba(91,163,224,0.35)]' },
-  epic: { border: 'border-(--color-tier-epic)', glow: 'shadow-[0_0_28px_rgba(185,127,227,0.35)]' },
-  legendary: { border: 'border-transparent', glow: 'shadow-[0_0_36px_rgba(212,169,60,0.25)]' },
+/**
+ * Border por tier. El glow ya NO vive acá: es `--cromo-tier-glow` (box-shadow
+ * derivado de la paleta vía `color-mix`, definido por `data-tier` en globals.css)
+ * y se fusiona con el inner-shadow del material en un único box-shadow abajo.
+ */
+const tierBorders: Record<Tier, string> = {
+  common: 'border-(--color-tier-common)/50',
+  uncommon: 'border-(--color-tier-uncommon)',
+  rare: 'border-(--color-tier-rare)',
+  epic: 'border-(--color-tier-epic)',
+  legendary: 'border-transparent',
 }
 
 /** Tilt máximo (grados) por tier. Legendary el que más "se mueve". */
@@ -111,7 +113,6 @@ export function Cromo({
   className,
 }: CromoProps) {
   const dims = sizeMap[size]
-  const styles = tierStyles[tier]
   const isLegendary = tier === 'legendary'
   const isRare = tier === 'rare'
   const isEpic = tier === 'epic'
@@ -167,10 +168,11 @@ export function Cromo({
         className={cn(
           'relative size-full overflow-hidden rounded-[16px] border',
           'flex flex-col justify-end',
-          // Profundidad/material: highlight superior + viñeta interna = "espesor de cartón foil"
-          'shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_0_34px_rgba(0,0,0,0.4)]',
-          styles.border,
-          styles.glow,
+          // Un solo box-shadow: highlight superior + viñeta interna ("espesor de cartón
+          // foil") + glow del tier (--cromo-tier-glow, por data-tier en globals.css).
+          // Van juntos a propósito: dos clases shadow-[] se pisan (--tw-shadow).
+          'shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_0_34px_rgba(0,0,0,0.4),var(--cromo-tier-glow)]',
+          tierBorders[tier],
         )}
       >
         {/* Arte o placeholder. onError → placeholder (objeto R2 faltante, no rota). */}
@@ -199,7 +201,7 @@ export function Cromo({
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'repeating-linear-gradient(120deg, transparent 0px, rgba(91, 163, 224, 0.13) 1px, transparent 2px, transparent 7px)',
+                'repeating-linear-gradient(120deg, transparent 0px, color-mix(in srgb, var(--color-tier-rare) 13%, transparent) 1px, transparent 2px, transparent 7px)',
             }}
             aria-hidden="true"
           />
@@ -211,19 +213,19 @@ export function Cromo({
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(circle at 50% 40%, rgba(185, 127, 227, 0.2) 0%, transparent 60%)',
+                'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-epic) 20%, transparent) 0%, transparent 60%)',
             }}
             aria-hidden="true"
           />
         )}
 
-        {/* Legendary: glow gold radial */}
+        {/* Legendary: glow radial (amarillo del prism, tier-legendary-3) */}
         {isLegendary && (
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(circle at 50% 40%, rgba(255, 217, 107, 0.2) 0%, transparent 55%)',
+                'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-legendary-3) 20%, transparent) 0%, transparent 55%)',
             }}
             aria-hidden="true"
           />
@@ -280,6 +282,15 @@ export function Cromo({
               'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.92) 100%)',
           }}
         >
+          {/* Filete art-deco — acento premium sutil (legendary/epic) */}
+          {(isLegendary || isEpic) && (
+            <DecoRule
+              className={cn(
+                'mb-1.5',
+                isLegendary ? 'text-(--color-gold)/80' : 'text-(--color-tier-epic)/70',
+              )}
+            />
+          )}
           <div className={cn('text-display text-white leading-[0.95]', dims.nameSize)}>
             {name.toUpperCase()}
           </div>
@@ -304,7 +315,7 @@ export function Cromo({
             className={cn(
               'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-medium leading-none',
               'bg-(--color-argentina-glow) text-(--color-surface-deep)',
-              'shadow-[0_0_16px_rgba(107,185,255,0.5)]',
+              'shadow-[0_0_16px_color-mix(in_srgb,var(--color-argentina-glow)_50%,transparent)]',
             )}
           >
             ¡Nuevo!
@@ -316,7 +327,8 @@ export function Cromo({
 }
 
 /**
- * Pip de rareza: gema chica tier-coded. Legendary = estrella dorada.
+ * Pip de rareza: gema chica tier-coded. Legendary = sol de mayo dorado
+ * (símbolo argentino sin escudo AFA — ver visual-references.md).
  */
 function RarityPip({ tier }: { tier: Tier }) {
   if (tier === 'legendary') {
@@ -324,10 +336,23 @@ function RarityPip({ tier }: { tier: Tier }) {
       <svg
         viewBox="0 0 24 24"
         className="size-4 text-(--color-gold) drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
-        fill="currentColor"
         aria-hidden="true"
       >
-        <path d="M12 2L14.2 8.5L21 9L15.5 13L17.5 19.5L12 15.8L6.5 19.5L8.5 13L3 9L9.8 8.5L12 2Z" />
+        {/* Sunburst de 8 rayos (tips r=11, valles r=5.5) */}
+        <polygon
+          points="12,1 14.11,6.92 19.78,4.22 17.08,9.89 23,12 17.08,14.11 19.78,19.78 14.11,17.08 12,23 9.89,17.08 4.22,19.78 6.92,14.11 1,12 6.92,9.89 4.22,4.22 9.89,6.92"
+          fill="currentColor"
+        />
+        {/* Aro interno del sol (rasgo del sol de mayo) */}
+        <circle
+          cx="12"
+          cy="12"
+          r="3.6"
+          fill="none"
+          stroke="var(--color-surface-deep)"
+          strokeWidth="0.9"
+          opacity="0.5"
+        />
       </svg>
     )
   }
@@ -343,5 +368,26 @@ function RarityPip({ tier }: { tier: Tier }) {
       style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.7)' }}
       aria-hidden="true"
     />
+  )
+}
+
+/**
+ * Filete art-deco: línea — rombo — línea. Acento sutil en la nameplate de los
+ * tiers premium. Hereda el color por `currentColor` (lo setea el caller).
+ */
+function DecoRule({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 6"
+      className={cn('h-1.5 w-12', className)}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1"
+      aria-hidden="true"
+    >
+      <line x1="0" y1="3" x2="19" y2="3" strokeLinecap="round" />
+      <polygon points="24,0.5 27,3 24,5.5 21,3" fill="currentColor" stroke="none" />
+      <line x1="29" y1="3" x2="48" y2="3" strokeLinecap="round" />
+    </svg>
   )
 }
