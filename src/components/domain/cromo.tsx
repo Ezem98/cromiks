@@ -71,15 +71,17 @@ const sizeMap = {
   },
 } as const
 
-const tierStyles: Record<Tier, { border: string; glow: string }> = {
-  common: { border: 'border-(--color-tier-common)/50', glow: '' },
-  uncommon: {
-    border: 'border-(--color-tier-uncommon)',
-    glow: 'shadow-[0_0_16px_rgba(212,169,60,0.18)]',
-  },
-  rare: { border: 'border-(--color-tier-rare)', glow: 'shadow-[0_0_24px_rgba(91,163,224,0.35)]' },
-  epic: { border: 'border-(--color-tier-epic)', glow: 'shadow-[0_0_28px_rgba(185,127,227,0.35)]' },
-  legendary: { border: 'border-transparent', glow: 'shadow-[0_0_36px_rgba(212,169,60,0.25)]' },
+/**
+ * Border por tier. El glow ya NO vive acá: es `--cromo-tier-glow` (box-shadow
+ * derivado de la paleta vía `color-mix`, definido por `data-tier` en globals.css)
+ * y se fusiona con el inner-shadow del material en un único box-shadow abajo.
+ */
+const tierBorders: Record<Tier, string> = {
+  common: 'border-(--color-tier-common)/50',
+  uncommon: 'border-(--color-tier-uncommon)',
+  rare: 'border-(--color-tier-rare)',
+  epic: 'border-(--color-tier-epic)',
+  legendary: 'border-transparent',
 }
 
 /** Tilt máximo (grados) por tier. Legendary el que más "se mueve". */
@@ -111,7 +113,6 @@ export function Cromo({
   className,
 }: CromoProps) {
   const dims = sizeMap[size]
-  const styles = tierStyles[tier]
   const isLegendary = tier === 'legendary'
   const isRare = tier === 'rare'
   const isEpic = tier === 'epic'
@@ -167,10 +168,11 @@ export function Cromo({
         className={cn(
           'relative size-full overflow-hidden rounded-[16px] border',
           'flex flex-col justify-end',
-          // Profundidad/material: highlight superior + viñeta interna = "espesor de cartón foil"
-          'shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_0_34px_rgba(0,0,0,0.4)]',
-          styles.border,
-          styles.glow,
+          // Un solo box-shadow: highlight superior + viñeta interna ("espesor de cartón
+          // foil") + glow del tier (--cromo-tier-glow, por data-tier en globals.css).
+          // Van juntos a propósito: dos clases shadow-[] se pisan (--tw-shadow).
+          'shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_0_34px_rgba(0,0,0,0.4),var(--cromo-tier-glow)]',
+          tierBorders[tier],
         )}
       >
         {/* Arte o placeholder. onError → placeholder (objeto R2 faltante, no rota). */}

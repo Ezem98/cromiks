@@ -179,6 +179,18 @@ background: conic-gradient(
 animation: prism-rotate 12s linear infinite;
 ```
 
+**Tier glows** (box-shadow). Derivados de la paleta vía `color-mix(in srgb, C X%, transparent)` — un solo lugar para tunear la rareza (toca el detalle del cromo y la grilla del álbum a la vez). Definidos en `globals.css`, consumidos por `cromo.tsx` (vía `--cromo-tier-glow` por `data-tier`) y `album-slot.tsx`.
+
+| Token | Valor | Tier (color base) |
+|---|---|---|
+| `--cromo-glow-uncommon` | `0 0 16px` · gold 18% | Uncommon |
+| `--cromo-glow-rare` | `0 0 24px` · tier-rare 35% | Rare |
+| `--cromo-glow-epic` | `0 0 28px` · tier-epic 35% | Epic |
+| `--cromo-glow-legendary` | `0 0 36px` · gold 25% | Legendary |
+| `--slot-glow-*` | igual color, blur 8–14px | Mismos tiers, versión sutil para la grilla |
+
+> Common no tiene glow. Uncommon y Legendary glowean en **gold** (no en su color de tier) — decisión de diseño preexistente, preservada al tokenizar.
+
 ### 4.6 Semantic
 
 | Token | Hex | Uso |

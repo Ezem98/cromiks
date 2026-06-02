@@ -156,6 +156,28 @@
 }
 
 /* ===========================================
+   TIER GLOWS — box-shadow por rareza, derivado de la paleta.
+   `color-mix(in srgb, C X%, transparent)` = el color C con alpha X/100,
+   o sea el mismo primitivo que Tailwind genera para `/opacity`. Tunear la
+   rareza vive acá: toca el detalle del cromo y la grilla del álbum a la vez.
+   (Antes era rgba(...) hardcodeado en cromo.tsx y album-slot.tsx.)
+   =========================================== */
+
+:root {
+  /* Detalle del cromo (componente <Cromo>) */
+  --cromo-glow-uncommon: 0 0 16px color-mix(in srgb, var(--color-gold) 18%, transparent);
+  --cromo-glow-rare: 0 0 24px color-mix(in srgb, var(--color-tier-rare) 35%, transparent);
+  --cromo-glow-epic: 0 0 28px color-mix(in srgb, var(--color-tier-epic) 35%, transparent);
+  --cromo-glow-legendary: 0 0 36px color-mix(in srgb, var(--color-gold) 25%, transparent);
+
+  /* Thumbnail en la grilla del álbum (album-slot) — más sutil */
+  --slot-glow-uncommon: 0 0 8px color-mix(in srgb, var(--color-gold) 15%, transparent);
+  --slot-glow-rare: 0 0 10px color-mix(in srgb, var(--color-tier-rare) 25%, transparent);
+  --slot-glow-epic: 0 0 12px color-mix(in srgb, var(--color-tier-epic) 25%, transparent);
+  --slot-glow-legendary: 0 0 14px color-mix(in srgb, var(--color-gold) 30%, transparent);
+}
+
+/* ===========================================
    GLOBAL RESET / BASE
    =========================================== */
 
@@ -362,6 +384,8 @@
   --rx: 0deg;
   --ry: 0deg;
   --glare: 0;
+  /* Glow del tier (box-shadow). Default sin glow; cada data-tier lo overridea. */
+  --cromo-tier-glow: 0 0 transparent;
   transform: perspective(800px) rotateX(var(--rx)) rotateY(var(--ry));
   transform-style: preserve-3d;
   transition: transform var(--duration-moderate) var(--ease-out);
@@ -423,15 +447,19 @@
 }
 .cromo[data-tier="uncommon"] {
   --holo-strength: 0.12;
+  --cromo-tier-glow: var(--cromo-glow-uncommon);
 }
 .cromo[data-tier="rare"] {
   --holo-strength: 0.2;
+  --cromo-tier-glow: var(--cromo-glow-rare);
 }
 .cromo[data-tier="epic"] {
   --holo-strength: 0.26;
+  --cromo-tier-glow: var(--cromo-glow-epic);
 }
 .cromo[data-tier="legendary"] {
   --holo-strength: 0.34;
+  --cromo-tier-glow: var(--cromo-glow-legendary);
 }
 
 /* Foil distinto por rareza (P3). La base .cromo-holo es el prism de 4 colores
