@@ -3274,17 +3274,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://digitalhub.fifa.com/transform/59b11d12-f048-4e3f-ae51-c716a8c97a37/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
+        source_kind: "direct"
+        author: "FIFA"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/francia-11-inicial-argentina.c5b18c68.webp"
+        credit: "Foto: FIFA · digitalhub.fifa.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:c5b18c68665ab92988b6dd184f14dc83cb36698bd874fabf1aba6c3c394307d7"
     metadata:
       match: "Argentina 3 (4) - (2) 3 Francia"
       date: "2022-12-18"
@@ -3298,17 +3298,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://digitalhub.fifa.com/transform/82a4bc9e-d1ff-49bb-b68f-32a105675e4b/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
+        source_kind: "direct"
+        author: "FIFA"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/francia-11-inicial-rival.c64eeef4.webp"
+        credit: "Foto: FIFA · digitalhub.fifa.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:c64eeef4c026361dbe43cc09474b961c286401f4932b6d6f6f46f1061dfe23be"
       
   - id: "penal-a-dimaria"
     name: "Penal a Di María"
@@ -3319,18 +3319,18 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/GWQBQA5LFOU5I72ZBVMKNEX4CY.jpg?auth=bbea3f5ad35583f2949efa0343b211dbd792f869ee70d89bc16d43e84aedce97&smart=true&width=2400&height=1700&quality=75"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 5 }
+        asset: "cromos/eterno-diciembre/penal-a-dimaria.cfda847d.webp"
+        credit: "Foto: Infobae · infobae.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:cfda847d377734b36177801ae5f047f4fc55cf771fc93f3999bfdee9e79fd844"
+      video: { type: "extract", source: "https://www.youtube.com/shorts/G2SMv0QXQQQ?feature=share", start: 0, duration: 8 }
       
   - id: "messi-gol-penal-final"
     name: "Gol Messi de penal (1-0)"
@@ -3341,19 +3341,19 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/VM64GETHUO2IYREFBCVR37GN64.jpg?auth=b501164f8b4cbf66fd6dd162def3a02fd9e32f769f69c9fd2b88e891598751c4&smart=true&width=2480&height=1545&quality=85"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
-      relator_clip: { source: "TODO", duration: 8 }
+        asset: "cromos/eterno-diciembre/messi-gol-penal-final.a55cb2cb.webp"
+        credit: "Foto: Infobae · infobae.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:a55cb2cb99a0255a14427858d532ce3e3d2c36e9e52f42b20ae21bd43fdfcebf"
+      video: { type: "extract", source: "https://www.youtube.com/shorts/nLqs7fsCCxE?feature=share", start: 0, duration: 9 }
+      relator_clip: { source: "https://www.youtube.com/watch?v=78s_1hgWonA", start: 35, duration: 9 }
     metadata:
       minute: "23"
       
@@ -3366,17 +3366,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/ClcJUCTseRZ/?img_index=2"
+        source_kind: "instagram"
+        author: "@alemacallister"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/asistencia-macallister-dimaria.3e1a4baf.webp"
+        credit: "Foto: @alemacallister · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:3e1a4baf7d2f5adfd237d3024039c8e2f294c1969d23c19ec20055a9aaba25f5"
       
   - id: "dimaria-gol-final"
     name: "Gol de Di María (Final)"
@@ -3387,25 +3387,25 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/CPCYH6U2CJ5B3AJACP43S5O4TI.jpg?auth=57eeedb6bc1362e95490fa02f614d092dead83a4fb537a7441026e7a014a12e8&smart=true&width=2480&height=1695&quality=85"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 8 }
-      relator_clip: { source: "TODO", duration: 10, relator: "Sebastián Vignolo" }
+        asset: "cromos/eterno-diciembre/dimaria-gol-final.62a8108f.webp"
+        credit: "Foto: Infobae · infobae.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:62a8108f7513a48593cd91e3bb5c8da96f2c39f652edb5a0b07a6ec1c65309bf"
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=gm3jomzFEpk", start: 14, duration: 16 }
+      relator_clip: { source: "https://www.youtube.com/watch?v=Kutz0UJExSU", start: 14, duration: 16, relator: "Sebastián Vignolo" }
     metadata:
       minute: "36"
       legendary_brief: "La revancha. Overlay sutil de lágrimas en Lottie. Gradient cálido. Gooooool argentino estirado + piano de fondo."
       
-  - id: "dimaria-festejo-llorando"
-    name: "Festejo Di María llorando"
+  - id: "dimaria-festejo"
+    name: "Festejo Di María tras el gol"
     page: "francia"
     rarity: "uncommon"
     card_number: 142
@@ -3413,17 +3413,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://tn.com.ar/resizer/v2/el-clasico-festejo-de-di-maria-en-el-segundo-gol-de-la-seleccion-argentina-reuters-SZYABT3QDNCGZEJYXPQDH4ZT7Q.png?auth=2d3278b188065cf5bc21753b330403f4c18718556fb00259c05e4589e980658f&width=2400"
+        source_kind: "direct"
+        author: "TN"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/dimaria-festejo.0e043440.webp"
+        credit: "Foto: TN · tn.com.ar"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:0e043440ca815d337423167f8df0e3fce198723b38ca8f5c0bb508930954af54"
       
   - id: "mbappe-empate-1"
     name: "Mbappé empate 1 (penal)"
@@ -3434,17 +3434,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://f.rpp-noticias.io/2022/12/18/504950_1363304.jpg?width=2400&quality=75"
+        source_kind: "direct"
+        author: "RPP Noticias"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/mbappe-empate-1.e3e2c90b.webp"
+        credit: "Foto: RPP Noticias · f.rpp-noticias.io"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:e3e2c90b00be65008752d889712b4a2086338e682400f7d08f084329f5d0c35c"
     metadata:
       minute: "80"
       
@@ -3457,17 +3457,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://ichef.bbci.co.uk/ace/ws/1920/cpsprodpb/13794/production/_128046797_012af83d-b19c-4749-849b-b411a4ee3b2d.jpg.webp"
+        source_kind: "direct"
+        author: "BBC"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/mbappe-empate-2.90958aa2.webp"
+        credit: "Foto: BBC · ichef.bbci.co.uk"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:90958aa24ee1ccb374bacaf67d7f1d22da6539a66b8416f90074a17afb877492"
     metadata:
       minute: "81"
       
@@ -3480,19 +3480,19 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/XZ4QDOOQCL2I4VIZG25FTEWUTE.jpg?auth=45aaf01d9b2b46c7c3ded7ebfd21d339bdb84c9798e335451028ebb060687f9e&smart=true&width=2400&height=1700&quality=75"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
-      relator_clip: { source: "TODO", duration: 8 }
+        asset: "cromos/eterno-diciembre/messi-gol-3-2.902ad701.webp"
+        credit: "Foto: Infobae · infobae.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:902ad7010daf09724235bdfdab64887b8b1a027aa751dd5695312eba9e68ff1c"
+      video: { type: "extract", source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10 }
+      relator_clip: { source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10, relator: "Pablo Giralt" }
     metadata:
       minute: "108"
       
@@ -3505,17 +3505,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media.cnn.com/api/v1/images/stellar/prod/221218130930-20-world-cup-final-1215.jpg?q=w_2400,c_fill/f_webp"
+        source_kind: "direct"
+        author: "CNN"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/mbappe-empate-3-3.e5ce13bd.webp"
+        credit: "Foto: CNN · media.cnn.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:e5ce13bd7ea0d81072dba5cf894c6ab1223af1867986e728dd7dc8677bb3d6b9"
     metadata:
       minute: "118"
       
@@ -3528,19 +3528,19 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/DD66u1rRgH4/?img_index=2"
+        source_kind: "instagram"
+        author: "@fifaworldcup"
+        license: "All rights reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
-      relator_clip: { source: "TODO", duration: 8 }
+        asset: "cromos/eterno-diciembre/dibu-atajada-kolo-muani.0165b29d.webp"
+        credit: "Foto: @fifaworldcup · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:0165b29d3ea61952a19c4b178f81db66650ea8e32add2fe3342179718f97bfc4"
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
+      relator_clip: { source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
     metadata:
       minute: "120+3"
       legendary_brief: "El segundo milagro. Slow-mo extremo + cronómetro decorativo 120+3. Bullet time sound design."
@@ -3554,17 +3554,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://i.guim.co.uk/img/media/d6f9849ebf05a3d9c4b201f716763f653df9a331/0_0_3500_2182/master/3500.jpg?width=1700&dpr=1&s=none&crop=none"
+        source_kind: "direct"
+        author: "The Guardian"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/penal-mbappe.2d437a10.webp"
+        credit: "Foto: The Guardian · i.guim.co.uk"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:2d437a1046d59978b5ffefe7ddb571fb99f4583b4d26e283884615170b3a2b15"
       
   - id: "penal-messi-final"
     name: "Penal Messi convertido"
@@ -3575,17 +3575,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://i.guim.co.uk/img/media/ca517a599d45e4221122e1c94f10c094be496eb2/0_0_3500_2475/master/3500.jpg?width=1900&dpr=1&s=none&crop=none"
+        source_kind: "direct"
+        author: "The Guardian"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/penal-messi-final.b86c8245.webp"
+        credit: "Foto: The Guardian · i.guim.co.uk"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:b86c82459961a0bf8a913ffc463c69310a78f67b76afaf23f03763350e2edd62"
       
   - id: "dibu-ataja-coman"
     name: "Dibu ataja a Coman"
@@ -3596,18 +3596,18 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://i.guim.co.uk/img/media/7910a2b19f977ae32e4e5da7ec057bc2df6451b3/0_0_3040_1619/master/3040.jpg?width=1900&dpr=1&s=none&crop=none"
+        source_kind: "direct"
+        author: "The Guardian"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 5 }
+        asset: "cromos/eterno-diciembre/dibu-ataja-coman.7d7821b4.webp"
+        credit: "Foto: The Guardian · i.guim.co.uk"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:7d7821b46f2221095c39bcd064c5bfa63f28f732411c1ae6f74beced6d339247"
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=lEyNAmU0CCI", start: 0, duration: 5 }
       
   - id: "truquito-dibu-penales"
     name: "El truquito de Dibu en los penales"
@@ -3618,17 +3618,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CyjbNgXPkXu/"
+        source_kind: "instagram"
+        author: "@dibumartinezz"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/truquito-dibu-penales.176b0570.webp"
+        credit: "Foto: @dibumartinezz · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:176b0570a5b6de260cb92c546af66c2e2e84be7f8a7d7635308e9f419b4a8395"
       
   - id: "penal-paredes"
     name: "Penal Paredes convertido"
@@ -3639,17 +3639,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media-cldnry.s-nbcnews.com/image/upload/c_fill,q_auto:eco,w_2000,h_1200/rockcms/2022-12/221218-gonzalo-montiel-jm-1316-e28947.jpeg"
+        source_kind: "direct"
+        author: "NBC News"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/penal-paredes.931497c4.webp"
+        credit: "Foto: NBC News · media-cldnry.s-nbcnews.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:931497c4d324424329fa26dbb13482d10f3a987c3a4a7f37ac450c5639574a66"
       
   - id: "penal-tchouameni"
     name: "Penal Tchouameni errado"
@@ -3660,17 +3660,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/K6EXCGLK6BWVJZ3VNKELXAAXMY.jpg?auth=aa486c84a316ddc4453ad6b46caa48a0780821f03b0ef08b77a8fa96140af1be&smart=true&width=2480&height=1457&quality=85"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/penal-tchouameni.3677adf6.webp"
+        credit: "Foto: Infobae · infobae.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:3677adf60a8c2df8449e0c95a831c3e6ab85ad588a64a712441b05517d72da8b"
       
   - id: "penal-dybala"
     name: "Penal Dybala convertido"
@@ -3681,17 +3681,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://assets.goal.com/images/v3/blta160e6ce594e3dff/GettyImages-1450100177_(1).jpg?format=pjpg&quality=75&auto=webp&width=2000"
+        source_kind: "direct"
+        author: "Goal.com"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/penal-dybala.a648209d.webp"
+        credit: "Foto: Goal.com · assets.goal.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:a648209d0b590c45ae1737fe7753bdf3b5e8b58b45605848a95cf8d2316bc6aa"
       
   - id: "penal-kolo-muani"
     name: "Penal Kolo Muani convertido"
@@ -3702,17 +3702,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.canal26.com/resizer/v2/KGUZEBDU2ZDSFMTXDLXXGXV6R4.jpg?auth=265cf0ce97a335bbc1ebd3e5b2343bd2c37287fd23518c21e29ac7f770753b58&smart=true&width=2400&height=1350&quality=70"
+        source_kind: "direct"
+        author: "Canal 26"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/penal-kolo-muani.aaa3ae49.webp"
+        credit: "Foto: Canal 26 · canal26.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:aaa3ae49b98444e0c5b25fc72cf861611db91b789759dc5ccc7576935746a294"
       
   - id: "penal-montiel"
     name: "El penal de Montiel"
@@ -3723,19 +3723,19 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://assets.goal.com/images/v3/bltfe03bdabd8e60f40/GOAL_-_Blank_WEB_-_Facebook_-_2023-03-09T114524.813.png?format=pjpg&quality=75&auto=webp&width=2000"
+        source_kind: "direct"
+        author: "Goal.com"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
-      video: { type: "extract", source: "TODO", duration: 8 }
-      relator_clip: { source: "TODO", duration: 12, relator: "Sebastián Vignolo" }
+        asset: "cromos/eterno-diciembre/penal-montiel.4e797f72.webp"
+        credit: "Foto: Goal.com · assets.goal.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:4e797f72a641c973758562d0d536c35367cedbf57a088c799a956c6accb22259"
+      video: { type: "extract", source: "https://www.youtube.com/shorts/qRx58cseJmA", start: 13, duration: 13 }
+      relator_clip: { source: "https://www.youtube.com/shorts/qRx58cseJmA", start: 13, duration: 13, relator: "Pablo Giralt" }
     metadata:
       legendary_brief: "Argentina campeón. Ring de 3 estrellas que se encienden una por una. Argentina campeón del mundo amplificado + campanadas."
       
@@ -3748,17 +3748,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CnkfJd6sqjA/?img_index=1"
+        source_kind: "instagram"
+        author: "@gonzalo_montiel29"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/montiel-festejo.001cba41.webp"
+        credit: "Foto: @gonzalo_montiel29 · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:001cba415a7d77cb9e9683b0102eead660ee56ce43cc6c78f58eda194f58d06b"
       
   - id: "plantel-corre-dibu"
     name: "Plantel corriendo al Dibu"
@@ -3769,17 +3769,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://i.guim.co.uk/img/media/ef3e8d7ae7994e635d57ec5abd3e874b363b39f4/1_191_4788_2874/master/4788.jpg?width=2000&dpr=1&s=none&crop=none"
+        source_kind: "direct"
+        author: "The Guardian"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/plantel-corre-dibu.04dac3e3.webp"
+        credit: "Foto: The Guardian · i.guim.co.uk"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:04dac3e38dbbde721ea96cb3595e52b015d29d618b2c1a6c107776773c93e992"
       
   - id: "llanto-cancha-final"
     name: "Llanto general en cancha"
@@ -3790,17 +3790,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://live-production.wcms.abc-cdn.net.au/3964643252b2a61b1dbf5ecc0788927a?impolicy=wcms_crop_resize&cropH=2721&cropW=4082&xPos=0&yPos=65&width=2400&height=1700"
+        source_kind: "direct"
+        author: "ABC News"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/llanto-cancha-final.96750470.webp"
+        credit: "Foto: ABC News · live-production.wcms.abc-cdn.net.au"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:96750470222da0d7f0a1912be49b938a30508c5224906b8f8369d6958588d5d8"
       
   - id: "mbappe-caminando-solo"
     name: "Mbappé caminando solo"
@@ -3811,17 +3811,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://pbs.twimg.com/media/FkVWJr4WQAIGfij?format=jpg&name=large"
+        source_kind: "direct"
+        author: "@KMbappe"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/mbappe-caminando-solo.133fba7a.webp"
+        credit: "Foto: @KMbappe · pbs.twimg.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:133fba7ae3e7e66153318aedcb58104bf4a6e653b77ddea9a5dc93205918dd37"
       
   - id: "macron-consolando-mbappe"
     name: "Macron consolando a Mbappé"
@@ -3832,17 +3832,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://img.lemde.fr/2022/12/18/0/0/3105/2070/2400/0/75/0/2c39c1e_5612b665f1194a8dad1eeb649a432d13-0-1134f4e491b54e34b90e31f60384ab57.jpg"
+        source_kind: "direct"
+        author: "Lemonde"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/macron-consolando-mbappe.56a68a6f.webp"
+        credit: "Foto: Lemonde · img.lemde.fr"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:56a68a6f8874586f881a23661507ed466f90925d74b671c529817671e4311dd0"
       
   - id: "dibu-guante-oro"
     name: "Dibu con el guante de oro"
@@ -3853,17 +3853,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://assets.goal.com/images/v3/getty-1245713968/crop/MM5DIOJUGQ5DENZYGE5G433XMU5DAORQ/GettyImages-1245713968.jpg?auto=webp&format=pjpg&width=2400&quality=75"
+        source_kind: "direct"
+        author: "Goal.com"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/dibu-guante-oro.4ffe932b.webp"
+        credit: "Foto: Goal.com · assets.goal.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:4ffe932b6890439bc6c3df278055f973e050ff37a948c20760dca2bdc8983f26"
       
   - id: "messi-balon-oro-mundial"
     name: "Messi con el Balón de Oro del Mundial"
@@ -3874,17 +3874,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUv48DLvxd/?img_index=7"
+        source_kind: "instagram"
+        author: "@leomessi"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/messi-balon-oro-mundial.5649a64c.webp"
+        credit: "Foto: @leomessi · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:5649a64caca5805a816e85a9987eb98b0c22278d41629d79a4404327e276daac"
       
   - id: "messi-bisht"
     name: "Messi recibiendo el bisht"
@@ -3895,17 +3895,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media.cnn.com/api/v1/images/stellar/prod/221219133629-messi-argentina-robe.jpg?c=original&q=w_2400,c_fill/f_webp"
+        source_kind: "direct"
+        author: "CNN"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
-        status: "pending"
+        status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: null
-        credit: null
-        fetched_at: null
-        content_hash: null
+        asset: "cromos/eterno-diciembre/messi-bisht.780a4dbb.webp"
+        credit: "Foto: CNN · media.cnn.com"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:780a4dbbc284d7abaa2ce94a3d6c95599bad97bc09e5e20ee6c249c00821a10e"
       
   - id: "messi-besando-copa"
     name: "Messi besando la copa"
@@ -3916,17 +3916,17 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "https://www.instagram.com/p/CmUv48DLvxd/"
+        source_url: "https://www.instagram.com/p/DDuHmQDvwfh/?img_index=1"
         source_kind: "instagram"
-        author: "@leomessi"
+        author: "@afaseleccion"
         license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-besando-copa.5649a64c.webp"
-        credit: "Foto: @leomessi · Instagram"
-        fetched_at: "2026-06-01"
-        content_hash: "sha256:5649a64caca5805a816e85a9987eb98b0c22278d41629d79a4404327e276daac"
+        asset: "cromos/eterno-diciembre/messi-besando-copa.dc797f35.webp"
+        credit: "Foto: @afaseleccion · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:dc797f35f6acb7da629301e876b23182515870dd814375bd60877d3fa525372a"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=P0SAzZEkQcU", start: 3, duration: 8 }
     metadata:
       legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
