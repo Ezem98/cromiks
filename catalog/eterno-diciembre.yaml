@@ -3266,6 +3266,7 @@ cards:
   # =====================================================================
 
   - id: "francia-11-inicial-argentina"
+    # !! RE-SOURCE: misma foto FIFA en 3 cromos (AVOID) -> foto distinta real del XI argentino
     name: "11 vs Francia"
     page: "francia"
     rarity: "uncommon"
@@ -3290,6 +3291,7 @@ cards:
       date: "2022-12-18"
       
   - id: "francia-11-inicial-rival"
+    # !! RE-SOURCE: misma foto FIFA en 3 cromos (AVOID) -> foto distinta real del XI frances
     name: "11 Francia (Mbappé, Griezmann, Giroud)"
     page: "francia"
     rarity: "common"
@@ -3311,6 +3313,7 @@ cards:
         content_hash: null
       
   - id: "penal-a-dimaria"
+    # !! RE-SOURCE: misma foto FIFA en 3 cromos (AVOID) + author "Infobae" mal -> foto real del penal
     name: "Penal a Di María"
     page: "francia"
     rarity: "rare"
@@ -3405,6 +3408,7 @@ cards:
       legendary_brief: "La revancha. Overlay sutil de lágrimas en Lottie. Gradient cálido. Gooooool argentino estirado + piano de fondo."
       
   - id: "dimaria-festejo"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Festejo Di María tras el gol"
     page: "francia"
     rarity: "uncommon"
@@ -3426,6 +3430,7 @@ cards:
         content_hash: null
       
   - id: "mbappe-empate-1"
+    # !! RE-SOURCE: TyC sin variante grande (364x485) -> otra fuente >=1000px
     name: "Mbappé empate 1 (penal)"
     page: "francia"
     rarity: "common"
@@ -3472,6 +3477,7 @@ cards:
       minute: "81"
       
   - id: "messi-gol-3-2"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Suplementarios — Gol Messi 3-2"
     page: "francia"
     rarity: "epic"
@@ -3497,6 +3503,7 @@ cards:
       minute: "108"
       
   - id: "mbappe-empate-3-3"
+    # !! RE-SOURCE: thumbnail de Brave search-cache (300x400), no es fuente real -> original
     name: "Suplementarios — Mbappé empate 3-3 de penal"
     page: "francia"
     rarity: "common"
@@ -3546,6 +3553,7 @@ cards:
       legendary_brief: "El segundo milagro. Slow-mo extremo + cronómetro decorativo 120+3. Bullet time sound design."
       
   - id: "penal-mbappe"
+    # !! RE-SOURCE: thumbnail de Brave search-cache (300x400), no es fuente real -> original
     name: "Penal Mbappé convertido"
     page: "francia"
     rarity: "common"
@@ -3567,6 +3575,7 @@ cards:
         content_hash: null
       
   - id: "penal-messi-final"
+    # !! RE-SOURCE: Twitter orig 555x740 chico -> fuente >=1000px lado corto
     name: "Penal Messi convertido"
     page: "francia"
     rarity: "uncommon"
@@ -3588,6 +3597,7 @@ cards:
         content_hash: null
       
   - id: "dibu-ataja-coman"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Dibu ataja a Coman"
     page: "francia"
     rarity: "epic"
@@ -3631,6 +3641,7 @@ cards:
         content_hash: null
       
   - id: "penal-paredes"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Penal Paredes convertido"
     page: "francia"
     rarity: "common"
@@ -3673,6 +3684,7 @@ cards:
         content_hash: null
       
   - id: "penal-dybala"
+    # !! RE-SOURCE: Clarin topa en 1200 (619x825) -> otra fuente mas grande
     name: "Penal Dybala convertido"
     page: "francia"
     rarity: "common"
@@ -3715,6 +3727,7 @@ cards:
         content_hash: null
       
   - id: "penal-montiel"
+    # !! RE-SOURCE: LEGENDARIA #156 (PRIORIDAD). Getty locked 594px -> fuente grande, lado corto >=1000px
     name: "El penal de Montiel"
     page: "francia"
     rarity: "legendary"
@@ -3761,6 +3774,7 @@ cards:
         content_hash: null
       
   - id: "plantel-corre-dibu"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Plantel corriendo al Dibu"
     page: "francia"
     rarity: "uncommon"
@@ -3782,6 +3796,7 @@ cards:
         content_hash: null
       
   - id: "llanto-cancha-final"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Llanto general en cancha"
     page: "francia"
     rarity: "common"
@@ -3803,6 +3818,7 @@ cards:
         content_hash: null
       
   - id: "mbappe-caminando-solo"
+    # !! RE-SOURCE: Getty preview locked 594px -> cambiar de fuente, lado corto >=1000px
     name: "Mbappé caminando solo"
     page: "francia"
     rarity: "common"
@@ -3824,6 +3840,7 @@ cards:
         content_hash: null
       
   - id: "macron-consolando-mbappe"
+    # !! RE-SOURCE: Getty preview locked 594px -> cambiar de fuente, lado corto >=1000px
     name: "Macron consolando a Mbappé"
     page: "francia"
     rarity: "common"
@@ -3845,6 +3862,7 @@ cards:
         content_hash: null
       
   - id: "dibu-guante-oro"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Dibu con el guante de oro"
     page: "francia"
     rarity: "uncommon"
@@ -3887,6 +3905,7 @@ cards:
         content_hash: null
       
   - id: "messi-bisht"
+    # !! RE-SOURCE: IG baja-res (~540px) -> fuente mas grande, lado corto >=1000px
     name: "Messi recibiendo el bisht"
     page: "francia"
     rarity: "uncommon"
