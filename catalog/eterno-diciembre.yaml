@@ -3601,12 +3601,15 @@ cards:
         author: "The Guardian"
         license: "all-rights-reserved"
         legal_posture: "takedown"
+        # Fuente apaisada: el Dibo vuela a la izquierda. Anclamos el crop 3:4 a la
+        # izquierda para encuadrar la atajada (default sería centrado y la corta).
+        focal: "left"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/dibu-ataja-coman.7d7821b4.webp"
+        asset: "cromos/eterno-diciembre/dibu-ataja-coman.7abe3d92.webp"
         credit: "Foto: The Guardian · i.guim.co.uk"
         fetched_at: "2026-06-02"
-        content_hash: "sha256:7d7821b46f2221095c39bcd064c5bfa63f28f732411c1ae6f74beced6d339247"
+        content_hash: "sha256:7abe3d926b9639ea670da042645687c4662e8d564aff6a989468259e81cb517b"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=lEyNAmU0CCI", start: 0, duration: 5 }
       
   - id: "truquito-dibu-penales"

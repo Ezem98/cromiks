@@ -100,12 +100,84 @@ def fetch_image(url: str, *, timeout: int = 20, max_redirects: int = 5, attempts
     raise FetchError(f"fetch falló tras {attempts} intentos: {last_err}")
 
 
+def _clamp01(v: float) -> float:
+    return 0.0 if v < 0.0 else 1.0 if v > 1.0 else v
+
+
+def _parse_focal_token(tok: str) -> float | None:
+    """Token numérico → fracción 0..1. Acepta '40%', '0.4' y '40' (>1 = porcentaje)."""
+    pct = tok.endswith("%")
+    t = tok[:-1] if pct else tok
+    try:
+        v = float(t)
+    except ValueError:
+        return None
+    if pct or v > 1.0:
+        v /= 100.0
+    return v
+
+
+def parse_focal(value: object) -> tuple[float, float]:
+    """
+    Punto focal del crop 3:4 → (fx, fy) en 0..1, donde 0.5/0.5 = centrado (el
+    comportamiento por defecto, idéntico al de siempre). fx corre la ventana de
+    recorte en horizontal (0=izquierda, 1=derecha); fy en vertical (0=arriba,
+    1=abajo).
+
+    Acepta:
+      - None / "" / "center"        → (0.5, 0.5)
+      - keywords: top/bottom/left/right y combos ("top left", "bottom-right")
+      - "x% y%" o "x y" numérico    → ("40% 20%" → (0.4, 0.2))
+      - [fx, fy] (lista/tupla)      → directo
+
+    Tokens desconocidos se ignoran (cae a centrado en ese eje).
+    """
+    if value is None:
+        return (0.5, 0.5)
+    if isinstance(value, (list, tuple)) and len(value) == 2:
+        return (_clamp01(float(value[0])), _clamp01(float(value[1])))
+
+    s = str(value).strip().lower().replace("-", " ").replace(",", " ")
+    if not s or s in ("center", "centre"):
+        return (0.5, 0.5)
+
+    x, y, nums = 0.5, 0.5, []
+    for tok in s.split():
+        if tok == "top":
+            y = 0.0
+        elif tok == "bottom":
+            y = 1.0
+        elif tok == "left":
+            x = 0.0
+        elif tok == "right":
+            x = 1.0
+        elif tok in ("center", "centre"):
+            continue
+        else:
+            n = _parse_focal_token(tok)
+            if n is not None:
+                nums.append(n)
+    if nums:
+        x = _clamp01(nums[0])
+        if len(nums) > 1:
+            y = _clamp01(nums[1])
+    return (x, y)
+
+
 def normalize_to_webp(
-    data: bytes, *, max_kb: int = MAX_KB, q_start: int = 90, q_floor: int = 60
+    data: bytes,
+    *,
+    focal: tuple[float, float] = (0.5, 0.5),
+    max_kb: int = MAX_KB,
+    q_start: int = 90,
+    q_floor: int = 60,
 ) -> tuple[bytes, int, int, int, str, list[str]]:
     """
     Normaliza a WebP 800x1066. Devuelve (webp, w, h, quality, content_hash, warnings).
     Lanza NormalizeError si la fuente es animada o muy chica (no upscaleamos).
+
+    `focal` (fx, fy en 0..1) decide de dónde sale el crop 3:4. Default (0.5, 0.5) =
+    centrado, idéntico al comportamiento histórico. Ver parse_focal().
     """
     try:
         from PIL import Image
@@ -142,8 +214,13 @@ def normalize_to_webp(
                     f"({TARGET_W / crop_w:.0%})"
                 )
 
-            left = (w - crop_w) // 2
-            top = (h - crop_h) // 2
+            # Punto focal: corre la ventana de recorte dentro de la fuente. Default
+            # (0.5, 0.5) reproduce exacto el crop centrado de siempre.
+            fx, fy = focal
+            left = max(0, min(w - crop_w, round((w - crop_w) * fx)))
+            top = max(0, min(h - crop_h, round((h - crop_h) * fy)))
+            if (fx, fy) != (0.5, 0.5):
+                warnings.append(f"crop focal {fx:.2f}/{fy:.2f}")
             im = im.crop((left, top, left + crop_w, top + crop_h))
             im = im.resize((TARGET_W, TARGET_H), Image.LANCZOS)
 

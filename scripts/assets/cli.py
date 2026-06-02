@@ -41,7 +41,13 @@ for _stream in (sys.stdout, sys.stderr):
 import catalog as cat  # noqa: E402
 from adapters import AdapterError, SourceResult, resolve_source  # noqa: E402
 from config import ConfigError, build_key, load_settings, make_s3_client, upload_webp  # noqa: E402
-from imaging import FetchError, NormalizeError, fetch_image, normalize_to_webp  # noqa: E402
+from imaging import (  # noqa: E402
+    FetchError,
+    NormalizeError,
+    fetch_image,
+    normalize_to_webp,
+    parse_focal,
+)
 
 # Colores (ANSI), igual estilo que scripts/seed.ts.
 RESET, DIM, GREEN, YELLOW, CYAN, RED = (
@@ -115,7 +121,11 @@ def main() -> int:
         try:
             src_res: SourceResult = resolve_source(src, card.source_kind, card.photo)
             raw = fetch_image(src_res.image_url)
-            webp, w, h, q, digest, warns = normalize_to_webp(raw)
+            # content.photo.focal (curado a mano): de dónde sale el crop 3:4. Default
+            # centrado. Para cartas mal encuadradas (ej. la atajada del Dibu) se pone
+            # algo como "bottom" / "40% 20%" y se re-corre con --force.
+            focal = parse_focal(card.photo.get("focal"))
+            webp, w, h, q, digest, warns = normalize_to_webp(raw, focal=focal)
 
             # Change-detection en --force: si el asset no cambió, no re-subimos.
             if args.force and cat.nullify(card.photo.get("content_hash")) == digest:

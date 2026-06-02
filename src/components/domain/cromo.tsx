@@ -51,6 +51,7 @@ const sizeMap = {
   sm: {
     width: 160,
     height: 213,
+    framePad: 6,
     nameSize: 'text-[14px]',
     roleSize: 'text-[8px]',
     numberSize: 'text-[15px]',
@@ -58,6 +59,7 @@ const sizeMap = {
   md: {
     width: 240,
     height: 320,
+    framePad: 8,
     nameSize: 'text-[18px]',
     roleSize: 'text-[9px]',
     numberSize: 'text-[18px]',
@@ -65,6 +67,7 @@ const sizeMap = {
   lg: {
     width: 320,
     height: 427,
+    framePad: 10,
     nameSize: 'text-[22px]',
     roleSize: 'text-[10px]',
     numberSize: 'text-[22px]',
@@ -72,16 +75,21 @@ const sizeMap = {
 } as const
 
 /**
- * Border por tier. El glow ya NO vive acá: es `--cromo-tier-glow` (box-shadow
- * derivado de la paleta vía `color-mix`, definido por `data-tier` en globals.css)
- * y se fusiona con el inner-shadow del material en un único box-shadow abajo.
+ * Passe-partout por tier: el marco "matte" tier-coded que rodea la foto (tipo TCG).
+ * Gradiente diagonal = sheen metálico, no un color plano. Legendary usa el dorado
+ * (y además el prism-border rotando por fuera). El glow del tier vive aparte en
+ * `--cromo-tier-glow` (box-shadow por `data-tier` en globals.css).
  */
-const tierBorders: Record<Tier, string> = {
-  common: 'border-(--color-tier-common)/50',
-  uncommon: 'border-(--color-tier-uncommon)',
-  rare: 'border-(--color-tier-rare)',
-  epic: 'border-(--color-tier-epic)',
-  legendary: 'border-transparent',
+function frameSheen(c: string): string {
+  return `linear-gradient(150deg, color-mix(in srgb, ${c} 60%, #fff) 0%, ${c} 40%, color-mix(in srgb, ${c} 70%, #000) 100%)`
+}
+
+const tierFrame: Record<Tier, string> = {
+  common: frameSheen('var(--color-tier-common)'),
+  uncommon: frameSheen('var(--color-tier-uncommon)'),
+  rare: frameSheen('var(--color-tier-rare)'),
+  epic: frameSheen('var(--color-tier-epic)'),
+  legendary: frameSheen('var(--color-gold)'),
 }
 
 /** Tilt máximo (grados) por tier. Legendary el que más "se mueve". */
@@ -163,148 +171,147 @@ export function Cromo({
         />
       )}
 
-      {/* Card body */}
+      {/* Frame (passe-partout): matte tier-coded que rodea la foto, tipo TCG. El arte
+          ya no va a sangre — queda enmarcado y recesado adentro del marco. */}
       <div
         className={cn(
-          'relative size-full overflow-hidden rounded-[16px] border',
-          'flex flex-col justify-end',
-          // Un solo box-shadow: highlight superior + viñeta interna ("espesor de cartón
-          // foil") + glow del tier (--cromo-tier-glow, por data-tier en globals.css).
-          // Van juntos a propósito: dos clases shadow-[] se pisan (--tw-shadow).
-          'shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_0_34px_rgba(0,0,0,0.4),var(--cromo-tier-glow)]',
-          tierBorders[tier],
+          'relative size-full overflow-hidden rounded-[16px]',
+          // Hairline oscuro que define la silueta + glow del tier. Un solo box-shadow:
+          // dos clases shadow-[] se pisan en --tw-shadow.
+          'shadow-[0_0_0_1px_rgba(0,0,0,0.45),var(--cromo-tier-glow)]',
         )}
+        style={{ padding: dims.framePad, background: tierFrame[tier] }}
       >
-        {/* Arte o placeholder. onError → placeholder (objeto R2 faltante, no rota). */}
-        <div className="absolute inset-0">
-          {imageUrl && erroredUrl !== imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={name}
-              fill
-              sizes={`${dims.width}px`}
-              className="object-cover"
-              priority={isLegendary}
-              // La CLI ya entrega el WebP 3:4 en tamaño final → saltamos el
-              // optimizer de Next (CPU/sharp en Railway) para una imagen ya óptima.
-              unoptimized
-              onError={() => setErroredUrl(imageUrl)}
-            />
-          ) : (
-            <CromoPlaceholder seed={seed} tier={tier} />
-          )}
-        </div>
-
-        {/* Rare: scanlines foil (estático, sutil) */}
-        {isRare && (
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'repeating-linear-gradient(120deg, transparent 0px, color-mix(in srgb, var(--color-tier-rare) 13%, transparent) 1px, transparent 2px, transparent 7px)',
-            }}
-            aria-hidden="true"
-          />
-        )}
-
-        {/* Epic: glow radial central */}
-        {isEpic && (
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-epic) 20%, transparent) 0%, transparent 60%)',
-            }}
-            aria-hidden="true"
-          />
-        )}
-
-        {/* Legendary: glow radial (amarillo del prism, tier-legendary-3) */}
-        {isLegendary && (
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-legendary-3) 20%, transparent) 0%, transparent 55%)',
-            }}
-            aria-hidden="true"
-          />
-        )}
-
-        {/* Foil holográfico (pointer-driven, ver globals.css) */}
-        <div className="cromo-holo" aria-hidden="true" />
-        {/* Glare especular (pointer-driven) */}
-        <div className="cromo-glare" aria-hidden="true" />
-
-        {/* Frame interno (bisel) — el "doble marco" tipo TCG */}
+        {/* Ventana del arte: recesada dentro del marco (inner shadow = "hundido"). */}
         <div
           className={cn(
-            'pointer-events-none absolute inset-[3px] z-10 rounded-[12px]',
-            'border border-white/10',
-            'shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]',
+            'relative size-full overflow-hidden rounded-[10px]',
+            'flex flex-col justify-end',
+            'border border-black/40',
+            'shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_2px_12px_rgba(0,0,0,0.55)]',
           )}
-          aria-hidden="true"
-        />
-
-        {/* Pip de rareza arriba-izquierda */}
-        <div className="absolute top-2.5 left-2.5 z-20">
-          <RarityPip tier={tier} />
-        </div>
-
-        {/* Número en badge enmarcado arriba-derecha */}
-        {number !== undefined && (
-          <div className="absolute top-2.5 right-2.5 z-20">
-            <span
-              className={cn(
-                'inline-flex items-center rounded-md px-1.5 py-0.5 leading-none',
-                'text-display',
-                dims.numberSize,
-                'bg-(--color-surface-deep)/55 backdrop-blur-sm',
-                'border border-white/10',
-                tierAccent[tier],
-              )}
-              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}
-            >
-              {number}
-            </span>
-          </div>
-        )}
-
-        {/* Nameplate: panel con hairline superior (no solo gradiente) */}
-        <div
-          className={cn(
-            'relative z-20 px-4 pt-7 pb-4',
-            'border-t',
-            isLegendary ? 'border-(--color-gold)/30' : 'border-white/10',
-          )}
-          style={{
-            background:
-              'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.92) 100%)',
-          }}
         >
-          {/* Filete art-deco — acento premium sutil (legendary/epic) */}
-          {(isLegendary || isEpic) && (
-            <DecoRule
-              className={cn(
-                'mb-1.5',
-                isLegendary ? 'text-(--color-gold)/80' : 'text-(--color-tier-epic)/70',
-              )}
+          {/* Arte o placeholder. onError → placeholder (objeto R2 faltante, no rota). */}
+          <div className="absolute inset-0">
+            {imageUrl && erroredUrl !== imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={name}
+                fill
+                sizes={`${dims.width}px`}
+                className="object-cover"
+                priority={isLegendary}
+                // La CLI ya entrega el WebP 3:4 en tamaño final → saltamos el
+                // optimizer de Next (CPU/sharp en Railway) para una imagen ya óptima.
+                unoptimized
+                onError={() => setErroredUrl(imageUrl)}
+              />
+            ) : (
+              <CromoPlaceholder seed={seed} tier={tier} />
+            )}
+          </div>
+
+          {/* Rare: scanlines foil (estático, sutil) */}
+          {isRare && (
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'repeating-linear-gradient(120deg, transparent 0px, color-mix(in srgb, var(--color-tier-rare) 13%, transparent) 1px, transparent 2px, transparent 7px)',
+              }}
+              aria-hidden="true"
             />
           )}
-          <div className={cn('text-display text-white leading-[0.95]', dims.nameSize)}>
-            {name.toUpperCase()}
-          </div>
-          {playerRole && (
+
+          {/* Epic: glow radial central */}
+          {isEpic && (
             <div
-              className={cn(
-                'text-mono uppercase mt-1 leading-none',
-                dims.roleSize,
-                isLegendary ? 'text-(--color-gold)/90' : 'text-white/65',
-              )}
-            >
-              {playerRole}
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-epic) 20%, transparent) 0%, transparent 60%)',
+              }}
+              aria-hidden="true"
+            />
+          )}
+
+          {/* Legendary: glow radial (amarillo del prism, tier-legendary-3) */}
+          {isLegendary && (
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-legendary-3) 20%, transparent) 0%, transparent 55%)',
+              }}
+              aria-hidden="true"
+            />
+          )}
+
+          {/* Foil holográfico (pointer-driven, ver globals.css) */}
+          <div className="cromo-holo" aria-hidden="true" />
+          {/* Glare especular (pointer-driven) */}
+          <div className="cromo-glare" aria-hidden="true" />
+
+          {/* Pip de rareza arriba-izquierda */}
+          <div className="absolute top-2.5 left-2.5 z-20">
+            <RarityPip tier={tier} />
+          </div>
+
+          {/* Número en badge enmarcado arriba-derecha */}
+          {number !== undefined && (
+            <div className="absolute top-2.5 right-2.5 z-20">
+              <span
+                className={cn(
+                  'inline-flex items-center rounded-md px-1.5 py-0.5 leading-none',
+                  'text-display',
+                  dims.numberSize,
+                  'bg-(--color-surface-deep)/55 backdrop-blur-sm',
+                  'border border-white/10',
+                  tierAccent[tier],
+                )}
+                style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}
+              >
+                {number}
+              </span>
             </div>
           )}
+
+          {/* Nameplate: panel con hairline superior (no solo gradiente) */}
+          <div
+            className={cn(
+              'relative z-20 px-4 pt-7 pb-4',
+              'border-t',
+              isLegendary ? 'border-(--color-gold)/30' : 'border-white/10',
+            )}
+            style={{
+              background:
+                'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.92) 100%)',
+            }}
+          >
+            {/* Filete art-deco — acento premium sutil (legendary/epic) */}
+            {(isLegendary || isEpic) && (
+              <DecoRule
+                className={cn(
+                  'mb-1.5',
+                  isLegendary ? 'text-(--color-gold)/80' : 'text-(--color-tier-epic)/70',
+                )}
+              />
+            )}
+            <div className={cn('text-display text-white leading-[0.95]', dims.nameSize)}>
+              {name.toUpperCase()}
+            </div>
+            {playerRole && (
+              <div
+                className={cn(
+                  'text-mono uppercase mt-1 leading-none',
+                  dims.roleSize,
+                  isLegendary ? 'text-(--color-gold)/90' : 'text-white/65',
+                )}
+              >
+                {playerRole}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
