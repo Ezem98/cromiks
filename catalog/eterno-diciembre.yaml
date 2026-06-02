@@ -3274,10 +3274,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://digitalhub.fifa.com/transform/82a4bc9e-d1ff-49bb-b68f-32a105675e4b/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
+        source_kind: "direct"
+        author: "FIFA"
+        license: ""
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3298,10 +3298,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://digitalhub.fifa.com/transform/82a4bc9e-d1ff-49bb-b68f-32a105675e4b/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
+        source_kind: "direct"
+        author: "FIFA"
+        license: ""
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3319,10 +3319,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://digitalhub.fifa.com/transform/82a4bc9e-d1ff-49bb-b68f-32a105675e4b/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
+        source_kind: "direct"
+        author: "Infobae"
+        license: ""
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3330,7 +3330,7 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 5 }
+      video: { type: "extract", source: "https://www.youtube.com/shorts/G2SMv0QXQQQ?feature=share", start: 0, duration: 8 }
       
   - id: "messi-gol-penal-final"
     name: "Gol Messi de penal (1-0)"
@@ -3341,10 +3341,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/VM64GETHUO2IYREFBCVR37GN64.jpg?auth=b501164f8b4cbf66fd6dd162def3a02fd9e32f769f69c9fd2b88e891598751c4&smart=true&width=2480&height=1545&quality=85"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3352,8 +3352,8 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
-      relator_clip: { source: "TODO", duration: 8 }
+      video: { type: "extract", source: "https://www.youtube.com/shorts/nLqs7fsCCxE?feature=share", start: 0, duration: 9 }
+      relator_clip: { source: "https://www.youtube.com/watch?v=78s_1hgWonA", start: 35, duration: 9 }
     metadata:
       minute: "23"
       
@@ -3366,10 +3366,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/ClcJUCTseRZ/?img_index=2"
+        source_kind: "instagram"
+        author: "@alemacallister"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3387,10 +3387,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/CPCYH6U2CJ5B3AJACP43S5O4TI.jpg?auth=57eeedb6bc1362e95490fa02f614d092dead83a4fb537a7441026e7a014a12e8&smart=true&width=2480&height=1695&quality=85"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3398,14 +3398,14 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 8 }
-      relator_clip: { source: "TODO", duration: 10, relator: "Sebastián Vignolo" }
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=gm3jomzFEpk", start: 14, duration: 16 }
+      relator_clip: { source: "https://www.youtube.com/watch?v=Kutz0UJExSU", start: 14, duration: 16, relator: "Sebastián Vignolo" }
     metadata:
       minute: "36"
       legendary_brief: "La revancha. Overlay sutil de lágrimas en Lottie. Gradient cálido. Gooooool argentino estirado + piano de fondo."
       
-  - id: "dimaria-festejo-llorando"
-    name: "Festejo Di María llorando"
+  - id: "dimaria-festejo"
+    name: "Festejo Di María tras el gol"
     page: "francia"
     rarity: "uncommon"
     card_number: 142
@@ -3413,10 +3413,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUwCuAL6KY/?img_index=1"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3434,10 +3434,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media.tycsports.com/files/2022/12/18/517173/gol-de-mbappe-de-penal-en-argentina-francia_862x485.webp?v=1"
+        source_kind: "direct"
+        author: "TyC Sports"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3457,10 +3457,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://ichef.bbci.co.uk/ace/ws/1920/cpsprodpb/13794/production/_128046797_012af83d-b19c-4749-849b-b411a4ee3b2d.jpg.webp"
+        source_kind: "direct"
+        author: "BBC"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3480,10 +3480,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUcGOaLeaP/?img_index=2"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3491,8 +3491,8 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
-      relator_clip: { source: "TODO", duration: 8 }
+      video: { type: "extract", source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10 }
+      relator_clip: { source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10, relator: "Pablo Giralt" }
     metadata:
       minute: "108"
       
@@ -3505,10 +3505,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://imgs.search.brave.com/n3bGGX2Tbgq7RbckW_oEuLdtCMYb0dycqwh4hWi2aAQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c3BvcnRwaG90b2dh/bGxlcnkuY29tL2Nv/bnRlbnQvaW1hZ2Vz/L2Ntc2ZpbGVzL3By/b2R1Y3QvNDI4MzYv/NDM3NjctbGlzdC5q/cGc"
+        source_kind: "direct"
+        author: "Brave"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3528,10 +3528,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/DD66u1rRgH4/?img_index=2"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "All rights reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3539,8 +3539,8 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 6 }
-      relator_clip: { source: "TODO", duration: 8 }
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
+      relator_clip: { source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
     metadata:
       minute: "120+3"
       legendary_brief: "El segundo milagro. Slow-mo extremo + cronómetro decorativo 120+3. Bullet time sound design."
@@ -3554,10 +3554,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://imgs.search.brave.com/LJfpK--ckK0qALSlFl3lVoazjyowxqKV0cZZDWHYzFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c3BvcnRwaG90b2dh/bGxlcnkuY29tL2Nv/bnRlbnQvaW1hZ2Vz/L2Ntc2ZpbGVzL3By/b2R1Y3QvNDI4Mzcv/NDM3NjgtbGlzdC5q/cGc"
+        source_kind: "direct"
+        author: "Brave"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3575,10 +3575,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://pbs.twimg.com/media/FkRTBb4WQAE9qo7?format=jpg&name=orig"
+        source_kind: "direct"
+        author: "@argentina"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3596,10 +3596,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUcGOaLeaP/?img_index=3"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3607,7 +3607,7 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 5 }
+      video: { type: "extract", source: "https://www.youtube.com/watch?v=lEyNAmU0CCI", start: 0, duration: 5 }
       
   - id: "truquito-dibu-penales"
     name: "El truquito de Dibu en los penales"
@@ -3618,10 +3618,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CyjbNgXPkXu/"
+        source_kind: "instagram"
+        author: "@dibumartinezz"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3639,10 +3639,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmmtRQhpILh/?img_index=4"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3660,10 +3660,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.infobae.com/resizer/v2/K6EXCGLK6BWVJZ3VNKELXAAXMY.jpg?auth=aa486c84a316ddc4453ad6b46caa48a0780821f03b0ef08b77a8fa96140af1be&smart=true&width=2480&height=1457&quality=85"
+        source_kind: "direct"
+        author: "Infobae"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3681,10 +3681,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.clarin.com/img/2023/09/05/iWpn5Gviv_1200x0__1.jpg"
+        source_kind: "direct"
+        author: "Clarín"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3702,10 +3702,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.canal26.com/resizer/v2/KGUZEBDU2ZDSFMTXDLXXGXV6R4.jpg?auth=265cf0ce97a335bbc1ebd3e5b2343bd2c37287fd23518c21e29ac7f770753b58&smart=true&width=2400&height=1350&quality=70"
+        source_kind: "direct"
+        author: "Canal 26"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3723,10 +3723,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media.gettyimages.com/id/1450406450/es/foto/lusail-city-qatar-gonzalo-montiel-of-argentina-scores-their-sides-fourth-and-winning-penalty.jpg?s=594x594&w=0&k=20&c=h7z5727XU9ppneWc1PNEy7rAJqXKmCBaFY3EnjsrNP0="
+        source_kind: "direct"
+        author: "Getty Images"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3734,8 +3734,8 @@ cards:
         credit: null
         fetched_at: null
         content_hash: null
-      video: { type: "extract", source: "TODO", duration: 8 }
-      relator_clip: { source: "TODO", duration: 12, relator: "Sebastián Vignolo" }
+      video: { type: "extract", source: "https://www.youtube.com/shorts/qRx58cseJmA", start: 13, duration: 13 }
+      relator_clip: { source: "https://www.youtube.com/shorts/qRx58cseJmA", start: 13, duration: 13, relator: "Pablo Giralt" }
     metadata:
       legendary_brief: "Argentina campeón. Ring de 3 estrellas que se encienden una por una. Argentina campeón del mundo amplificado + campanadas."
       
@@ -3748,10 +3748,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CnkfJd6sqjA/?img_index=1"
+        source_kind: "instagram"
+        author: "@gonzalo_montiel29"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3769,10 +3769,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUcGOaLeaP/?img_index=8"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3790,10 +3790,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUcGOaLeaP/?img_index=4"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3811,10 +3811,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media.gettyimages.com/id/1450131693/es/foto/lusail-city-qatar-kylian-mbappe-of-france-walks-past-the-fifa-world-cup-trophy-after-winning.jpg?s=594x594&w=0&k=20&c=xzybuAA3ea9wUDYrWev44I80dLWZ1czb9_61EJCjvtY="
+        source_kind: "direct"
+        author: "Getty Images"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3832,10 +3832,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://media.gettyimages.com/id/1450254157/es/foto/lusail-city-qatar-kylian-mbappe-of-france-is-consoled-by-president-of-france-emmanuel-macron.jpg?s=594x594&w=0&k=20&c=Ei-4wvjoJiV6i1PjFkiIYA2ZcT8-dBOJ0sXpNEKJf8w="
+        source_kind: "direct"
+        author: "Getty Images"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3853,10 +3853,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUdf-2rXDL/?img_index=2"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3874,10 +3874,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmUv48DLvxd/?img_index=7"
+        source_kind: "instagram"
+        author: "@leomessi"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3895,10 +3895,10 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "TODO"
-        source_kind: "TODO"
-        author: "TODO"
-        license: "TODO"
+        source_url: "https://www.instagram.com/p/CmU3z4QpnOB/"
+        source_kind: "instagram"
+        author: "@afaseleccion"
+        license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "pending"
         # --- completa la CLI, no editar a mano ---
@@ -3916,9 +3916,9 @@ cards:
     content:
       photo:
         type: "video_capture"
-        source_url: "https://www.instagram.com/p/CmUv48DLvxd/"
+        source_url: "https://www.instagram.com/p/DDuHmQDvwfh/?img_index=1"
         source_kind: "instagram"
-        author: "@leomessi"
+        author: "@afaseleccion"
         license: "all-rights-reserved"
         legal_posture: "takedown"
         status: "published"
