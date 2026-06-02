@@ -454,7 +454,7 @@
   --cromo-tier-glow: var(--cromo-glow-rare);
 }
 .cromo[data-tier="epic"] {
-  --holo-strength: 0.26;
+  --holo-strength: 0.3;
   --cromo-tier-glow: var(--cromo-glow-epic);
 }
 .cromo[data-tier="legendary"] {
@@ -483,15 +483,27 @@
     transparent 86%
   );
 }
+/* Epic = cosmos/sparkle (P3): nebulosa violeta (tinte del token) + campo de
+   estrellas. El starfield es % del tile, así que driftea al panear con el
+   puntero (parallax). Sin loops → vive solo mientras interactuás. */
 .cromo[data-tier="epic"] .cromo-holo {
-  background-image: linear-gradient(
-    105deg,
-    transparent 14%,
-    var(--color-tier-epic) 36%,
-    #ff9ed6 52%,
-    var(--color-tier-epic) 68%,
-    transparent 86%
-  );
+  background-image:
+    radial-gradient(circle at 18% 24%, #fff 0, transparent 1.3px),
+    radial-gradient(circle at 67% 16%, #ffd1f0 0, transparent 1.5px),
+    radial-gradient(circle at 41% 62%, #fff 0, transparent 1.1px),
+    radial-gradient(circle at 82% 54%, #d9b8ff 0, transparent 1.4px),
+    radial-gradient(circle at 58% 38%, #fff 0, transparent 1px),
+    radial-gradient(circle at 12% 78%, #ffd1f0 0, transparent 1.3px),
+    radial-gradient(circle at 89% 86%, #fff 0, transparent 1.1px),
+    radial-gradient(circle at 33% 90%, #d9b8ff 0, transparent 1.2px),
+    radial-gradient(
+      ellipse 70% 90% at 40% 35%,
+      color-mix(in srgb, var(--color-tier-epic) 70%, transparent) 0%,
+      transparent 65%
+    ),
+    linear-gradient(125deg, transparent 20%, #ff9ed6 50%, transparent 80%);
+  background-size: 160% 160%;
+  filter: saturate(1.3);
 }
 
 @media (prefers-reduced-motion: reduce) {
