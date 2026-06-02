@@ -203,17 +203,20 @@ function OwnedSlot({ card, onClick }: { card: AlbumCardSlot; onClick?: () => voi
         <div className="cromo-slot-holo" data-tier={card.tier} aria-hidden="true" />
       )}
 
-      {/* Número arriba a la derecha */}
-      <div
-        className={cn(
-          'absolute top-1.5 right-1.5 z-10',
-          'text-display leading-none',
-          'text-[clamp(12px,2.5vw,16px)]',
-          tierTextColors[card.tier],
-        )}
-        style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
-      >
-        {card.cardNumber}
+      {/* Número arriba a la derecha — chip oscuro para garantizar contraste sobre la
+          foto (el tier-color solo + text-shadow desaparecía sobre fondos claros). */}
+      <div className="absolute top-1.5 right-1.5 z-10">
+        <span
+          className={cn(
+            'inline-flex items-center rounded-md px-1.5 py-0.5 leading-none',
+            'text-display text-[clamp(12px,2.5vw,16px)]',
+            'bg-(--color-surface-deep)/70 backdrop-blur-sm border border-white/10',
+            tierTextColors[card.tier],
+          )}
+          style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
+        >
+          {card.cardNumber}
+        </span>
       </div>
 
       {/* Badge de copies (si tiene más de 1) */}
