@@ -157,7 +157,9 @@ function CardDetailHeader({ card }: { card: AlbumCardSlot }) {
         tier={card.tier}
         name={card.name}
         playerRole={card.playerRole ?? undefined}
-        number={card.number ?? undefined}
+        // El número canónico es card_number (no metadata.number, que casi siempre
+        // viene vacío y mostraba el badge en blanco). Mismo origen que el álbum.
+        number={card.cardNumber}
         seed={card.id}
         imageUrl={card.imageUrl ?? undefined}
         size="md"
