@@ -201,7 +201,7 @@ export function Cromo({
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'repeating-linear-gradient(120deg, transparent 0px, rgba(91, 163, 224, 0.13) 1px, transparent 2px, transparent 7px)',
+                'repeating-linear-gradient(120deg, transparent 0px, color-mix(in srgb, var(--color-tier-rare) 13%, transparent) 1px, transparent 2px, transparent 7px)',
             }}
             aria-hidden="true"
           />
@@ -213,19 +213,19 @@ export function Cromo({
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(circle at 50% 40%, rgba(185, 127, 227, 0.2) 0%, transparent 60%)',
+                'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-epic) 20%, transparent) 0%, transparent 60%)',
             }}
             aria-hidden="true"
           />
         )}
 
-        {/* Legendary: glow gold radial */}
+        {/* Legendary: glow radial (amarillo del prism, tier-legendary-3) */}
         {isLegendary && (
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(circle at 50% 40%, rgba(255, 217, 107, 0.2) 0%, transparent 55%)',
+                'radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-tier-legendary-3) 20%, transparent) 0%, transparent 55%)',
             }}
             aria-hidden="true"
           />
@@ -306,7 +306,7 @@ export function Cromo({
             className={cn(
               'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-medium leading-none',
               'bg-(--color-argentina-glow) text-(--color-surface-deep)',
-              'shadow-[0_0_16px_rgba(107,185,255,0.5)]',
+              'shadow-[0_0_16px_color-mix(in_srgb,var(--color-argentina-glow)_50%,transparent)]',
             )}
           >
             ¡Nuevo!
