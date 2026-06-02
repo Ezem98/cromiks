@@ -15,7 +15,9 @@ import { cn } from '@/lib/utils'
  * Estados (los 6 del design review):
  *  - default      → still + botón "Volvé a verlo"
  *  - loading      → poster sostenido con pulse hasta que el iframe cargó
- *  - playing      → iframe youtube-nocookie (autoplay + captions)
+ *  - playing      → iframe youtube-nocookie (autoplay MUTED + captions; el user
+ *                   des-mutea desde el player. El audio "diseñado" del relato
+ *                   (relator_clip) es F2.)
  *  - error/id malo → mensaje reverente + link-out a YouTube (nunca frame roto)
  *  - no-video     → el caller no monta este componente (videoUrl null)
  *  - reduced-motion → lo maneja el bloque global de globals.css (anim 0.01ms);
@@ -154,7 +156,7 @@ export function LegendaryMoment({
           </div>
         )}
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&cc_load_policy=1&rel=0&modestbranding=1${
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&cc_load_policy=1&rel=0&modestbranding=1${
             start ? `&start=${start}` : ''
           }${end ? `&end=${end}` : ''}`}
           title={`El momento: ${cardName}`}
