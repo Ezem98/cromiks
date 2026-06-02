@@ -44,6 +44,9 @@ content:
     author:        autor/fotógrafo (para crédito)   # direct/x: a mano
     license:       cc-by | cc-by-sa | cc0 | all-rights-reserved | ai-generated
     legal_posture: licensed | takedown
+    focal:         center (default) | top | bottom | left | right | combos | "x% y%"
+                   # de dónde sale el crop 3:4. Default centrado. Para fotos mal
+                   # encuadradas, ej "left" o "40% 20%". Re-correr con --force.
     # --- OUTPUT (lo completa la CLI, no editar a mano) ---
     asset:         cromos/<album>/<card_id>.<hash>.webp
     credit:        string armado para alt/caption
