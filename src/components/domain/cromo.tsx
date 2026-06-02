@@ -282,6 +282,15 @@ export function Cromo({
               'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.92) 100%)',
           }}
         >
+          {/* Filete art-deco — acento premium sutil (legendary/epic) */}
+          {(isLegendary || isEpic) && (
+            <DecoRule
+              className={cn(
+                'mb-1.5',
+                isLegendary ? 'text-(--color-gold)/80' : 'text-(--color-tier-epic)/70',
+              )}
+            />
+          )}
           <div className={cn('text-display text-white leading-[0.95]', dims.nameSize)}>
             {name.toUpperCase()}
           </div>
@@ -318,7 +327,8 @@ export function Cromo({
 }
 
 /**
- * Pip de rareza: gema chica tier-coded. Legendary = estrella dorada.
+ * Pip de rareza: gema chica tier-coded. Legendary = sol de mayo dorado
+ * (símbolo argentino sin escudo AFA — ver visual-references.md).
  */
 function RarityPip({ tier }: { tier: Tier }) {
   if (tier === 'legendary') {
@@ -326,10 +336,23 @@ function RarityPip({ tier }: { tier: Tier }) {
       <svg
         viewBox="0 0 24 24"
         className="size-4 text-(--color-gold) drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
-        fill="currentColor"
         aria-hidden="true"
       >
-        <path d="M12 2L14.2 8.5L21 9L15.5 13L17.5 19.5L12 15.8L6.5 19.5L8.5 13L3 9L9.8 8.5L12 2Z" />
+        {/* Sunburst de 8 rayos (tips r=11, valles r=5.5) */}
+        <polygon
+          points="12,1 14.11,6.92 19.78,4.22 17.08,9.89 23,12 17.08,14.11 19.78,19.78 14.11,17.08 12,23 9.89,17.08 4.22,19.78 6.92,14.11 1,12 6.92,9.89 4.22,4.22 9.89,6.92"
+          fill="currentColor"
+        />
+        {/* Aro interno del sol (rasgo del sol de mayo) */}
+        <circle
+          cx="12"
+          cy="12"
+          r="3.6"
+          fill="none"
+          stroke="var(--color-surface-deep)"
+          strokeWidth="0.9"
+          opacity="0.5"
+        />
       </svg>
     )
   }
@@ -345,5 +368,26 @@ function RarityPip({ tier }: { tier: Tier }) {
       style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.7)' }}
       aria-hidden="true"
     />
+  )
+}
+
+/**
+ * Filete art-deco: línea — rombo — línea. Acento sutil en la nameplate de los
+ * tiers premium. Hereda el color por `currentColor` (lo setea el caller).
+ */
+function DecoRule({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 6"
+      className={cn('h-1.5 w-12', className)}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1"
+      aria-hidden="true"
+    >
+      <line x1="0" y1="3" x2="19" y2="3" strokeLinecap="round" />
+      <polygon points="24,0.5 27,3 24,5.5 21,3" fill="currentColor" stroke="none" />
+      <line x1="29" y1="3" x2="48" y2="3" strokeLinecap="round" />
+    </svg>
   )
 }
