@@ -3866,7 +3866,6 @@ cards:
         content_hash: "sha256:4ffe932b6890439bc6c3df278055f973e050ff37a948c20760dca2bdc8983f26"
       
   - id: "messi-balon-oro-mundial"
-    # !! RE-SOURCE: muestra la MISMA foto que #165 (hash 5649a64c). Deberia ser el trofeo Balon de Oro, no levantar la copa. status=published -> re-source + cli --force
     name: "Messi con el Balón de Oro del Mundial"
     page: "francia"
     rarity: "uncommon"
@@ -3909,7 +3908,6 @@ cards:
         content_hash: "sha256:780a4dbbc284d7abaa2ce94a3d6c95599bad97bc09e5e20ee6c249c00821a10e"
       
   - id: "messi-besando-copa"
-    # !! RE-SOURCE: muestra un levantamiento, no el BESO (hash 5649a64c, igual que #163). Buscar la foto del beso. status=published -> re-source + cli --force
     name: "Messi besando la copa"
     page: "francia"
     rarity: "legendary"
@@ -3925,10 +3923,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-besando-copa.5649a64c.webp"
-        credit: "Foto: @leomessi · Instagram"
-        fetched_at: "2026-06-01"
-        content_hash: "sha256:5649a64caca5805a816e85a9987eb98b0c22278d41629d79a4404327e276daac"
+        asset: "cromos/eterno-diciembre/messi-besando-copa.dc797f35.webp"
+        credit: "Foto: @afaseleccion · Instagram"
+        fetched_at: "2026-06-02"
+        content_hash: "sha256:dc797f35f6acb7da629301e876b23182515870dd814375bd60877d3fa525372a"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=P0SAzZEkQcU", start: 3, duration: 8 }
     metadata:
       legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
