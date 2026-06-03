@@ -96,7 +96,7 @@ describe('FRANCIA_BENTO — integridad del placement', () => {
     for (const n of [141, 147, 156, 165]) {
       const cell = getBentoCell(8, n)
       expect(cell, `falta la celda del cromo ${n}`).toBeDefined()
-      expect(cell!.span, `la legendaria ${n} no rompe la grilla`).toBeGreaterThan(1)
+      expect(cell?.span ?? 0, `la legendaria ${n} no rompe la grilla`).toBeGreaterThan(1)
     }
     // El clímax (Montiel campeón) y la atajada son full-row.
     expect(getBentoCell(8, 156)?.span).toBe(BENTO_COLS)
@@ -122,7 +122,8 @@ describe('helpers', () => {
     expect(cellAspectClass({ card: 1, layout: 'portrait', span: 1 })).toBe(
       LAYOUT_ASPECT_CLASS.portrait,
     )
-    expect(cellAspectClass(getBentoCell(8, 136)!)).toBe('aspect-[16/9]')
+    const diptychCell = getBentoCell(8, 136)
+    expect(diptychCell && cellAspectClass(diptychCell)).toBe('aspect-[16/9]')
   })
 
   it('spanClamp acota a la grilla', () => {
