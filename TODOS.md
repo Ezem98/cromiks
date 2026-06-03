@@ -85,6 +85,54 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 ---
 
+## T-06 · `parse_focal` borrado en `chore/react-doctor-cleanup` (posible baja no intencional)
+
+**What:** Revisar el diff de la rama `chore/react-doctor-cleanup`: borró `parse_focal` + el crop focal de `scripts/assets/imaging.py` (~70 líneas) y cobertura de `test_imaging.py`. Confirmar si fue intencional y o revertirlo o abandonar la rama.
+
+**Why:** Una rama de cleanup de lint TS borrando lógica Python de cropping huele a baja accidental. `parse_focal` vive en `origin/main` (`imaging.py:120`) y es la base del pipeline de ratios (T-07/feature bento). Si esa rama se mergea, rompe silenciosamente el crop focal de TODAS las fotos. Surgido en /plan-eng-review (2026-06-03).
+
+**Pros:** Evita una regresión silenciosa del pipeline. **Cons:** Ninguno real, es chequeo.
+
+**Context:** No bloquea el feature bento (se implementa desde `origin/main`, donde focal está). Comparar `git show chore/react-doctor-cleanup:scripts/assets/imaging.py` vs `origin/main`. **Priority:** P1 si esa rama está por mergearse, sino P3.
+
+---
+
+## T-07 · `generatePlaceholders` muerto + `rarity_distribution` desfasado (limpieza seed)
+
+**What:** El catálogo ya define los 205 `card_number` sin huecos → `generatePlaceholders` (`scripts/seed.ts:175`) genera 0 placeholders, y `rarity_distribution` del YAML está desfasado (uncommon 57≠55, rare 17≠14, epic 7≠12). Borrar/simplificar la lógica muerta y reconciliar o eliminar `rarity_distribution`.
+
+**Why:** Código muerto que confunde a quien lea el seed (indujo un razonamiento equivocado en el design doc del bento). No rompe nada. Surgido en /plan-eng-review (2026-06-03).
+
+**Pros:** Limpia una fuente de confusión; el seed dice la verdad. **Cons:** Toca seed.ts sin valor de feature; mejor no mezclarlo con un PR de feature.
+
+**Context:** Ver [[cromiks-catalog-saturates-205]]. Hacer en un PR de limpieza aparte. **Priority:** P3.
+
+---
+
+## T-08 · PR2 del bento — detalle + reveal con ratios apaisados (fast-follow)
+
+**What:** Adaptar `src/components/domain/cromo.tsx` (`sizeMap` 3:4 fijo → ratios variables: frame/nameplate/número apaisados) y `src/features/pack-opening/components/3d/card-mesh.tsx` (pasar w/h apaisado al `planeGeometry`) para que los cromos anchos se vean en su ratio en el detalle y en el reveal del sobre.
+
+**Why:** PR1 (bento en la grilla) shippea sin esto; mientras tanto un cromo ancho se ve recortado a 3:4 en el modal de detalle (`<Cromo>` con object-cover) y en el reveal 3D. Degradación aceptada para la ventana de PR1 (decisión /plan-eng-review 2026-06-03), no rota. Fast-follow.
+
+**Pros:** Cierra la experiencia del ancho en todas las superficies. **Cons:** Toca 3D (R3F) + el componente del cromo; menor que PR1.
+
+**Context:** `<Cromo>` se usa solo en `card-detail-dialog.tsx`. El reveal NO usa `<Cromo>` (usa `card-mesh`). `card-mesh` ya parametriza `planeGeometry args={[w,h]}` → recibe otro w/h. **Depends on:** PR1 del bento. **Priority:** P2 (fast-follow post-PR1).
+
+---
+
+## T-09 · "Se arma con 2 mitades" de verdad (post-beta, con pity)
+
+**What:** La mecánica de coleccionable real: dos cromos sorteables (ej. 136a/136b) que con ambos forman una foto continua, con media-foto+silueta si tenés uno solo. En la beta se shippeó como **díptico solo-presentación** (un cromo ancho, sin mecánica) por el riesgo de pool chico.
+
+**Why:** En un pool de ~31 con reemplazo, la probabilidad de juntar las dos mitades específicas es baja → el flagship se ve mitad-armado para casi todos (outside voice, /plan-eng-review 2026-06-03). Para hacerlo bien hace falta un **pity/garantía** (ej. la segunda mitad cae garantizada tras N sobres si ya tenés la primera) + manejar el reveal apaisado + OG/share por-mitad + el conteo (sube a 206, ver design doc original).
+
+**Pros:** El gancho de coleccionable analógico real ("me falta la otra mitad"). **Cons:** Toca `roll_cards`/`open_pack` (engine), completion, OG, reveal; pool grande lo hace viable (post-beta con más páginas activas).
+
+**Context:** Design doc original (`~/.gstack/projects/Ezem98-cromiks/emachado-main-design-20260602-213047.md`, secciones originales) tiene el modelo de dos filas detallado. Reconsiderar cuando el pool sea más grande y haya un pity diseñado. **Depends on:** beta learnings + pool expandido (T-02). **Priority:** P3 (post-beta).
+
+---
+
 ## 🚀 Beta launch — croacia (checklist)
 
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
