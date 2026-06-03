@@ -196,15 +196,18 @@ function FormationGhost({ tier }: { tier: AlbumCardSlot['tier'] }) {
       aria-hidden="true"
       className={cn(
         'pointer-events-none absolute inset-0 size-full',
-        'opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-200',
+        // Más presencia que los ghosts portrait (0.07): esta celda es el hero
+        // full-row y a 0.08 los puntos desaparecían a escala de página
+        // (design review F-002). Sigue siendo penumbra, no ruido.
+        'opacity-[0.11] group-hover:opacity-[0.16] transition-opacity duration-200',
         tierGhostColors[tier],
       )}
     >
       {back.map((x) => (
-        <circle key={`b${x}`} cx={x} cy={72} r={9} fill="currentColor" />
+        <circle key={`b${x}`} cx={x} cy={72} r={12} fill="currentColor" />
       ))}
       {front.map((x) => (
-        <circle key={`f${x}`} cx={x} cy={118} r={9} fill="currentColor" />
+        <circle key={`f${x}`} cx={x} cy={118} r={12} fill="currentColor" />
       ))}
     </svg>
   )
