@@ -5,9 +5,10 @@ fetch_image: baja con validación dura (formato raster real por magic bytes, top
 de tamaño, rechazo de GIF/SVG/animado, redirects acotados, UA con contacto), con
 retry + backoff para errores de red.
 
-normalize_to_webp: Pillow con guard anti decompression-bomb, cover-crop 3:4 →
-800x1066 (gate de min-resolución: NO upscalea basura), y loop de calidad WebP
-descendente hasta < 200KB.
+normalize_to_webp: Pillow con guard anti decompression-bomb, cover-crop al ratio
+del layout del cromo (portrait 3:4 default / landscape 3:2 / pano 2:1 — ver
+RATIO_PRESETS en config), gate de min-resolución por ratio (NO upscalea basura),
+y loop de calidad WebP descendente hasta el budget de peso del preset.
 """
 
 from __future__ import annotations
@@ -16,10 +17,9 @@ import hashlib
 import io
 import time
 
-from config import MAX_KB, TARGET_H, TARGET_W, USER_AGENT
+from config import RATIO_PRESETS, USER_AGENT
 
 _MAX_BYTES = 25 * 1024 * 1024  # 25MB
-_TARGET_RATIO = TARGET_W / TARGET_H  # 0.75 (3:4 retrato)
 # Tolerancia de upscale: aceptamos un crop hasta 10% más chico que el target y lo
 # subimos ese poco (imperceptible). Las fotos de IG/X suelen toparse en ~1080 y
 # caen justo abajo de 800x1066; sin esto se rechazan fotos perfectamente usables.
@@ -119,7 +119,7 @@ def _parse_focal_token(tok: str) -> float | None:
 
 def parse_focal(value: object) -> tuple[float, float]:
     """
-    Punto focal del crop 3:4 → (fx, fy) en 0..1, donde 0.5/0.5 = centrado (el
+    Punto focal de la ventana de crop → (fx, fy) en 0..1, donde 0.5/0.5 = centrado (el
     comportamiento por defecto, idéntico al de siempre). fx corre la ventana de
     recorte en horizontal (0=izquierda, 1=derecha); fy en vertical (0=arriba,
     1=abajo).
@@ -164,21 +164,50 @@ def parse_focal(value: object) -> tuple[float, float]:
     return (x, y)
 
 
+def resolve_layout(layout: object) -> tuple[str, dict]:
+    """
+    Nombre de layout (content.photo.layout) → preset de ratio (RATIO_PRESETS).
+    None/"" → portrait (el comportamiento histórico). Desconocido → NormalizeError:
+    un typo en el YAML tiene que fallar claro, no croppear al ratio equivocado en
+    silencio.
+    """
+    name = str(layout).strip().lower() if layout is not None else ""
+    if not name:
+        name = "portrait"
+    preset = RATIO_PRESETS.get(name)
+    if preset is None:
+        raise NormalizeError(
+            f"layout desconocido: {layout!r} (válidos: {', '.join(RATIO_PRESETS)})"
+        )
+    return name, preset
+
+
 def normalize_to_webp(
     data: bytes,
     *,
+    layout: object = None,
     focal: tuple[float, float] = (0.5, 0.5),
-    max_kb: int = MAX_KB,
+    max_kb: int | None = None,
     q_start: int = 90,
     q_floor: int = 60,
 ) -> tuple[bytes, int, int, int, str, list[str]]:
     """
-    Normaliza a WebP 800x1066. Devuelve (webp, w, h, quality, content_hash, warnings).
-    Lanza NormalizeError si la fuente es animada o muy chica (no upscaleamos).
+    Normaliza a WebP al ratio del `layout` (portrait 800x1066 default — idéntico al
+    comportamiento histórico; landscape 1200x800; pano 1600x800). Devuelve
+    (webp, w, h, quality, content_hash, warnings). Lanza NormalizeError si la fuente
+    es animada, muy chica para el ratio pedido (no upscaleamos) o el layout es
+    desconocido.
 
-    `focal` (fx, fy en 0..1) decide de dónde sale el crop 3:4. Default (0.5, 0.5) =
-    centrado, idéntico al comportamiento histórico. Ver parse_focal().
+    `focal` (fx, fy en 0..1) decide de dónde sale la ventana de crop — compone con
+    cualquier ratio (la ventana se desliza dentro de la fuente). Default (0.5, 0.5)
+    = centrado. Ver parse_focal(). `max_kb=None` usa el budget del preset.
     """
+    layout_name, preset = resolve_layout(layout)
+    target_w, target_h = int(preset["w"]), int(preset["h"])
+    target_ratio = target_w / target_h
+    if max_kb is None:
+        max_kb = int(preset["max_kb"])
+
     try:
         from PIL import Image
     except ImportError as e:  # pragma: no cover
@@ -195,23 +224,24 @@ def normalize_to_webp(
             im = im.convert("RGB")
             w, h = im.size
 
-            # Gate de min-resolución: el mayor crop 3:4 centrado debe ser >= 800x1066.
+            # Gate de min-resolución: el mayor crop al ratio target debe alcanzar
+            # el tamaño del preset (con la tolerancia de upscale).
             src_ratio = w / h
-            if src_ratio >= _TARGET_RATIO:
-                crop_h, crop_w = h, round(h * _TARGET_RATIO)
+            if src_ratio >= target_ratio:
+                crop_h, crop_w = h, round(h * target_ratio)
             else:
-                crop_w, crop_h = w, round(w / _TARGET_RATIO)
-            floor_w, floor_h = round(TARGET_W / _MAX_UPSCALE), round(TARGET_H / _MAX_UPSCALE)
+                crop_w, crop_h = w, round(w / target_ratio)
+            floor_w, floor_h = round(target_w / _MAX_UPSCALE), round(target_h / _MAX_UPSCALE)
             if crop_w < floor_w or crop_h < floor_h:
                 raise NormalizeError(
-                    f"resolución insuficiente: el crop 3:4 da {crop_w}x{crop_h}, debajo del piso "
-                    f"{floor_w}x{floor_h} (tolerancia {_MAX_UPSCALE:g}x sobre {TARGET_W}x{TARGET_H}; "
-                    f"no upscaleamos basura)"
+                    f"resolución insuficiente: el crop {layout_name} da {crop_w}x{crop_h}, "
+                    f"debajo del piso {floor_w}x{floor_h} (tolerancia {_MAX_UPSCALE:g}x sobre "
+                    f"{target_w}x{target_h}; no upscaleamos basura)"
                 )
-            if crop_w < TARGET_W or crop_h < TARGET_H:
+            if crop_w < target_w or crop_h < target_h:
                 warnings.append(
-                    f"upscale leve: crop {crop_w}x{crop_h} → {TARGET_W}x{TARGET_H} "
-                    f"({TARGET_W / crop_w:.0%})"
+                    f"upscale leve: crop {crop_w}x{crop_h} → {target_w}x{target_h} "
+                    f"({target_w / crop_w:.0%})"
                 )
 
             # Punto focal: corre la ventana de recorte dentro de la fuente. Default
@@ -222,7 +252,7 @@ def normalize_to_webp(
             if (fx, fy) != (0.5, 0.5):
                 warnings.append(f"crop focal {fx:.2f}/{fy:.2f}")
             im = im.crop((left, top, left + crop_w, top + crop_h))
-            im = im.resize((TARGET_W, TARGET_H), Image.LANCZOS)
+            im = im.resize((target_w, target_h), Image.LANCZOS)
 
             # Loop de calidad descendente hasta < max_kb.
             chosen: bytes | None = None
@@ -247,4 +277,4 @@ def normalize_to_webp(
         raise NormalizeError(f"Pillow no pudo procesar la imagen: {e}") from e
 
     digest = "sha256:" + hashlib.sha256(chosen).hexdigest()
-    return chosen, TARGET_W, TARGET_H, quality, digest, warnings
+    return chosen, target_w, target_h, quality, digest, warnings

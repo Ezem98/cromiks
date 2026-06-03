@@ -98,3 +98,60 @@ def test_sniff_magic_bytes():
     assert _sniff(b"GIF89a") == "gif"
     assert _sniff(b"  <svg xmlns='...'>") == "svg"
     assert _sniff(b"\x00\x01garbage") is None
+
+
+# ── Presets de ratio (feature bento: cromos anchos) ──
+
+
+def test_normalize_landscape_target():
+    webp, w, h, q, digest, warns = normalize_to_webp(_png(3000, 2000), layout="landscape")
+    assert (w, h) == (1200, 800)
+    assert _sniff(webp) == "webp"
+    assert len(webp) <= 260 * 1024
+    assert warns == []
+
+
+def test_normalize_pano_target():
+    _, w, h, *_ = normalize_to_webp(_png(4000, 2000), layout="pano")
+    assert (w, h) == (1600, 800)
+
+
+def test_normalize_layout_default_es_portrait():
+    # Sin layout / None / "portrait" → idéntico al comportamiento histórico.
+    src = _png(2000, 3000)
+    a = normalize_to_webp(src)
+    b = normalize_to_webp(src, layout=None)
+    c = normalize_to_webp(src, layout="portrait")
+    assert a[1:3] == b[1:3] == c[1:3] == (800, 1066)
+    assert a[4] == b[4] == c[4]  # mismo content_hash
+
+
+def test_normalize_layout_desconocido_falla():
+    # Typo en el YAML → error claro, NO croppear al ratio equivocado en silencio.
+    with pytest.raises(NormalizeError, match="layout desconocido"):
+        normalize_to_webp(_png(2000, 3000), layout="widescreen")
+
+
+def test_normalize_gate_por_ratio():
+    # 900x700: el crop 3:2 da 900x600, debajo del piso landscape (1091x727) → rechaza.
+    with pytest.raises(NormalizeError, match="landscape"):
+        normalize_to_webp(_png(900, 700), layout="landscape")
+
+
+def test_normalize_landscape_tolera_upscale_leve():
+    # crop ~1140x760: abajo de 1200x800 pero arriba del piso (10%) → upscalea y avisa.
+    _, w, h, _, _, warns = normalize_to_webp(_png(1140, 760), layout="landscape")
+    assert (w, h) == (1200, 800)
+    assert any("upscale leve" in x for x in warns)
+
+
+def test_focal_compone_con_landscape():
+    # Fuente muy ancha, mitad izquierda roja / derecha azul. crop 3:2 con focal
+    # left toma la zona roja; right la azul — la ventana compone con el ratio.
+    src = _split_png(4000, 1000, (200, 30, 30), (30, 30, 200), 2000)
+    webp_left, *_ = normalize_to_webp(src, layout="landscape", focal=(0.0, 0.5))
+    webp_right, *_ = normalize_to_webp(src, layout="landscape", focal=(1.0, 0.5))
+    cl = Image.open(io.BytesIO(webp_left)).convert("RGB").getpixel((600, 400))
+    cr = Image.open(io.BytesIO(webp_right)).convert("RGB").getpixel((600, 400))
+    assert cl[0] > cl[2]  # crop izquierdo: rojizo
+    assert cr[2] > cr[0]  # crop derecho: azulado
