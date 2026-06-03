@@ -3,8 +3,9 @@
 CLI de assets de Cromiks (T9) — fetch → validate → normalize → upload(R2) → write_back.
 
 Asistida por lotes: vos curás `source_url` por cromo en el catálogo YAML; la tool
-baja la imagen, la normaliza (3:4, 800x1066, WebP <200KB), la sube a R2 con key
-determinístico, y escribe la provenance de vuelta en el YAML (ruamel round-trip).
+baja la imagen, la normaliza al ratio de `content.photo.layout` (portrait 3:4
+default / landscape 3:2 / pano 2:1, WebP bajo el budget del preset), la sube a R2
+con key determinístico, y escribe la provenance de vuelta en el YAML.
 
 Uso (desde la raíz del repo):
     python scripts/assets/cli.py --only dibu-plantel
@@ -121,11 +122,15 @@ def main() -> int:
         try:
             src_res: SourceResult = resolve_source(src, card.source_kind, card.photo)
             raw = fetch_image(src_res.image_url)
-            # content.photo.focal (curado a mano): de dónde sale el crop 3:4. Default
-            # centrado. Para cartas mal encuadradas (ej. la atajada del Dibu) se pone
-            # algo como "bottom" / "40% 20%" y se re-corre con --force.
+            # content.photo.focal (curado a mano): de dónde sale la ventana de crop.
+            # Default centrado. Para cartas mal encuadradas (ej. la atajada del Dibu)
+            # se pone algo como "bottom" / "40% 20%" y se re-corre con --force.
             focal = parse_focal(card.photo.get("focal"))
-            webp, w, h, q, digest, warns = normalize_to_webp(raw, focal=focal)
+            # content.photo.layout: ratio target del cromo (portrait default /
+            # landscape / pano — RATIO_PRESETS). Un layout desconocido falla claro
+            # (skip-and-continue) en vez de croppear al ratio equivocado en silencio.
+            layout = cat.nullify(card.photo.get("layout"))
+            webp, w, h, q, digest, warns = normalize_to_webp(raw, layout=layout, focal=focal)
 
             # Change-detection en --force: si el asset no cambió, no re-subimos.
             if args.force and cat.nullify(card.photo.get("content_hash")) == digest:

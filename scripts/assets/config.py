@@ -20,10 +20,20 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # User-Agent con contacto (cortesía + requisito de varias fuentes, ej. Wikimedia).
 USER_AGENT = "Cromiks-AssetBot/1.0 (+https://cromiks.app; contacto: bajas@cromiks.app)"
 
-# Specs de imagen (docs/assets/photos.md): 3:4, >=800x1066, WebP, <200KB.
-TARGET_W = 800
-TARGET_H = 1066
-MAX_KB = 200
+# Specs de imagen (docs/assets/photos.md): WebP, ratio POR CROMO vía
+# content.photo.layout (feature bento — cromos anchos en francia). portrait es el
+# histórico y el default. Cada preset fija target px + budget de peso: los formatos
+# anchos tienen más píxeles → más KB para no degradar calidad.
+RATIO_PRESETS = {
+    "portrait": {"w": 800, "h": 1066, "max_kb": 200},  # 3:4 — default histórico
+    "landscape": {"w": 1200, "h": 800, "max_kb": 260},  # 3:2 — planos de acción anchos
+    "pano": {"w": 1600, "h": 800, "max_kb": 320},  # 2:1 — panorámicas
+}
+
+# Aliases del preset portrait — compat con imports existentes.
+TARGET_W = RATIO_PRESETS["portrait"]["w"]
+TARGET_H = RATIO_PRESETS["portrait"]["h"]
+MAX_KB = RATIO_PRESETS["portrait"]["max_kb"]
 
 
 class ConfigError(RuntimeError):

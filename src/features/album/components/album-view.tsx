@@ -4,18 +4,23 @@ import { motion } from 'motion/react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { getBentoCell, pageHasBento, SPAN_CLASS, spanClamp } from '../bento-layout'
 import type { AlbumCardSlot, AlbumData, PageCompletionMap } from '../queries'
 import { AlbumFilterBar, type AlbumFilters, applyFilters, defaultFilters } from './album-filter-bar'
 import { AlbumPageNav } from './album-page-nav'
 import { AlbumSlot } from './album-slot'
 import { CardDetailDialog } from './card-detail-dialog'
+import { DiptychSlot } from './diptych-slot'
 
 /**
  * Vista principal del álbum.
  *
  * Layout:
  *  - Header con título de la página actual + progreso
- *  - Grid responsive de slots (4 columns mobile, 5 desktop, 6 wide)
+ *  - Grid de slots: páginas con bento curado (francia, ver bento-layout.ts)
+ *    usan 4 cols fijas + col-span por celda; el resto, la grilla uniforme
+ *    responsive (4 → 5 → 6 → 7 cols). Con filtros activos el bento cae a la
+ *    grilla uniforme (las filas curadas dejan de sumar 4 → habría huecos).
  *  - Page nav abajo
  *
  * Por ahora el click en un slot no abre nada (E1.4 es el detalle del cromo).
@@ -54,6 +59,13 @@ export function AlbumView({ data, username }: AlbumViewProps) {
   // Filtrado client-side de la página actual. useMemo así no recalcula en
   // cada render (ej. al abrir el dialog).
   const visibleCards = useMemo(() => applyFilters(cards, filters), [cards, filters])
+
+  // Bento curado (francia) SOLO con la página completa a la vista: las filas
+  // del bento suman exacto 4 columnas en orden (bento-layout.test.ts); al
+  // filtrar, faltan celdas y quedarían huecos/filas rotas → caemos a la
+  // grilla uniforme compacta (el filtro es una vista utilitaria, la
+  // narrativa es para el álbum entero).
+  const bentoActive = pageHasBento(currentPage.pageNumber) && visibleCards.length === cards.length
 
   // CTA: primera página (≠ la actual) donde el user tiene ≥1 cromo.
   const jumpToPage = useMemo(
@@ -127,21 +139,36 @@ export function AlbumView({ data, username }: AlbumViewProps) {
             }}
             className={cn(
               'grid gap-2.5 sm:gap-3',
-              // Responsive: 4 cols mobile → 5 sm → 6 md → 7 lg
-              'grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7',
+              bentoActive
+                ? // Bento: 4 columnas fijas en TODOS los breakpoints; cada celda
+                  // trae su col-span del const (sin auto-flow dense: el orden de
+                  // card_number es la cronología de la final).
+                  'grid-cols-4'
+                : // Grilla uniforme: 4 cols mobile → 5 sm → 6 md → 7 lg
+                  'grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7',
             )}
           >
-            {visibleCards.map((card) => (
-              <motion.div
-                key={card.id}
-                variants={{
-                  hidden: { opacity: 0, y: 10 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-                }}
-              >
-                <AlbumSlot card={card} onClick={() => handleSlotClick(card)} />
-              </motion.div>
-            ))}
+            {visibleCards.map((card) => {
+              const cell = bentoActive
+                ? getBentoCell(currentPage.pageNumber, card.cardNumber)
+                : undefined
+              return (
+                <motion.div
+                  key={card.id}
+                  className={cell && SPAN_CLASS[spanClamp(cell.span) as 1 | 2 | 3 | 4]}
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+                  }}
+                >
+                  {cell?.diptych ? (
+                    <DiptychSlot card={card} cell={cell} onClick={() => handleSlotClick(card)} />
+                  ) : (
+                    <AlbumSlot card={card} cell={cell} onClick={() => handleSlotClick(card)} />
+                  )}
+                </motion.div>
+              )
+            })}
           </motion.div>
         ) : (
           <div className="py-10 text-center">
