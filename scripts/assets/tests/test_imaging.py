@@ -139,8 +139,16 @@ def test_normalize_gate_por_ratio():
 
 
 def test_normalize_landscape_tolera_upscale_leve():
-    # crop ~1140x760: abajo de 1200x800 pero arriba del piso (10%) → upscalea y avisa.
+    # crop ~1140x760: abajo de 1200x800 pero arriba del piso (12%) → upscalea y avisa.
     _, w, h, _, _, warns = normalize_to_webp(_png(1140, 760), layout="landscape")
+    assert (w, h) == (1200, 800)
+    assert any("upscale leve" in x for x in warns)
+
+
+def test_normalize_landscape_acepta_fuente_instagram():
+    # El caso que motivó la tolerancia 1.12: fuente IG (1080 de ancho) → crop
+    # landscape 1080x720, que con el piso de 1.10 (1091px) fallaba por 11px.
+    _, w, h, _, _, warns = normalize_to_webp(_png(1080, 1350), layout="landscape")
     assert (w, h) == (1200, 800)
     assert any("upscale leve" in x for x in warns)
 

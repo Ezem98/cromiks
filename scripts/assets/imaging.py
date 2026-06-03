@@ -20,11 +20,12 @@ import time
 from config import RATIO_PRESETS, USER_AGENT
 
 _MAX_BYTES = 25 * 1024 * 1024  # 25MB
-# Tolerancia de upscale: aceptamos un crop hasta 10% más chico que el target y lo
-# subimos ese poco (imperceptible). Las fotos de IG/X suelen toparse en ~1080 y
-# caen justo abajo de 800x1066; sin esto se rechazan fotos perfectamente usables.
-# Abajo del piso, sí es upscale-basura y se rechaza.
-_MAX_UPSCALE = 1.10
+# Tolerancia de upscale: aceptamos un crop hasta 12% más chico que el target y lo
+# subimos ese poco (imperceptible). Las fotos de IG/X suelen toparse en ~1080:
+# para portrait-800 sobraba con 1.10, pero para landscape-1200 el piso a 1.10
+# (1091px) dejaba afuera a TODO Instagram por 11px — 1200/1080 = 1.11, de ahí
+# 1.12. Abajo del piso, sí es upscale-basura y se rechaza.
+_MAX_UPSCALE = 1.12
 
 
 class FetchError(RuntimeError):

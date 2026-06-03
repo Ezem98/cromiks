@@ -3274,6 +3274,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://digitalhub.fifa.com/transform/59b11d12-f048-4e3f-ae51-c716a8c97a37/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
         source_kind: "direct"
         author: "FIFA"
@@ -3281,10 +3282,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/francia-11-inicial-argentina.c5b18c68.webp"
+        asset: "cromos/eterno-diciembre/francia-11-inicial-argentina.688d0bf6.webp"
         credit: "Foto: FIFA · digitalhub.fifa.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:c5b18c68665ab92988b6dd184f14dc83cb36698bd874fabf1aba6c3c394307d7"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:688d0bf6270ea1ecc1755df726876b0435d80885d2c008f8af40daf2dc5de4c3"
     metadata:
       match: "Argentina 3 (4) - (2) 3 Francia"
       date: "2022-12-18"
@@ -3341,6 +3342,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.infobae.com/resizer/v2/VM64GETHUO2IYREFBCVR37GN64.jpg?auth=b501164f8b4cbf66fd6dd162def3a02fd9e32f769f69c9fd2b88e891598751c4&smart=true&width=2480&height=1545&quality=85"
         source_kind: "direct"
         author: "Infobae"
@@ -3348,10 +3350,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-gol-penal-final.a55cb2cb.webp"
+        asset: "cromos/eterno-diciembre/messi-gol-penal-final.8f01d0bc.webp"
         credit: "Foto: Infobae · infobae.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:a55cb2cb99a0255a14427858d532ce3e3d2c36e9e52f42b20ae21bd43fdfcebf"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:8f01d0bccd25cdf16fd3f70ebceda371d5d48a6a47003084ecc097ba99e3942f"
       video: { type: "extract", source: "https://www.youtube.com/shorts/nLqs7fsCCxE?feature=share", start: 0, duration: 9 }
       relator_clip: { source: "https://www.youtube.com/watch?v=78s_1hgWonA", start: 35, duration: 9 }
     metadata:
@@ -3387,6 +3389,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.infobae.com/resizer/v2/CPCYH6U2CJ5B3AJACP43S5O4TI.jpg?auth=57eeedb6bc1362e95490fa02f614d092dead83a4fb537a7441026e7a014a12e8&smart=true&width=2480&height=1695&quality=85"
         source_kind: "direct"
         author: "Infobae"
@@ -3394,10 +3397,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/dimaria-gol-final.62a8108f.webp"
+        asset: "cromos/eterno-diciembre/dimaria-gol-final.9c06a610.webp"
         credit: "Foto: Infobae · infobae.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:62a8108f7513a48593cd91e3bb5c8da96f2c39f652edb5a0b07a6ec1c65309bf"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:9c06a610d0e4862e09d7b99199fcf60fd437e6c30241dfaffae6a5b4eb2889f3"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=gm3jomzFEpk", start: 14, duration: 16 }
       relator_clip: { source: "https://www.youtube.com/watch?v=Kutz0UJExSU", start: 14, duration: 16, relator: "Sebastián Vignolo" }
     metadata:
@@ -3434,6 +3437,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://f.rpp-noticias.io/2022/12/18/504950_1363304.jpg?width=2400&quality=75"
         source_kind: "direct"
         author: "RPP Noticias"
@@ -3441,10 +3445,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-empate-1.e3e2c90b.webp"
+        asset: "cromos/eterno-diciembre/mbappe-empate-1.0e57e0cd.webp"
         credit: "Foto: RPP Noticias · f.rpp-noticias.io"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:e3e2c90b00be65008752d889712b4a2086338e682400f7d08f084329f5d0c35c"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:0e57e0cdc724ca192f6300ff3035b0e040523027bb5f45f91298c0484babe68e"
     metadata:
       minute: "80"
       
@@ -3457,6 +3461,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://ichef.bbci.co.uk/ace/ws/1920/cpsprodpb/13794/production/_128046797_012af83d-b19c-4749-849b-b411a4ee3b2d.jpg.webp"
         source_kind: "direct"
         author: "BBC"
@@ -3464,10 +3469,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-empate-2.90958aa2.webp"
+        asset: "cromos/eterno-diciembre/mbappe-empate-2.05a3978c.webp"
         credit: "Foto: BBC · ichef.bbci.co.uk"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:90958aa24ee1ccb374bacaf67d7f1d22da6539a66b8416f90074a17afb877492"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:05a3978c36486c6f60f6b120c1ad54f6023df539885656c65603ede72554e452"
     metadata:
       minute: "81"
       
@@ -3480,6 +3485,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.infobae.com/resizer/v2/XZ4QDOOQCL2I4VIZG25FTEWUTE.jpg?auth=45aaf01d9b2b46c7c3ded7ebfd21d339bdb84c9798e335451028ebb060687f9e&smart=true&width=2400&height=1700&quality=75"
         source_kind: "direct"
         author: "Infobae"
@@ -3487,10 +3493,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-gol-3-2.902ad701.webp"
+        asset: "cromos/eterno-diciembre/messi-gol-3-2.e306cb45.webp"
         credit: "Foto: Infobae · infobae.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:902ad7010daf09724235bdfdab64887b8b1a027aa751dd5695312eba9e68ff1c"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:e306cb450831de343f0066d40d45f23d5178fe8855926413b116a541f95eaf32"
       video: { type: "extract", source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10 }
       relator_clip: { source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10, relator: "Pablo Giralt" }
     metadata:
@@ -3505,6 +3511,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://media.cnn.com/api/v1/images/stellar/prod/221218130930-20-world-cup-final-1215.jpg?q=w_2400,c_fill/f_webp"
         source_kind: "direct"
         author: "CNN"
@@ -3512,10 +3519,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-empate-3-3.e5ce13bd.webp"
+        asset: "cromos/eterno-diciembre/mbappe-empate-3-3.eba6fe03.webp"
         credit: "Foto: CNN · media.cnn.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:e5ce13bd7ea0d81072dba5cf894c6ab1223af1867986e728dd7dc8677bb3d6b9"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:eba6fe03d12a341c88246514546915a5af1c4fac9c17eff3a1cb5e4cf32f635c"
     metadata:
       minute: "118"
       
@@ -3528,6 +3535,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "pano"
         source_url: "https://www.instagram.com/p/DD66u1rRgH4/?img_index=2"
         source_kind: "instagram"
         author: "@fifaworldcup"
@@ -3726,6 +3734,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "pano"
         source_url: "https://assets.goal.com/images/v3/bltfe03bdabd8e60f40/GOAL_-_Blank_WEB_-_Facebook_-_2023-03-09T114524.813.png?format=pjpg&quality=75&auto=webp&width=2000"
         source_kind: "direct"
         author: "Goal.com"
@@ -3733,10 +3742,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-montiel.4e797f72.webp"
+        asset: "cromos/eterno-diciembre/penal-montiel.643d0b76.webp"
         credit: "Foto: Goal.com · assets.goal.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:4e797f72a641c973758562d0d536c35367cedbf57a088c799a956c6accb22259"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:643d0b76a5128b909e3696550577e39329628dd18f0293b63a58f4432e0dfa54"
       video: { type: "extract", source: "https://www.youtube.com/shorts/qRx58cseJmA", start: 13, duration: 13 }
       relator_clip: { source: "https://www.youtube.com/shorts/qRx58cseJmA", start: 13, duration: 13, relator: "Pablo Giralt" }
     metadata:
@@ -3772,6 +3781,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://i.guim.co.uk/img/media/ef3e8d7ae7994e635d57ec5abd3e874b363b39f4/1_191_4788_2874/master/4788.jpg?width=2000&dpr=1&s=none&crop=none"
         source_kind: "direct"
         author: "The Guardian"
@@ -3779,10 +3789,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/plantel-corre-dibu.04dac3e3.webp"
+        asset: "cromos/eterno-diciembre/plantel-corre-dibu.de1258b8.webp"
         credit: "Foto: The Guardian · i.guim.co.uk"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:04dac3e38dbbde721ea96cb3595e52b015d29d618b2c1a6c107776773c93e992"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:de1258b84e932d49d7bf88b7a58dcfa566b363e979b60b3d28ec614d29eac1e0"
       
   - id: "llanto-cancha-final"
     name: "Llanto general en cancha"
@@ -3898,6 +3908,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://media.cnn.com/api/v1/images/stellar/prod/221219133629-messi-argentina-robe.jpg?c=original&q=w_2400,c_fill/f_webp"
         source_kind: "direct"
         author: "CNN"
@@ -3905,10 +3916,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-bisht.780a4dbb.webp"
+        asset: "cromos/eterno-diciembre/messi-bisht.767e0d88.webp"
         credit: "Foto: CNN · media.cnn.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:780a4dbbc284d7abaa2ce94a3d6c95599bad97bc09e5e20ee6c249c00821a10e"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:767e0d887338bfab1695cf41d2c5112fc3fe9ae466d766ceec14563c2ae0ea19"
       
   - id: "messi-besando-copa"
     name: "Messi besando la copa"
@@ -3919,6 +3930,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.instagram.com/p/DDuHmQDvwfh/?img_index=1"
         source_kind: "instagram"
         author: "@afaseleccion"
@@ -3926,10 +3938,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-besando-copa.dc797f35.webp"
+        asset: "cromos/eterno-diciembre/messi-besando-copa.640e93f3.webp"
         credit: "Foto: @afaseleccion · Instagram"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:dc797f35f6acb7da629301e876b23182515870dd814375bd60877d3fa525372a"
+        fetched_at: "2026-06-03"
+        content_hash: "sha256:640e93f3ce1c4b32f93ff2a67f387040c99d838bd71106c27ce7c08bb7fe3585"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=P0SAzZEkQcU", start: 3, duration: 8 }
     metadata:
       legendary_brief: "La consagración. Tratamiento de cromo Premium. Parallax depth (copa-Messi-Lusail). Silencio + un click de cámara."
