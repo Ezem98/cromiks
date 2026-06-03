@@ -88,13 +88,15 @@ export function DiptychSlot({ card, cell, onClick }: DiptychSlotProps) {
       )}
       aria-label={`${card.name}, cromo ${card.cardNumber}`}
     >
-      {/* Una sola foto (el WebP 3:2 del plantel); la celda 16:9 recorta simétrico */}
+      {/* Una sola foto (el WebP 3:2 del plantel); la celda 16:9 recorta con sesgo
+          hacia abajo (62%): conserva los botines de la fila delantera y recorta
+          tribuna, que sobra arriba (design review F-001). */}
       {card.imageUrl ? (
         // biome-ignore lint/performance/noImgElement: img normal, mismo criterio que album-slot
         <img
           src={card.imageUrl}
           alt=""
-          className="absolute inset-0 size-full object-cover"
+          className="absolute inset-0 size-full object-cover object-[50%_62%]"
           loading="lazy"
         />
       ) : (
