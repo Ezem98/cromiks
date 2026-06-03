@@ -133,7 +133,15 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 ---
 
-## 🚀 Beta launch — croacia (checklist)
+## T-10 · Filter chips colapsables en mobile (la apertura del álbum queda bajo el fold)
+
+**What:** En mobile (375px) los chips del filtro del álbum (`album-filter-bar.tsx`) ocupan ~3 filas (Todas / Las que tengo / Las que me faltan / Destacadas / Común / Poco común / Rara / Épica / Legendaria) ANTES del primer cromo — el díptico hero de francia queda medio empujado bajo el fold. Colapsar: una fila scrolleable horizontal, o un botón "Filtrar" que expande.
+
+**Why:** La audiencia es smartphone-first (DESIGN.md §1.5) y la apertura de francia (el plantel campeón a todo el ancho) es el primer impacto del bento — hoy se pierde detrás de una pared de botones. Encontrado en /design-review del bento (2026-06-03, F-005); pre-existente, fuera del diff de PR #44.
+
+**Pros:** La página abre con el hero, no con UI utilitaria; menos scroll para llegar al contenido. **Cons:** Toca un componente compartido (filter bar) que usan todas las páginas del álbum; pide su propio mini-QA.
+
+**Context:** Punto de cambio: `src/features/album/components/album-filter-bar.tsx`. Capturas en `~/.gstack/projects/Ezem98-cromiks/designs/design-audit-20260603/screenshots/m1-top.png`. **Priority:** P2 (antes de invitar la cohorte mobile-first idealmente).
 
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
