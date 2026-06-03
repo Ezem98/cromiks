@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { type BentoCell, cellAspectClass, cellRatio } from '../bento-layout'
 import type { AlbumCardSlot } from '../queries'
 
 /**
@@ -9,6 +10,12 @@ import type { AlbumCardSlot } from '../queries'
  *    nombre + número visibles). Badge de copies si tiene > 1.
  *  - Missing: silhouette gris con el número del cromo grande al centro.
  *    Visualmente "vacío", indica al user qué slot le falta.
+ *
+ * Bento (francia): si viene `cell` (de bento-layout), el aspect deja de ser
+ * 3:4 fijo y sale de la celda (landscape 3:2 / pano 2:1), y el estado missing
+ * usa una silueta ANCHA (horizonte de cancha) en vez de la cabeza+hombros —
+ * la 3:4 estirada en una celda apaisada se deforma. El span lo aplica el
+ * parent (AlbumView) en el wrapper de la grilla.
  *
  * NOTA: NO usamos el componente <Cromo/> completo porque sería:
  *  1. Demasiado grande (renderizar 20 Cromos por página x animaciones = lag)
@@ -23,9 +30,12 @@ import type { AlbumCardSlot } from '../queries'
 type AlbumSlotProps = {
   card: AlbumCardSlot
   onClick?: () => void
+  /** Celda del bento (francia). Sin cell → portrait 3:4 (grilla uniforme). */
+  cell?: BentoCell
 }
 
-const tierBorders: Record<AlbumCardSlot['tier'], string> = {
+// Exportados para DiptychSlot (mismo lenguaje visual de slot, render especial).
+export const tierBorders: Record<AlbumCardSlot['tier'], string> = {
   common: 'border-(--color-tier-common)/40',
   uncommon: 'border-(--color-tier-uncommon)/70',
   rare: 'border-(--color-tier-rare)',
@@ -34,7 +44,7 @@ const tierBorders: Record<AlbumCardSlot['tier'], string> = {
 }
 
 // Glow del tier — tokens derivados de la paleta (ver --slot-glow-* en globals.css).
-const tierGlows: Record<AlbumCardSlot['tier'], string> = {
+export const tierGlows: Record<AlbumCardSlot['tier'], string> = {
   common: '',
   uncommon: 'shadow-[var(--slot-glow-uncommon)]',
   rare: 'shadow-[var(--slot-glow-rare)]',
@@ -50,19 +60,31 @@ const tierTextColors: Record<AlbumCardSlot['tier'], string> = {
   legendary: 'text-(--color-gold)',
 }
 
-export function AlbumSlot({ card, onClick }: AlbumSlotProps) {
+export function AlbumSlot({ card, onClick, cell }: AlbumSlotProps) {
+  // Aspect de la celda (bento) o el 3:4 histórico. `wide` decide la silueta missing.
+  const aspect = cell ? cellAspectClass(cell) : 'aspect-[3/4]'
+  const wide = cell ? cellRatio(cell) > 1 : false
+
   if (!card.owned) {
-    return <MissingSlot cardNumber={card.cardNumber} tier={card.tier} onClick={onClick} />
+    return (
+      <MissingSlot
+        cardNumber={card.cardNumber}
+        tier={card.tier}
+        onClick={onClick}
+        aspect={aspect}
+        wide={wide}
+      />
+    )
   }
 
-  return <OwnedSlot card={card} onClick={onClick} />
+  return <OwnedSlot card={card} onClick={onClick} aspect={aspect} />
 }
 
 /**
  * Silueta del tier para el ghost pip — el mismo tinte que usa el pin/número
  * del owned slot, pero desaturado. Es foreshadowing: "acá va a ir un cromo".
  */
-const tierGhostColors: Record<AlbumCardSlot['tier'], string> = {
+export const tierGhostColors: Record<AlbumCardSlot['tier'], string> = {
   common: 'text-(--color-tier-common)',
   uncommon: 'text-(--color-tier-uncommon)',
   rare: 'text-(--color-tier-rare)',
@@ -87,17 +109,22 @@ function MissingSlot({
   cardNumber,
   tier,
   onClick,
+  aspect = 'aspect-[3/4]',
+  wide = false,
 }: {
   cardNumber: number
   tier: AlbumCardSlot['tier']
   onClick?: () => void
+  aspect?: string
+  wide?: boolean
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'group relative aspect-[3/4] w-full rounded-[10px] overflow-hidden',
+        'group relative w-full rounded-[10px] overflow-hidden',
+        aspect,
         'border border-dashed transition-all duration-200',
         'flex items-center justify-center',
         'bg-(--color-surface-base)/40',
@@ -112,8 +139,9 @@ function MissingSlot({
       )}
       aria-label={`Cromo ${cardNumber}, no obtenido`}
     >
-      {/* Silueta cromo-shaped tintada por tier, muy baja opacidad. Sube en hover. */}
-      <MissingSilhouette tier={tier} />
+      {/* Silueta tintada por tier, muy baja opacidad. Sube en hover. En celdas
+          anchas (bento) la cabeza+hombros 3:4 se deforma → horizonte de cancha. */}
+      {wide ? <MissingWideSilhouette tier={tier} /> : <MissingSilhouette tier={tier} />}
 
       {/* Número grande al centro, por encima de la silueta */}
       <span
@@ -168,6 +196,40 @@ function MissingSilhouette({ tier }: { tier: AlbumCardSlot['tier'] }) {
 }
 
 /**
+ * Silueta para slots ANCHOS vacíos (bento): horizonte de cancha + círculo
+ * central, en trazo. La cabeza+hombros estirada a 3:2/2:1 se deforma; esto
+ * foreshadowea "acá va un plano ancho de la cancha" con el mismo lenguaje
+ * (currentColor, baja opacidad, sube en hover).
+ */
+function MissingWideSilhouette({ tier }: { tier: AlbumCardSlot['tier'] }) {
+  return (
+    <svg
+      viewBox="0 0 320 180"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      className={cn(
+        'pointer-events-none absolute inset-0 size-full',
+        'opacity-[0.07] group-hover:opacity-[0.12] transition-opacity duration-200',
+        tierGhostColors[tier],
+      )}
+    >
+      {/* Horizonte de la cancha */}
+      <line x1="0" y1="118" x2="320" y2="118" stroke="currentColor" strokeWidth="2.5" />
+      {/* Círculo central (elipse por la perspectiva) */}
+      <ellipse
+        cx="160"
+        cy="118"
+        rx="46"
+        ry="13"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+      />
+    </svg>
+  )
+}
+
+/**
  * Slot con cromo obtenido — thumbnail compacto del cromo.
  *
  * Diseño:
@@ -178,13 +240,22 @@ function MissingSilhouette({ tier }: { tier: AlbumCardSlot['tier'] }) {
  *  - Badge "×N" si copies > 1
  *  - Pin indicator si está pineada
  */
-function OwnedSlot({ card, onClick }: { card: AlbumCardSlot; onClick?: () => void }) {
+function OwnedSlot({
+  card,
+  onClick,
+  aspect = 'aspect-[3/4]',
+}: {
+  card: AlbumCardSlot
+  onClick?: () => void
+  aspect?: string
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'group relative aspect-[3/4] w-full rounded-[10px]',
+        'group relative w-full rounded-[10px]',
+        aspect,
         'border transition-all duration-200',
         'flex flex-col justify-end overflow-hidden',
         'bg-(--color-surface-elevated)',
