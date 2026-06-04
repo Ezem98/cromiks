@@ -48,15 +48,18 @@ const ownershipLabels: Record<Ownership, string> = {
   missing: 'Las que me faltan',
 }
 
-/** Color del tier para el pill seleccionado. Solo en cromos (DESIGN.md 4.5). */
-const tierActiveClasses: Record<Tier, string> = {
-  common: 'border-(--color-tier-common) text-(--color-tier-common) bg-(--color-tier-common)/10',
-  uncommon:
-    'border-(--color-tier-uncommon) text-(--color-tier-uncommon) bg-(--color-tier-uncommon)/10',
-  rare: 'border-(--color-tier-rare) text-(--color-tier-rare) bg-(--color-tier-rare)/10',
-  epic: 'border-(--color-tier-epic) text-(--color-tier-epic) bg-(--color-tier-epic)/10',
-  legendary: 'border-(--color-gold) text-(--color-gold) bg-(--color-gold)/10',
-}
+/**
+ * Tratamiento ÚNICO de chip seleccionado en toda la barra (posesión, destacadas
+ * y tier). El color de tier NO se usa acá: vive exclusivamente en los cromos
+ * (DESIGN.md §4.5, principio "la rareza se gana la pantalla"). El tier ya queda
+ * identificado por el label del chip; el estado activo es neutro argentina-glow.
+ */
+const chipBase =
+  'inline-flex min-h-11 items-center rounded-md px-3.5 text-sm border transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)'
+const chipActive =
+  'border-(--color-argentina-glow) bg-(--color-argentina-glow)/10 text-(--color-argentina-glow)'
+const chipInactive =
+  'border-white/[0.08] text-(--color-text-secondary) hover:border-white/[0.18] hover:text-(--color-text-primary)'
 
 /**
  * Aplica los filtros a la lista de cromos. Pura — testeable y memoizable.
@@ -120,14 +123,7 @@ export function AlbumFilterBar({
               type="button"
               aria-pressed={active}
               onClick={() => cycleOwnership(value)}
-              className={cn(
-                'inline-flex min-h-11 items-center rounded-md px-3.5 text-sm',
-                'border transition-all duration-200',
-                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
-                active
-                  ? 'border-(--color-argentina-glow) bg-(--color-argentina-glow)/10 text-(--color-argentina-glow)'
-                  : 'border-white/[0.08] text-(--color-text-secondary) hover:border-white/[0.18] hover:text-(--color-text-primary)',
-              )}
+              className={cn(chipBase, active ? chipActive : chipInactive)}
             >
               {ownershipLabels[value]}
             </button>
@@ -139,14 +135,7 @@ export function AlbumFilterBar({
           type="button"
           aria-pressed={filters.pinnedOnly}
           onClick={() => onChange({ ...filters, pinnedOnly: !filters.pinnedOnly })}
-          className={cn(
-            'inline-flex min-h-11 items-center gap-1.5 rounded-md px-3.5 text-sm',
-            'border transition-all duration-200',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
-            filters.pinnedOnly
-              ? 'border-(--color-gold) bg-(--color-gold)/10 text-(--color-gold)'
-              : 'border-white/[0.08] text-(--color-text-secondary) hover:border-white/[0.18] hover:text-(--color-text-primary)',
-          )}
+          className={cn(chipBase, 'gap-1.5', filters.pinnedOnly ? chipActive : chipInactive)}
         >
           <StarIcon className="size-3.5" />
           Destacadas
@@ -164,14 +153,7 @@ export function AlbumFilterBar({
               type="button"
               aria-pressed={active}
               onClick={() => toggleTier(tier)}
-              className={cn(
-                'inline-flex min-h-11 items-center rounded-md px-3.5 text-sm',
-                'border transition-all duration-200',
-                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
-                active
-                  ? tierActiveClasses[tier]
-                  : 'border-white/[0.08] text-(--color-text-secondary) hover:border-white/[0.18] hover:text-(--color-text-primary)',
-              )}
+              className={cn(chipBase, active ? chipActive : chipInactive)}
             >
               {tierLabels[tier]}
             </button>
