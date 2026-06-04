@@ -164,7 +164,9 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
-## T-10 · Filter chips colapsables en mobile (la apertura del álbum queda bajo el fold)
+## T-10 · Filter chips colapsables en mobile (la apertura del álbum queda bajo el fold) — ✅ HECHA (2026-06-04, PR #51)
+
+**Resuelto:** toggle "Filtrar" (solo mobile, `sm:hidden`) con badge de filtros activos; el panel completo (posesión + Destacadas + rarezas) colapsado por default, se despliega on-demand. Desktop mantiene la barra completa sin cambios. `applyFilters` intacto; solo cambia el chrome. A11y: `aria-expanded` + `aria-controls`. Verificado en vivo (colapsado/expandido/badge + desktop intacto) + type-check + lint + 21 tests. **PR #51 stacked sobre #48** (ambos tocan `album-filter-bar.tsx`; mergear #48 primero). Contexto original abajo.
 
 **What:** En mobile (375px) los chips del filtro del álbum (`album-filter-bar.tsx`) ocupan ~3 filas (Todas / Las que tengo / Las que me faltan / Destacadas / Común / Poco común / Rara / Épica / Legendaria) ANTES del primer cromo — el díptico hero de francia queda medio empujado bajo el fold. Colapsar: una fila scrolleable horizontal, o un botón "Filtrar" que expande.
 
