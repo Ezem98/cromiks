@@ -9,6 +9,7 @@ import type { AlbumCardSlot, AlbumData, PageCompletionMap } from '../queries'
 import { AlbumFilterBar, type AlbumFilters, applyFilters, defaultFilters } from './album-filter-bar'
 import { AlbumPageNav } from './album-page-nav'
 import { AlbumSlot } from './album-slot'
+import { AlbumSpotlight, shouldShowSpotlight } from './album-spotlight'
 import { CardDetailDialog } from './card-detail-dialog'
 import { DiptychSlot } from './diptych-slot'
 
@@ -91,6 +92,17 @@ export function AlbumView({ data, username }: AlbumViewProps) {
           subtitle={currentPage.subtitle}
           owned={pageOwned}
           total={pageTotalCards}
+        />
+
+        {/* === Spotlight de apertura (low-fill): lidera con lo que tenés + camino
+            a sobres, en vez de abrir contra un vacío de fantasmas (T-12). Se
+            auto-retira al pasar el 50%. Va arriba de la filter bar a propósito:
+            empuja la pared de filtros hacia abajo en mobile. === */}
+        <AlbumSpotlight
+          cards={cards}
+          totalOwned={totalOwned}
+          totalCards={totalCards}
+          pageTitle={currentPage.title}
         />
 
         {/* === CTA: saltar a una página con cromos tuyos === */}
@@ -188,8 +200,9 @@ export function AlbumView({ data, username }: AlbumViewProps) {
           />
         </div>
 
-        {/* === Empty state, opcional (página sin cromos, sin filtros activos) === */}
-        {pageOwned === 0 && (
+        {/* === Empty state, opcional (página sin cromos). Se omite si el spotlight
+            ya está cubriendo el mensaje con un CTA más rico. === */}
+        {pageOwned === 0 && !shouldShowSpotlight(totalOwned, totalCards) && (
           <p className="text-center text-(--color-text-muted) text-sm pt-2">
             Aún no tenés cromos de esta página. Seguí abriendo sobres.
           </p>
