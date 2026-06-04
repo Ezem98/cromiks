@@ -336,6 +336,30 @@ sin foto no molesta hoy).
 
 ---
 
+## T-16 · El E2E corre contra prod — split a una Supabase de staging
+
+**What:** El `tests/e2e/global-setup.ts` corre contra la **DB de prod** (`oaussuztahdxivemqbnd`, confirmado por el dueño 2026-06-04): crea/borra el user `PLAYWRIGHT_TEST_USER_EMAIL` y siembra packs ahí, en cada PR (CI) y en cada corrida local. Apuntar el E2E a un proyecto Supabase de **staging** (env aparte para CI) y dejar prod solo para usuarios reales.
+
+**Why:** Con usuarios reales en la beta, correr el suite contra prod es riesgo innecesario: el global-setup borra por email (hoy aislado al user de test, pero un cambio de email/typo o un test nuevo que toque otra tabla puede pegarle a data real). Además ensucia métricas/auth de prod (flow_states, user creado/borrado) en cada CI. Surgido al diagnosticar el cutover (la misma DB que .env.local).
+
+**Cómo:** Proyecto Supabase staging (mismas migraciones + seed) → secrets de CI (`NEXT_PUBLIC_SUPABASE_URL`/`SUPABASE_SECRET_KEY`/`PLAYWRIGHT_TEST_USER_EMAIL`) apuntando a staging → `.env.local` de cada dev a staging para e2e. Ojo: el smoke necesita una página `is_active` con cartas published en staging (replicar el cutover de francia ahí).
+
+**Priority:** P2 (no bloquea la beta, pero sí antes de que el CI corra seguido con usuarios reales en prod).
+
+---
+
+## T-17 · Redirect `cromiks.com` → `cromiks.app`
+
+**What:** `cromiks.com` debe redirigir (301) a `cromiks.app`. Plan del dueño: **transferir primero el dominio `.com` a Cloudflare**, después armar el redirect.
+
+**Why:** `cromiks.app` es el dominio canónico (live en Railway, auth/OG/links apuntan ahí). El `.com` suelto confunde y puede romper auth/OG si alguien entra por ahí.
+
+**Cómo:** (1) Transferir/agregar `cromiks.com` a Cloudflare (DNS). (2) **Redirect Rule** / Bulk Redirect en Cloudflare: `cromiks.com/*` → `https://cromiks.app/$1`, 301, preservando path+query. No requiere tocar Railway ni el código (el redirect vive en el edge de Cloudflare). Ojo: NO agregar `cromiks.com` como dominio servido en Railway ni al allowlist de Supabase — solo redirige.
+
+**Priority:** P3 (cosmético/canónico; no bloquea la beta — el link a DMear es `cromiks.app` directo).
+
+---
+
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
 > **Página de la beta: francia (page 8, la final vs Francia), NO croacia.** croacia
@@ -344,6 +368,7 @@ Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). L
 > hizo sobre francia.
 
 ### Bloqueante (P0)
+- [ ] **🔴 Auth de prod rota (Supabase URL config)** — el login de Google (y muy probablemente el magic-link por email) en `cromiks.app` redirige a `http://localhost:8080`. Causa: la app manda el `redirect_to` correcto (`https://cromiks.app/auth/callback`, verificado golpeando `/auth/login` en prod) pero **`cromiks.app/**` NO está en la allowlist de Redirect URLs de Supabase**, así que Supabase cae al **Site URL = `http://localhost:8080`**. El e2e no lo detecta porque usa `localhost:3000` (sí allowlisteado). **NO es bug de código.** Fix (Supabase Dashboard → Authentication → URL Configuration): Site URL → `https://cromiks.app`; Redirect URLs → agregar `https://cromiks.app/**` (dejar `http://localhost:3000/**`). Bloquea el signup → hacerlo ANTES de invitar. Ver [[cromiks-auth-url-config]].
 - [x] ~~**Contenido de la página de beta (francia)**~~ — ✅ francia está curada: 30 cromos con foto REAL (T-11, pasada foto-por-foto), videos YouTube + relator_clips + `legendary_brief` en las legendarias (141/147/156/165). Sustancialmente listo (vs croacia, que nunca se construyó).
 - [x] ~~**Re-texturizar el sobre 3D**~~ — ✅ HECHO: `body_baseColor.png` ya es la textura Cromiks (navy + sol de mayo dorado + "Eterno Diciembre" + art-deco, sin IP). Los docs decían "pendiente/tiene Pokémon" pero el rebrand estaba aplicado y committeado desde antes — eran docs viejos (corregidos 2026-06-04). Ver `CREDITS.md` / `docs/assets/3d-pack.md`.
 - [x] ~~**Álbum respeta `is_active`**~~ — ✅ HECHO (T-04): `getAlbumData` scopea al set activo (`resolveActivePageIds`) y el contador "X / N" va sobre lo obtenible.
