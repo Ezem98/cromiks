@@ -202,7 +202,9 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
-## T-12 · Álbum vacío se lee como deuda — valle de apertura del hero-slot (primer uso de la beta)
+## T-12 · Álbum vacío se lee como deuda — valle de apertura del hero-slot (primer uso de la beta) — ✅ HECHA (2026-06-04, PR #50)
+
+**Resuelto:** `AlbumSpotlight` (`src/features/album/components/album-spotlight.tsx`) arriba de la grilla. Variante "tu mejor cromo" (mayor rareza, desempata por más reciente) con `<Cromo>` real + copy celebratoria + barra de progreso + CTA al sobre; variante primer-uso (0 owned) con siluetas de anticipación + CTA. Se auto-retira al 50% del set activo (sin flag de dismiss). Va arriba de la filter bar (empuja la pared de filtros en mobile, gana terreno para T-10). No toca el bento. Verificado en vivo (8/30 → variante mejor-cromo, desktop + mobile) + type-check + lint + 21 tests. Contexto original abajo.
 
 **What:** Para un usuario con poco llenado, la página francia abre con el primer cell = el díptico 136 (el XI campeón) que casi nadie tiene temprano → un vacío grande de puntos fantasma punteados como PRIMER impacto cada sesión. Diseñar el primer uso: spotlight celebratorio de los cromos que SÍ tenés + camino visible a abrir sobres + una invitación cálida en el díptico vacío en estados low-fill (sin tocar el bento de PR #44, que es fuerte).
 
@@ -218,7 +220,9 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
-## T-13 · Color de tier se fuga al chrome del álbum (viola §4.5)
+## T-13 · Color de tier se fuga al chrome del álbum (viola §4.5) — ✅ HECHA (2026-06-04)
+
+**Resuelto:** `album-filter-bar.tsx` usa un único `chipActive` (argentina-glow) para posesión, destacadas y tier; se borró `tierActiveClasses`. Verificado en vivo (los 3 chips activos rinden `rgb(107,185,255)`), type-check + lint + 21 tests verdes. Decisión registrada en [DESIGN.md §4.5](DESIGN.md). Contexto original abajo.
 
 **What:** Los chips de filtro activos de `album-filter-bar.tsx` usan color de tier (chip "Legendaria" gold, "Rara" celeste, "Destacadas" gold). Pasarlos al tratamiento neutro único (`--argentina-glow`, como ya hacen los chips de posesión). Si hace falta identidad de tier, un puntito de color adentro del chip — nunca el chip entero.
 
@@ -229,6 +233,20 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 **Context:** Punto de cambio: `src/features/album/components/album-filter-bar.tsx`. **Decisión del dueño (2026-06-03): el filtro está mal, no la regla** — §4.5 manda. Ver también U-26 en [`docs/improvements.md`](docs/improvements.md) (mismo finding, este TODO es el home con contexto). Capturas: `.impeccable/critique/shots/album-filter-legendary.png`, `album-filter-empty.png`. Plan acordado: Tanda 1 (junto con U-09 contraste + U-12 touch targets).
 
 **Priority:** P2
+
+---
+
+## T-14 · Smoke E2E flaky (depende del estado vivo del backend)
+
+**What:** Hacer el smoke golden-path (`tests/e2e/smoke.spec.ts`: home → reclamar sobre → abrir → álbum) determinístico, para que no flakee en PRs que no tocan ese flow.
+
+**Why:** El test crea un usuario fresh (global-setup vía generateLink) y **reclama un sobre diario REAL** contra Supabase + el pool `pages.is_active` + Upstash. Es no-determinístico: un render lento del home (>10s en cold-start CI), un daily-pack no reclamable, o un blip de Supabase tumban el test sin importar el diff. Confirmado: falló en PR #49 (solo-docs, no toca home ni el contador del álbum) buscando el botón "Reclamar sobre diario" (línea 24) y el contador "X / N" (línea 51); al re-correr con los MISMOS docs pasó limpio (2026-06-04). Los retries de Playwright no ayudan porque el estado del backend persiste entre intentos (si el user quedó sin pack reclamable, sigue sin pack).
+
+**Pros:** CI confiable; deja de asustar/bloquear en PRs no relacionados. **Cons:** Trabajo de test infra; mockear el backend reduce la cobertura "real" del golden path (que es justamente lo que valida B-22/B-23, la idempotencia del open_pack).
+
+**Context:** Opciones — (a) seedear un pack pending determinístico en `global-setup` en vez de depender de `claim_daily_pack` en runtime; (b) tolerar el caso "ya reclamado" (si el user ya tiene pack pending, saltar el claim y abrir el pending); (c) subir timeouts del home (cold-start CI a veces > 10s); (d) aislar el flow del estado del pool activo. Recomendado: (a) + (c) — mantiene la cobertura del open_pack real pero saca la dependencia del claim runtime. Punto de cambio: `tests/e2e/smoke.spec.ts` + `tests/e2e/global-setup.*`. Ver [[cromiks-local-visual-qa-quirks]] (el daemon e2e y la sesión fresca por generateLink).
+
+**Priority:** P2 (molesta pero no bloquea; el rerun lo resuelve mientras tanto).
 
 ---
 

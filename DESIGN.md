@@ -136,14 +136,16 @@ Producto **dark-only**. Sin light mode alternativo. La paleta de rareza (Common 
 |---|---|---|
 | `--text-primary` | `#F0F4F8` | Body text, titulares |
 | `--text-secondary` | `#B0BAC8` | Subtítulos, info secundaria |
-| `--text-muted` | `#6B7585` | Captions, metadata |
+| `--text-muted` | `#7A8392` | Captions, metadata |
 | `--text-ghost` | `#3A4250` | Placeholder, disabled |
 
 **Contrast ratios** (sobre `--surface-deep` #0A0E14):
 - `--text-primary` (#F0F4F8): 17.7:1 ✓ (AAA)
 - `--text-secondary` (#B0BAC8): 10.3:1 ✓ (AAA)
-- `--text-muted` (#6B7585): 5.4:1 ✓ (AA Large)
+- `--text-muted` (#7A8392): **5.06:1** ✓ (AA)
 - `--text-ghost` (#3A4250): 2.5:1 — only decorative, never primary content
+
+> ✅ **Resuelto (2026-06-04, U-09):** el valor era `#6B7585` y la doc afirmaba 5.4:1 — ambos mal: el real medía **4.15:1** (falla AA 4.5 para texto normal, y se usa en captions/metadata que a tamaño chico cuentan como tal). Subido a **`#7A8392` = 5.06:1 ✓** en `globals.css`. Verificado en vivo (color computado `rgb(122,131,146)`).
 
 ### 4.4 Brand
 
@@ -158,6 +160,10 @@ Producto **dark-only**. Sin light mode alternativo. La paleta de rareza (Common 
 ### 4.5 Rarity tiers
 
 Estos colores se usan EXCLUSIVAMENTE en cromos, no en UI general.
+
+> **[DECISION] (2026-06-03):** regla reafirmada. El critique del álbum encontró que los chips de filtro activos (`album-filter-bar.tsx`) usaban color de tier (gold/celeste) — una **fuga** de este principio a la UI. Decisión del dueño: **el filtro está mal, no la regla**. El color de tier es sagrado de los cromos; los chips activos van al tratamiento neutro único (`--argentina-glow`). Es el principio 1 del producto ("la rareza se gana la pantalla", PRODUCT.md).
+>
+> ✅ **Resuelto (2026-06-04, T-13/U-26):** `album-filter-bar.tsx` usa un único `chipActive` (argentina-glow) para posesión, destacadas y tier. Verificado en vivo: los tres chips activos rinden `rgb(107,185,255)`. El tier queda identificado por el label, no por color.
 
 | Token | Hex | Tier |
 |---|---|---|
