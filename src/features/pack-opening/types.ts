@@ -2,6 +2,8 @@
  * Tipos compartidos del flow de apertura.
  */
 
+import type { PhotoLayout } from '@/lib/cards/photo-layout'
+
 export type Tier = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
 
 const TIERS: readonly Tier[] = ['common', 'uncommon', 'rare', 'epic', 'legendary']
@@ -59,6 +61,9 @@ export type RevealedCard = {
   reward: number | null
   /** URL de la foto (null → usa placeholder con seed) */
   imageUrl: string | null
+  /** Layout base de la foto (content.photo.layout): el summary/lite lo usan para
+   *  mostrar el cromo en su ratio, no recortado a 3:4 (T-15). */
+  layout: PhotoLayout
   /** Seed para placeholder determinístico */
   seed: string
 }

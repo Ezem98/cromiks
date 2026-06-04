@@ -24,7 +24,10 @@ fila, PR #53), **T-14 (smoke determinístico)**, leyenda/ayuda, búsqueda + filt
    `history.replaceState` (sin re-fetch) + los page-links cargan los filtros. De paso
    **se restauró el colapso mobile de T-10**, que había regresado (el commit de Tanda 1
    pisó el de PR #51 — ver T-10 abajo). Lib pura `filters-url.ts` + tests.
-3. **T-15** · reveal del sobre apaisado (descopeado de T-08, P3). Ver abajo.
+3. ~~**T-15** · reveal del sobre apaisado~~ — ✅ HECHO (2026-06-04, rama
+   `feat/reveal-apaisado`): el summary 2×2 + el fallback lite muestran los cromos
+   en su ratio (el reveal 3D, procedural, queda igual). **Critique del álbum: backlog
+   CERRADO.** Ver abajo.
 
 ---
 
@@ -193,7 +196,11 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
-## T-15 · Reveal del sobre apaisado (descopeado de T-08)
+## T-15 · Reveal del sobre apaisado (descopeado de T-08) — ✅ HECHA (2026-06-04, rama `feat/reveal-apaisado`)
+
+**Resuelto (scope: las superficies que muestran la foto):** el **summary 2×2** (`phase-summary.tsx`, se ve en CADA apertura) y el **fallback lite** (`phase-stack.tsx`) muestran los cromos en su ratio (no recortados a 3:4). Plumbing: `getCardLayoutMap` (nuevo, `src/lib/cards/`, reusa `parsePhotoLayout` de T-08) se llama **en paralelo** al image-map en `actions.ts` (sin round-trip en serie, sin migración SQL) → `RevealedCard.layout` → `<Cromo ratio={...}>`. El summary usa `place-items-center` para que los ratios mixtos queden prolijos. **Decisión del dueño:** el **reveal 3D queda igual** — es procedural (no muestra la foto), apaisar su caja sería cosmético; texturizar el 3D con la foto real quedó como idea aparte (más grande, fuera de P3). Verificado: e2e `reveal-summary-ratio.spec.ts` (debug mode, mide el ratio del `.cromo` en el summary) + captura en vivo (Dibu landscape entre portraits) + type-check + lint + 48 unit. Contexto original abajo.
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** Que el reveal del sobre muestre los cromos anchos en su ratio. Dos partes:
 (a) la geometría del card-mesh 3D + el stack (240×320 fijo en `phase-stack.tsx`) + el
@@ -216,6 +223,8 @@ llega. Punto de cambio: `open_pack` (SQL, agregar `content->'photo'->>'layout'`)
 `actions.ts` (fetch defensivo) → `types.ts` (RevealedCard.layout) → `phase-stack.tsx`
 (lite pasa `ratio`) + geometría 3D si se quiere (a). **Priority:** P3 (post-beta; el 3D
 sin foto no molesta hoy).
+
+</details>
 
 ---
 

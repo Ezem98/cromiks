@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { Cromo } from '@/components/domain/cromo'
 import { TierLabel } from '@/components/domain/tier-label'
 import { Button } from '@/components/ui/button'
+import { PHOTO_LAYOUT_RATIO } from '@/lib/cards/photo-layout'
 import { vibrate } from '@/lib/haptics'
 import { useRenderTier } from '@/lib/hooks/use-render-tier'
 import { playReveal } from '@/lib/sound'
@@ -338,6 +339,7 @@ function RevealedView({
             seed={revealedCard.seed}
             imageUrl={revealedCard.imageUrl ?? undefined}
             size="lg"
+            ratio={PHOTO_LAYOUT_RATIO[revealedCard.layout]}
           />
         </motion.div>
       ) : (
