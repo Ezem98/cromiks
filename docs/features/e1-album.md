@@ -268,12 +268,12 @@ supabase
 |---|---|---|---|
 | P1 | Valle de apertura: con poco llenado el primer cell (díptico 136) es un vacío de fantasmas — invierte el peak-end "orgullo" | T-12 ([`../../TODOS.md`](../../TODOS.md)) | ✅ 2026-06-04 (PR #50, `AlbumSpotlight`) |
 | P2 | Color de tier se fuga al chrome (chips gold/celeste) — viola §4.5. **Decisión: el filtro está mal** → chips al tratamiento neutro único | T-13 + [DESIGN.md §4.5](../../DESIGN.md) | ✅ 2026-06-04 |
-| P2 | Filter bar = muro de 9 controles, domina el fold mobile (238px/28%) | T-10 (re-confirmado live) | ✅ 2026-06-04 (PR #51) |
+| P2 | Filter bar = muro de 9 controles, domina el fold mobile (238px/28%) | T-10 (re-confirmado live) | ✅ PR #51 · regresó · restaurado 2026-06-04 |
 | P2 | Dots de nav 10px < 44px táctil (medido: 32×10 / 10×10, flechas 36×36) | U-12 ([`../improvements.md`](../improvements.md)) | ✅ 2026-06-04 (44×44 verificado live) |
 | P2 | Texto muted `#6b7585` = 4.2:1 (<4.5) + DESIGN.md §4.3 afirma 5.4:1 (dato MAL) | U-09 + [DESIGN.md §4.3](../../DESIGN.md) | ✅ 2026-06-04 (`#7a8392` = 5.06:1) |
 | P3 | Grilla `loading="lazy"` → warning LCP + flash de gradiente en frío | U-17 | ✅ 2026-06-04 (eager/priority 1ra fila + hero spotlight) |
 
-**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo. ✅ **T-12 HECHA (2026-06-04, PR #50)** = `AlbumSpotlight` (onboard del álbum low-fill). ✅ **T-10 HECHA (PR #51)** = filter bar colapsable. ✅ **T-08 HECHA (2026-06-04)** = detalle apaisado (reveal descopeado → T-15). ✅ **U-17 HECHA (2026-06-04)** = eager/priority 1ra fila + hero del spotlight. ✅ **T-14 HECHA (2026-06-04)** = smoke determinístico (pack pending sembrado en global-setup). **Re-run del critique 2026-06-04: 29 → 31/40.** ✅ **Leyenda/ayuda HECHA** (dots de tier en los chips de filtro + glosas de "Destacar" y canje). **Pendientes (no bloquean la beta):** búsqueda+filtros-URL (`harden`), T-15 (reveal apaisado, P3).
+**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo. ✅ **T-12 HECHA (2026-06-04, PR #50)** = `AlbumSpotlight` (onboard del álbum low-fill). ✅ **T-10 HECHA (PR #51)** = filter bar colapsable. ✅ **T-08 HECHA (2026-06-04)** = detalle apaisado (reveal descopeado → T-15). ✅ **U-17 HECHA (2026-06-04)** = eager/priority 1ra fila + hero del spotlight. ✅ **T-14 HECHA (2026-06-04)** = smoke determinístico (pack pending sembrado en global-setup). **Re-run del critique 2026-06-04: 29 → 31/40.** ✅ **Leyenda/ayuda HECHA** (dots de tier + glosas). ✅ **Búsqueda + filtros-URL HECHA** (buscador por nombre/número + filtros persistidos en la querystring; de paso se **restauró el colapso mobile de T-10**, que había regresado). **Pendientes (no bloquean la beta):** T-15 (reveal apaisado, P3).
 
 ---
 
