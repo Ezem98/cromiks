@@ -266,14 +266,14 @@ supabase
 
 | Prio | Finding | Home | Estado |
 |---|---|---|---|
-| P1 | Valle de apertura: con poco llenado el primer cell (díptico 136) es un vacío de fantasmas — invierte el peak-end "orgullo" | T-12 ([`../../TODOS.md`](../../TODOS.md)) | 🚧 próximo |
+| P1 | Valle de apertura: con poco llenado el primer cell (díptico 136) es un vacío de fantasmas — invierte el peak-end "orgullo" | T-12 ([`../../TODOS.md`](../../TODOS.md)) | ✅ 2026-06-04 (PR #50, `AlbumSpotlight`) |
 | P2 | Color de tier se fuga al chrome (chips gold/celeste) — viola §4.5. **Decisión: el filtro está mal** → chips al tratamiento neutro único | T-13 + [DESIGN.md §4.5](../../DESIGN.md) | ✅ 2026-06-04 |
 | P2 | Filter bar = muro de 9 controles, domina el fold mobile (238px/28%) | T-10 (re-confirmado live) | 🚧 |
 | P2 | Dots de nav 10px < 44px táctil (medido: 32×10 / 10×10, flechas 36×36) | U-12 ([`../improvements.md`](../improvements.md)) | ✅ 2026-06-04 (44×44 verificado live) |
 | P2 | Texto muted `#6b7585` = 4.2:1 (<4.5) + DESIGN.md §4.3 afirma 5.4:1 (dato MAL) | U-09 + [DESIGN.md §4.3](../../DESIGN.md) | ✅ 2026-06-04 (`#7a8392` = 5.06:1) |
 | P3 | Grilla `loading="lazy"` → warning LCP + flash de gradiente en frío | U-17 | 🚧 |
 
-**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo (type-check + lint + 21 tests verdes). **Próximo: T-12** (onboard del álbum vacío). T-10 (filter bar) y T-08 (detalle apaisado) en su propio turno.
+**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo. ✅ **T-12 HECHA (2026-06-04, PR #50)** = `AlbumSpotlight` (onboard del álbum low-fill). **Pendientes:** T-10 (filter bar mobile), U-17 (LCP/lazy), T-08 (detalle apaisado).
 
 ---
 

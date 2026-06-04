@@ -202,7 +202,9 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
-## T-12 · Álbum vacío se lee como deuda — valle de apertura del hero-slot (primer uso de la beta)
+## T-12 · Álbum vacío se lee como deuda — valle de apertura del hero-slot (primer uso de la beta) — ✅ HECHA (2026-06-04, PR #50)
+
+**Resuelto:** `AlbumSpotlight` (`src/features/album/components/album-spotlight.tsx`) arriba de la grilla. Variante "tu mejor cromo" (mayor rareza, desempata por más reciente) con `<Cromo>` real + copy celebratoria + barra de progreso + CTA al sobre; variante primer-uso (0 owned) con siluetas de anticipación + CTA. Se auto-retira al 50% del set activo (sin flag de dismiss). Va arriba de la filter bar (empuja la pared de filtros en mobile, gana terreno para T-10). No toca el bento. Verificado en vivo (8/30 → variante mejor-cromo, desktop + mobile) + type-check + lint + 21 tests. Contexto original abajo.
 
 **What:** Para un usuario con poco llenado, la página francia abre con el primer cell = el díptico 136 (el XI campeón) que casi nadie tiene temprano → un vacío grande de puntos fantasma punteados como PRIMER impacto cada sesión. Diseñar el primer uso: spotlight celebratorio de los cromos que SÍ tenés + camino visible a abrir sobres + una invitación cálida en el díptico vacío en estados low-fill (sin tocar el bento de PR #44, que es fuerte).
 
