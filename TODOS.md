@@ -147,7 +147,13 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 ---
 
-## T-11 · Pasada de curación de layouts del bento de francia (feedback del dueño)
+## T-11 · Curación de layouts del bento de francia — ✅ HECHA (2026-06-03, commit 0b530c6)
+
+**Resuelto:** pasada foto-por-foto con el dueño. Cambios aplicados (yaml + re-crop R2 + const + tests + seed, todo en `feat/album-bento-francia`): 137/138→landscape, 143/144/164→portrait, 147→landscape (foto IG actual, sin foto nueva), 150/153→landscape, 139/148/155→bandas 21:9, 160→landscape; la tanda pasó de strip uniforme a CRESCENDO. Suite verde, verificado en vivo (19/19 imgs).
+
+**Remanente (P3, opcional):** la foto del 147 (atajada del Dibu) es floja — Kolo Muani de espaldas, de lejos; NO es el plano icónico de la atajada. Entra limpia como landscape pero si aparece la foto buena (Getty/FIFA, frame de la atajada de frente), re-curar `--only dibu-atajada-kolo-muani --force`. No bloquea.
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** Revisar FOTO POR FOTO los 30 cromos de francia y corregir el layout asignado en PR #44: hay fotos que deberían ir horizontales (simple o doble) y quedaron portrait, y otras que se hicieron anchas y deberían volver a portrait. Cada corrección toca DOS lugares acoplados: `catalog/eterno-diciembre.yaml` (`content.photo.layout` → re-crop con `--force` + `pnpm seed`) y `src/features/album/bento-layout.ts` (el placement: las filas deben volver a sumar 4 con armonía de alturas — `bento-layout.test.ts` explota si no, intencionalmente).
 
@@ -160,6 +166,8 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 **Cómo encararlo:** sesión asistida — el agente baja y MUESTRA cada foto de francia (puede leer imágenes), el dueño decide portrait/landscape/pano por cada una, y al final se re-empaqueta el placement una sola vez, se corre `cli.py --only <ids> --force` + `pnpm seed` + suite. Capturas de referencia del estado actual en `~/.gstack/projects/Ezem98-cromiks/designs/design-audit-20260603/`.
 
 **Depends on:** PR #44 mergeado (o sobre la misma rama antes del merge). **Priority:** P1 — es curación visible del contenido de la beta.
+
+</details>
 
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
