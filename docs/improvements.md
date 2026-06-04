@@ -213,12 +213,14 @@ Renderizar el `/api/og/card/[cardId]` como thumbnail dentro del sheet, así el u
 
 Las transiciones entre `anticipation → tear → stack → summary` son cortes secos. Crossfade de 200ms suaviza.
 
-### U-17 · Imágenes con `sizes` prop optimizado + `eager` en la primera fila 🟡
-**Archivos**: [`cromo.tsx`](../src/components/domain/cromo.tsx), profile, album
+### U-17 · `eager`/`priority` en la primera fila del álbum ✅ HECHO (2026-06-04)
+**Archivos**: `album-view.tsx` + `album-slot.tsx` + `diptych-slot.tsx` + `cromo.tsx` + `album-spotlight.tsx`
 
-Next/Image sin `sizes` carga imágenes más grandes de lo necesario en mobile. `sizes="(max-width: 640px) 160px, (max-width: 1024px) 240px, 320px"` ahorra bandwidth.
+**Resuelto:** la primera fila above-the-fold carga la foto con `loading="eager"` + `fetchpriority="high"` (LCP sin flash de gradiente); el resto queda lazy. `album-view` calcula los ids de la fila 1 con `firstRowPriorityIds` (bento: acumular spans hasta 4 → el díptico hero; uniforme: las primeras ~7 celdas) y los pasa a los slots. El **hero del `AlbumSpotlight`** (el LCP real para usuarios low-fill, arriba de la grilla) ahora va `priority` + respeta su `ratio` (consistencia con T-08). Verificado: e2e `album-lcp-priority.spec.ts` (siembra 136 + 165, assert eager/high vs lazy) + unit `first-row-priority.test.ts`.
 
-> **Verificado en vivo (critique álbum 2026-06-03):** la grilla usa `loading="lazy"` en todas las imágenes → Next loguea un **warning de LCP** (la foto del penal above-the-fold es el LCP element y carga lazy), y en cold-cache la grilla pinta rectángulos de gradiente de tier antes de las fotos (flash). DESIGN.md §13.4 pide LCP < 1.8s. Fix: primera fila above-the-fold con `loading="eager"`/`priority`, el resto lazy.
+> El sub-ítem `sizes` prop quedó N/A: la grilla usa `<img>` plano con WebP de tamaño final (la CLI ya entrega el tamaño servible) y el `<Cromo>` del detalle ya usa `sizes={width}px` (ancho fijo). No había `sizes` subóptimo que arreglar.
+>
+> Contexto original (critique álbum 2026-06-03): la grilla usaba `loading="lazy"` en TODAS las imágenes → warning de LCP (la foto above-the-fold cargaba lazy) + flash de gradiente de tier en frío. DESIGN.md §13.4 pide LCP < 1.8s.
 
 ### U-18 · "Saltar animación" más descubrible 🟢
 **Archivo**: [`pack-opening-flow.tsx:51`](../src/features/pack-opening/components/pack-opening-flow.tsx)
@@ -310,7 +312,7 @@ Detectado en vivo (critique 2026-06-03): los chips de filtro activos usan color 
 | U-14 | 🟢 | UX | Preview OG en ShareSheet |
 | U-15 | 🟢 | UX | Atajos teclado álbum |
 | U-16 | 🟢 | UX | Crossfade entre fases |
-| U-17 | 🟡 | Perf | Image sizes prop + `eager` 1ra fila álbum (warning LCP live) |
+| U-17 | ✅ | Perf | `eager`/`priority` 1ra fila álbum + hero del spotlight (2026-06-04) |
 | U-18 | 🟢 | UX | Skip animación descubrible |
 | U-19 | 🟡 | UX | CTA guest en /cromo |
 | U-20 | 🟢 | UX | text-balance en títulos |

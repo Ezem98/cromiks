@@ -59,6 +59,12 @@ type CromoProps = {
   diptych?: boolean
   /** Posición horizontal del gutter del díptico (0..1, default 0.5). */
   gutter?: number
+  /**
+   * Carga la foto con prioridad (Next/Image `priority` → eager + fetchpriority
+   * high + preload). Para cromos above-the-fold que son el LCP (ej. el hero del
+   * spotlight del álbum, U-17). Las legendarias ya van priority por su cuenta.
+   */
+  priority?: boolean
   className?: string
 }
 
@@ -130,6 +136,7 @@ export function Cromo({
   ratio = 3 / 4,
   diptych = false,
   gutter = 0.5,
+  priority = false,
   className,
 }: CromoProps) {
   const dims = sizeMap[size]
@@ -216,7 +223,7 @@ export function Cromo({
                 fill
                 sizes={`${width}px`}
                 className="object-cover"
-                priority={isLegendary}
+                priority={priority || isLegendary}
                 // La CLI ya entrega el WebP 3:4 en tamaño final → saltamos el
                 // optimizer de Next (CPU/sharp en Railway) para una imagen ya óptima.
                 unoptimized

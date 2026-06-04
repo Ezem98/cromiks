@@ -32,6 +32,8 @@ type AlbumSlotProps = {
   onClick?: () => void
   /** Celda del bento (francia). Sin cell → portrait 3:4 (grilla uniforme). */
   cell?: BentoCell
+  /** Primera fila above-the-fold: carga la foto eager + fetchpriority=high (U-17). */
+  priority?: boolean
 }
 
 // Exportados para DiptychSlot (mismo lenguaje visual de slot, render especial).
@@ -60,12 +62,13 @@ const tierTextColors: Record<AlbumCardSlot['tier'], string> = {
   legendary: 'text-(--color-gold)',
 }
 
-export function AlbumSlot({ card, onClick, cell }: AlbumSlotProps) {
+export function AlbumSlot({ card, onClick, cell, priority = false }: AlbumSlotProps) {
   // Aspect de la celda (bento) o el 3:4 histórico. `wide` decide la silueta missing.
   const aspect = cell ? cellAspectClass(cell) : 'aspect-[3/4]'
   const wide = cell ? cellRatio(cell) > 1 : false
 
   if (!card.owned) {
+    // Missing = silueta SVG inline (no <img>), no aplica priority de carga.
     return (
       <MissingSlot
         cardNumber={card.cardNumber}
@@ -77,7 +80,7 @@ export function AlbumSlot({ card, onClick, cell }: AlbumSlotProps) {
     )
   }
 
-  return <OwnedSlot card={card} onClick={onClick} aspect={aspect} />
+  return <OwnedSlot card={card} onClick={onClick} aspect={aspect} priority={priority} />
 }
 
 /**
@@ -244,10 +247,12 @@ function OwnedSlot({
   card,
   onClick,
   aspect = 'aspect-[3/4]',
+  priority = false,
 }: {
   card: AlbumCardSlot
   onClick?: () => void
   aspect?: string
+  priority?: boolean
 }) {
   return (
     <button
@@ -266,7 +271,7 @@ function OwnedSlot({
       aria-label={`${card.name}, cromo ${card.cardNumber}`}
     >
       {/* Background del cromo: imagen si tiene, sino gradient tier-coded */}
-      <SlotBackground card={card} />
+      <SlotBackground card={card} priority={priority} />
 
       {/* Foil holográfico en hover — solo legendary/epic (P4). CSS puro, sin
           pointer-JS, así la grilla no pierde perf con 20 cartas. */}
@@ -334,7 +339,7 @@ function OwnedSlot({
  * Como muchas cards aún no tienen `photo.source` real (están en "TODO"),
  * la mayoría usa el gradient. Cuando lleguen las fotos reales, se renderean.
  */
-function SlotBackground({ card }: { card: AlbumCardSlot }) {
+function SlotBackground({ card, priority = false }: { card: AlbumCardSlot; priority?: boolean }) {
   if (card.imageUrl) {
     return (
       // biome-ignore lint/performance/noImgElement: usamos img normal para evitar el overhead de next/image en thumbnails chicos
@@ -342,7 +347,10 @@ function SlotBackground({ card }: { card: AlbumCardSlot }) {
         src={card.imageUrl}
         alt=""
         className="absolute inset-0 size-full object-cover"
-        loading="lazy"
+        // Primera fila (U-17): eager + fetchpriority=high para que la foto above-the-fold
+        // sea el LCP y no flashee el gradiente. El resto, lazy.
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
       />
     )
   }

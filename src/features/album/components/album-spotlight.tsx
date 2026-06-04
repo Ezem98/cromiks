@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Cromo } from '@/components/domain/cromo'
 import { Button } from '@/components/ui/button'
+import { PHOTO_LAYOUT_RATIO } from '@/lib/cards/photo-layout'
 import { cn } from '@/lib/utils'
 import type { AlbumCardSlot } from '../queries'
 
@@ -151,6 +152,10 @@ function HeroVisual({ card }: { card: AlbumCardSlot }) {
         imageUrl={card.imageUrl ?? undefined}
         seed={card.id}
         size="md"
+        // El hero respeta el ratio de la foto (T-08) y carga con prioridad: es el
+        // LCP above-the-fold para usuarios low-fill, justo cuando se muestra (U-17).
+        ratio={PHOTO_LAYOUT_RATIO[card.layout]}
+        priority
       />
     </div>
   )

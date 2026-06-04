@@ -4,7 +4,8 @@ import { motion } from 'motion/react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { getBentoCell, pageHasBento, SPAN_CLASS, spanClamp } from '../bento-layout'
+import { BENTO_COLS, getBentoCell, pageHasBento, SPAN_CLASS, spanClamp } from '../bento-layout'
+import { firstRowPriorityIds } from '../first-row-priority'
 import type { AlbumCardSlot, AlbumData, PageCompletionMap } from '../queries'
 import { AlbumFilterBar, type AlbumFilters, applyFilters, defaultFilters } from './album-filter-bar'
 import { AlbumPageNav } from './album-page-nav'
@@ -67,6 +68,19 @@ export function AlbumView({ data, username }: AlbumViewProps) {
   // grilla uniforme compacta (el filtro es una vista utilitaria, la
   // narrativa es para el álbum entero).
   const bentoActive = pageHasBento(currentPage.pageNumber) && visibleCards.length === cards.length
+
+  // Primera fila above-the-fold con prioridad de carga (eager + fetchpriority=high):
+  // mata el warning de LCP y el flash de gradiente de tier en frío (U-17). El resto
+  // queda lazy. Bento: la fila 1 (acumular spans hasta 4) — en francia es el díptico
+  // hero, el LCP. Grilla uniforme: las primeras ~7 celdas (cubre la fila 1 en el
+  // breakpoint más ancho; en mobile son ~2 filas de thumbnails chicos, costo nulo).
+  const priorityCardIds = useMemo(
+    () =>
+      firstRowPriorityIds(visibleCards, bentoActive ? BENTO_COLS : 7, (card) =>
+        bentoActive ? (getBentoCell(currentPage.pageNumber, card.cardNumber)?.span ?? 1) : 1,
+      ),
+    [visibleCards, bentoActive, currentPage.pageNumber],
+  )
 
   // CTA: primera página (≠ la actual) donde el user tiene ≥1 cromo.
   const jumpToPage = useMemo(
@@ -174,9 +188,19 @@ export function AlbumView({ data, username }: AlbumViewProps) {
                   }}
                 >
                   {cell?.diptych ? (
-                    <DiptychSlot card={card} cell={cell} onClick={() => handleSlotClick(card)} />
+                    <DiptychSlot
+                      card={card}
+                      cell={cell}
+                      priority={priorityCardIds.has(card.id)}
+                      onClick={() => handleSlotClick(card)}
+                    />
                   ) : (
-                    <AlbumSlot card={card} cell={cell} onClick={() => handleSlotClick(card)} />
+                    <AlbumSlot
+                      card={card}
+                      cell={cell}
+                      priority={priorityCardIds.has(card.id)}
+                      onClick={() => handleSlotClick(card)}
+                    />
                   )}
                 </motion.div>
               )
