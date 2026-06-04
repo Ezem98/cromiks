@@ -70,8 +70,21 @@ describe('FRANCIA_BENTO — integridad del placement', () => {
     }
   })
 
-  it('la tanda de penales (148-155) es un strip uniforme de celdas chicas', () => {
-    for (let n = 148; n <= 155; n++) {
+  it('la tanda escala como crescendo: bandas 21:9 en 148/155, paradas anchas, penales en celdas', () => {
+    // Las bandas que abren y cierran la tanda (cinemascope, curaduría T-11)
+    for (const n of [148, 155]) {
+      const cell = getBentoCell(8, n)
+      expect(cell?.span, `la banda ${n} no es full-row`).toBe(BENTO_COLS)
+      expect(cell?.aspectClass).toBe('aspect-[21/9]')
+    }
+    // Las intervenciones del arquero / la errada, anchas
+    for (const n of [150, 153]) {
+      const cell = getBentoCell(8, n)
+      expect(cell?.layout).toBe('landscape')
+      expect(cell?.span).toBe(2)
+    }
+    // Los penales convertidos, celdas portrait chicas
+    for (const n of [149, 151, 152, 154]) {
       const cell = getBentoCell(8, n)
       expect(cell?.layout).toBe('portrait')
       expect(cell?.span).toBe(1)
@@ -98,9 +111,9 @@ describe('FRANCIA_BENTO — integridad del placement', () => {
       expect(cell, `falta la celda del cromo ${n}`).toBeDefined()
       expect(cell?.span ?? 0, `la legendaria ${n} no rompe la grilla`).toBeGreaterThan(1)
     }
-    // El clímax (Montiel campeón) y la atajada son full-row.
+    // El clímax (Montiel campeón) es full-row pano.
     expect(getBentoCell(8, 156)?.span).toBe(BENTO_COLS)
-    expect(getBentoCell(8, 147)?.span).toBe(BENTO_COLS)
+    expect(getBentoCell(8, 156)?.layout).toBe('pano')
   })
 })
 

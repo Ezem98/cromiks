@@ -19,34 +19,41 @@
  *    portrait span1 (h=4/3u) ↔ landscape span2 (h=4/3u) tilean perfecto;
  *    pano span4 (h=2u) y el díptico (16:9 → h=2.25u) van en fila propia.
  *
- * FRANCIA — el bento narrativo (decidido en /plan-design-review 2026-06-03):
+ * FRANCIA — el bento narrativo (diseñado en /plan-design-review 2026-06-03,
+ * CURADO foto-por-foto por el dueño 2026-06-03 — T-11):
  *
  *   ┌───────────────────────────────────────────────────┐
  *   │ 136 EL XI DE ARGENTINA (díptico 16:9, full-row)     │ ← apertura
- *   ├─────────┬─────────┬───────────────────────────────┤
- *   │ 137 XI  │ 138     │ 139 GOL MESSI 1-0 (land ×2)    │ ← primeros golpes
- *   │ Francia │ Penal   │                                │
- *   ├─────────┼─────────┴────────────────┬──────────────┤
- *   │ 140 Asis│ 141 GOL DI MARÍA (LEG ×2)│ 142 Festejo  │
- *   ├─────────┴──────────┬───────────────┴──────────────┤
- *   │ 143 Mbappé 1 (×2)  │ 144 Mbappé 2 volea (×2)      │ ← la remontada
- *   ├────────────────────┼──────────────────────────────┤
- *   │ 145 MESSI 3-2 (×2) │ 146 Mbappé 3-3 (×2)          │ ← suplementarios
- *   ├────────────────────┴──────────────────────────────┤
- *   │ 147 LA ATAJADA DEL DIBU (pano, LEG, full-row)      │ ← se para el aire
- *   ├────────────┬────────────┬────────────┬────────────┤
- *   │ 148        │ 149        │ 150        │ 151        │ ← LA TANDA
- *   ├────────────┼────────────┼────────────┼────────────┤   (ritmo de penales:
- *   │ 152        │ 153        │ 154        │ 155        │    celdas chicas)
- *   ├────────────┴────────────┴────────────┴────────────┤
- *   │ 156 EL PENAL DE MONTIEL — CAMPEÓN (pano full, LEG) │ ← clímax
- *   ├─────────┬──────────────────┬──────────────────────┤
- *   │ 157 Fest│ 158 Corren (×2)  │ 159 Llanto           │ ← desahogo
- *   ├─────────┼─────────┬────────┴──┬───────────────────┤
- *   │ 160     │ 161     │ 162       │ 163               │
- *   ├─────────┴─────────┼───────────┴───────────────────┤
- *   │ 164 Bisht (×2)    │ 165 BESO A LA COPA (LEG ×2)   │ ← cierre
- *   └───────────────────┴───────────────────────────────┘
+ *   ├─────────────────────────┬─────────────────────────┤
+ *   │ 137 XI Francia (×2)     │ 138 Penal a Di María (×2)│ ← preludio
+ *   ├─────────────────────────┴─────────────────────────┤
+ *   │ 139 GOL MESSI DE PENAL 1-0 (21:9, full-row)        │ ← el primer grito
+ *   ├─────────┬──────────────────────────┬──────────────┤
+ *   │ 140 Asis│ 141 GOL DI MARÍA (LEG ×2)│ 142 Festejo  │ ← el 2-0
+ *   ├─────────┼─────────┬────────────────┴──────────────┤
+ *   │ 143     │ 144     │ 145 MESSI 3-2 (×2)            │ ← remontada + 3-2
+ *   ├─────────┴─────────┴──┬────────────────────────────┤
+ *   │ 146 Mbappé 3-3 (×2)  │ 147 ATAJADA DIBU (LEG ×2)  │ ← el alargue
+ *   ├──────────────────────┴────────────────────────────┤
+ *   │ 148 PENAL MBAPPÉ (21:9, full-row)                  │ ← abre la tanda
+ *   ├─────────┬─────────────────────┬───────────────────┤
+ *   │ 149     │ 150 Dibu-Coman (×2) │ 151               │ ← la tanda
+ *   ├─────────┼─────────────────────┼───────────────────┤
+ *   │ 152     │ 153 Tchouameni (×2) │ 154               │
+ *   ├─────────┴─────────────────────┴───────────────────┤
+ *   │ 155 PENAL KOLO MUANI (21:9, full-row)              │ ← última bala
+ *   ├────────────────────────────────────────────────────┤
+ *   │ 156 EL PENAL DE MONTIEL — CAMPEÓN (pano full, LEG) │ ← CLÍMAX
+ *   ├─────────┬──────────────────┬───────────────────────┤
+ *   │ 157 Fest│ 158 Corren (×2)  │ 159 Llanto            │ ← desahogo
+ *   ├─────────┴────────┬─────────┼───────────────────────┤
+ *   │ 160 Mbappé (×2)  │ 161     │ 162                   │
+ *   ├─────────┬────────┴┬────────┴───────────────────────┤
+ *   │ 163     │ 164     │ 165 BESO A LA COPA (LEG ×2)    │ ← cierre
+ *   └─────────┴─────────┴────────────────────────────────┘
+ *
+ * Jerarquía de bandas full-row (alto en unidades de columna):
+ *   bandas 21:9 (139/148/155) 1.71u < clímax pano (156) 2u < díptico 16:9 (136) 2.25u
  */
 
 export type CromoLayout = 'portrait' | 'landscape' | 'pano'
@@ -111,46 +118,47 @@ export const FRANCIA_BENTO: BentoCell[] = [
     aspectClass: 'aspect-[16/9]',
     ratio: 16 / 9,
   },
-  // R2 — el rival y los primeros golpes
-  { card: 137, layout: 'portrait', span: 1 },
-  { card: 138, layout: 'portrait', span: 1 },
-  { card: 139, layout: 'landscape', span: 2 }, // epic: gol de penal de Messi
-  // R3 — el 2-0
+  // R2 — el preludio: el rival y la falta que abrió todo
+  { card: 137, layout: 'landscape', span: 2 },
+  { card: 138, layout: 'landscape', span: 2 },
+  // R3 — el primer grito: banda cinemascope
+  { card: 139, layout: 'landscape', span: 4, aspectClass: 'aspect-[21/9]', ratio: 21 / 9 },
+  // R4 — el 2-0
   { card: 140, layout: 'portrait', span: 1 },
   { card: 141, layout: 'landscape', span: 2 }, // LEGENDARY: gol de Di María
   { card: 142, layout: 'portrait', span: 1 },
-  // R4 — la remontada de Mbappé, dos golpes anchos
-  { card: 143, layout: 'landscape', span: 2 },
-  { card: 144, layout: 'landscape', span: 2 },
-  // R5 — suplementarios
+  // R5 — la remontada de Mbappé + el 3-2 de Messi
+  { card: 143, layout: 'portrait', span: 1 },
+  { card: 144, layout: 'portrait', span: 1 }, // la volea, plano cerrado (curaduría)
   { card: 145, layout: 'landscape', span: 2 }, // epic: Messi 3-2
+  // R6 — el alargue: el 3-3 y LA atajada
   { card: 146, layout: 'landscape', span: 2 },
-  // R6 — LA atajada (se para el aire)
-  { card: 147, layout: 'pano', span: 4 }, // LEGENDARY
-  // R7-R8 — la tanda: ritmo de penales, celdas chicas uniformes
-  { card: 148, layout: 'portrait', span: 1 },
+  { card: 147, layout: 'landscape', span: 2 }, // LEGENDARY: atajada a Kolo Muani
+  // R7 — la tanda abre con banda: el primer penal
+  { card: 148, layout: 'landscape', span: 4, aspectClass: 'aspect-[21/9]', ratio: 21 / 9 },
+  // R8-R9 — la tanda: penales en celdas, las atajadas/erradas anchas
   { card: 149, layout: 'portrait', span: 1 },
-  { card: 150, layout: 'portrait', span: 1 },
+  { card: 150, layout: 'landscape', span: 2 }, // epic: Dibu ataja a Coman
   { card: 151, layout: 'portrait', span: 1 },
   { card: 152, layout: 'portrait', span: 1 },
-  { card: 153, layout: 'portrait', span: 1 },
+  { card: 153, layout: 'landscape', span: 2 }, // Tchouameni la tira afuera
   { card: 154, layout: 'portrait', span: 1 },
-  { card: 155, layout: 'portrait', span: 1 },
-  // R9 — clímax: campeones del mundo
+  // R10 — la última bala de Francia, banda
+  { card: 155, layout: 'landscape', span: 4, aspectClass: 'aspect-[21/9]', ratio: 21 / 9 },
+  // R11 — clímax: campeones del mundo
   { card: 156, layout: 'pano', span: 4 }, // LEGENDARY: el penal de Montiel
-  // R10 — desahogo
+  // R12 — desahogo
   { card: 157, layout: 'portrait', span: 1 },
   { card: 158, layout: 'landscape', span: 2 },
   { card: 159, layout: 'portrait', span: 1 },
-  // R11 — la otra cara + los premios
-  { card: 160, layout: 'portrait', span: 1 },
+  // R13 — la otra cara
+  { card: 160, layout: 'landscape', span: 2 }, // Mbappé y la Copa, composición ancha
   { card: 161, layout: 'portrait', span: 1 },
   { card: 162, layout: 'portrait', span: 1 },
+  // R14 — los premios + el cierre
   { card: 163, layout: 'portrait', span: 1 },
-  // R12 — cierre: el beso a la copa (165 puede pasar a portrait si la foto
-  // real pide el plano íntimo — decidirlo en el check visual del re-crop)
-  { card: 164, layout: 'landscape', span: 2 },
-  { card: 165, layout: 'landscape', span: 2 }, // LEGENDARY
+  { card: 164, layout: 'portrait', span: 1 }, // el bisht, plano vertical (curaduría)
+  { card: 165, layout: 'landscape', span: 2 }, // LEGENDARY: el beso a la copa
 ]
 /* eslint-enable no-irregular-whitespace */
 

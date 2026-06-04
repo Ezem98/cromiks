@@ -3299,6 +3299,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://digitalhub.fifa.com/transform/82a4bc9e-d1ff-49bb-b68f-32a105675e4b/Argentina-v-France-Final-FIFA-World-Cup-Qatar-2022?&io=transform:fill,width:2400&quality=75"
         source_kind: "direct"
         author: "FIFA"
@@ -3306,10 +3307,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/francia-11-inicial-rival.c64eeef4.webp"
+        asset: "cromos/eterno-diciembre/francia-11-inicial-rival.ad044317.webp"
         credit: "Foto: FIFA · digitalhub.fifa.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:c64eeef4c026361dbe43cc09474b961c286401f4932b6d6f6f46f1061dfe23be"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:ad04431741a714479d57dda4ecaeaa6ca662ded968e0536453b5ad48bc5fda81"
       
   - id: "penal-a-dimaria"
     name: "Penal a Di María"
@@ -3320,6 +3321,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.infobae.com/resizer/v2/GWQBQA5LFOU5I72ZBVMKNEX4CY.jpg?auth=bbea3f5ad35583f2949efa0343b211dbd792f869ee70d89bc16d43e84aedce97&smart=true&width=2400&height=1700&quality=75"
         source_kind: "direct"
         author: "Infobae"
@@ -3327,10 +3329,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-a-dimaria.cfda847d.webp"
+        asset: "cromos/eterno-diciembre/penal-a-dimaria.e42fde0a.webp"
         credit: "Foto: Infobae · infobae.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:cfda847d377734b36177801ae5f047f4fc55cf771fc93f3999bfdee9e79fd844"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:e42fde0a04d21f97694478e9f27713bf662a1fd92ae514b1d6238e01de5ead88"
       video: { type: "extract", source: "https://www.youtube.com/shorts/G2SMv0QXQQQ?feature=share", start: 0, duration: 8 }
       
   - id: "messi-gol-penal-final"
@@ -3437,7 +3439,6 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
         source_url: "https://f.rpp-noticias.io/2022/12/18/504950_1363304.jpg?width=2400&quality=75"
         source_kind: "direct"
         author: "RPP Noticias"
@@ -3445,10 +3446,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-empate-1.0e57e0cd.webp"
+        asset: "cromos/eterno-diciembre/mbappe-empate-1.a017bde4.webp"
         credit: "Foto: RPP Noticias · f.rpp-noticias.io"
-        fetched_at: "2026-06-03"
-        content_hash: "sha256:0e57e0cdc724ca192f6300ff3035b0e040523027bb5f45f91298c0484babe68e"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:a017bde4827b287c9cc15fdd03eeb9dbe4d7eeaaddcef2e85307667496112f60"
     metadata:
       minute: "80"
       
@@ -3461,7 +3462,6 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
         source_url: "https://ichef.bbci.co.uk/ace/ws/1920/cpsprodpb/13794/production/_128046797_012af83d-b19c-4749-849b-b411a4ee3b2d.jpg.webp"
         source_kind: "direct"
         author: "BBC"
@@ -3469,10 +3469,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-empate-2.05a3978c.webp"
+        asset: "cromos/eterno-diciembre/mbappe-empate-2.90958aa2.webp"
         credit: "Foto: BBC · ichef.bbci.co.uk"
-        fetched_at: "2026-06-03"
-        content_hash: "sha256:05a3978c36486c6f60f6b120c1ad54f6023df539885656c65603ede72554e452"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:90958aa24ee1ccb374bacaf67d7f1d22da6539a66b8416f90074a17afb877492"
     metadata:
       minute: "81"
       
@@ -3535,7 +3535,8 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "pano"
+        layout: "landscape"
+        focal: "50% 35%"
         source_url: "https://www.instagram.com/p/DD66u1rRgH4/?img_index=2"
         source_kind: "instagram"
         author: "@fifaworldcup"
@@ -3543,10 +3544,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/dibu-atajada-kolo-muani.0165b29d.webp"
+        asset: "cromos/eterno-diciembre/dibu-atajada-kolo-muani.43b3ff7f.webp"
         credit: "Foto: @fifaworldcup · Instagram"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:0165b29d3ea61952a19c4b178f81db66650ea8e32add2fe3342179718f97bfc4"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:43b3ff7f1816203d57b56ce91fefd4e720cf4fe019848b3789e77642e1b45454"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
       relator_clip: { source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
     metadata:
@@ -3562,6 +3563,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://i.guim.co.uk/img/media/d6f9849ebf05a3d9c4b201f716763f653df9a331/0_0_3500_2182/master/3500.jpg?width=1700&dpr=1&s=none&crop=none"
         source_kind: "direct"
         author: "The Guardian"
@@ -3569,10 +3571,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-mbappe.2d437a10.webp"
+        asset: "cromos/eterno-diciembre/penal-mbappe.a2aefad8.webp"
         credit: "Foto: The Guardian · i.guim.co.uk"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:2d437a1046d59978b5ffefe7ddb571fb99f4583b4d26e283884615170b3a2b15"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:a2aefad89ac9ec9dc5573654ae9bc1229a17111d0f2c0d013c273316c46b2c02"
       
   - id: "penal-messi-final"
     name: "Penal Messi convertido"
@@ -3604,6 +3606,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://i.guim.co.uk/img/media/7910a2b19f977ae32e4e5da7ec057bc2df6451b3/0_0_3040_1619/master/3040.jpg?width=1900&dpr=1&s=none&crop=none"
         source_kind: "direct"
         author: "The Guardian"
@@ -3614,10 +3617,10 @@ cards:
         focal: "left"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/dibu-ataja-coman.7abe3d92.webp"
+        asset: "cromos/eterno-diciembre/dibu-ataja-coman.c5533509.webp"
         credit: "Foto: The Guardian · i.guim.co.uk"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:7abe3d926b9639ea670da042645687c4662e8d564aff6a989468259e81cb517b"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:c553350987a8d8e868fb4aa386f64afc5aa37edd6e6de09f4485c35d904ca7cd"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=lEyNAmU0CCI", start: 0, duration: 5 }
       
   - id: "truquito-dibu-penales"
@@ -3671,6 +3674,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.infobae.com/resizer/v2/K6EXCGLK6BWVJZ3VNKELXAAXMY.jpg?auth=aa486c84a316ddc4453ad6b46caa48a0780821f03b0ef08b77a8fa96140af1be&smart=true&width=2480&height=1457&quality=85"
         source_kind: "direct"
         author: "Infobae"
@@ -3678,10 +3682,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-tchouameni.3677adf6.webp"
+        asset: "cromos/eterno-diciembre/penal-tchouameni.9765ebf1.webp"
         credit: "Foto: Infobae · infobae.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:3677adf60a8c2df8449e0c95a831c3e6ab85ad588a64a712441b05517d72da8b"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:9765ebf12b030722a779b6d4ad7c904a4d0e5892ab43f21d365ee7a39db6470b"
       
   - id: "penal-dybala"
     name: "Penal Dybala convertido"
@@ -3713,6 +3717,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://www.canal26.com/resizer/v2/KGUZEBDU2ZDSFMTXDLXXGXV6R4.jpg?auth=265cf0ce97a335bbc1ebd3e5b2343bd2c37287fd23518c21e29ac7f770753b58&smart=true&width=2400&height=1350&quality=70"
         source_kind: "direct"
         author: "Canal 26"
@@ -3720,10 +3725,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-kolo-muani.aaa3ae49.webp"
+        asset: "cromos/eterno-diciembre/penal-kolo-muani.c7136f4e.webp"
         credit: "Foto: Canal 26 · canal26.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:aaa3ae49b98444e0c5b25fc72cf861611db91b789759dc5ccc7576935746a294"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:c7136f4ea459acc5ba7f4e4d97a6181c7bc50dd60560ba7f074ef86be9305fe8"
       
   - id: "penal-montiel"
     name: "El penal de Montiel"
@@ -3824,6 +3829,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://pbs.twimg.com/media/FkVWJr4WQAIGfij?format=jpg&name=large"
         source_kind: "direct"
         author: "@KMbappe"
@@ -3831,10 +3837,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-caminando-solo.133fba7a.webp"
+        asset: "cromos/eterno-diciembre/mbappe-caminando-solo.f3ba6a1d.webp"
         credit: "Foto: @KMbappe · pbs.twimg.com"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:133fba7ae3e7e66153318aedcb58104bf4a6e653b77ddea9a5dc93205918dd37"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:f3ba6a1d7ed4587fefb5a80273981234de84b396dc06597402fbbe933ec52d28"
       
   - id: "macron-consolando-mbappe"
     name: "Macron consolando a Mbappé"
@@ -3908,7 +3914,6 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
         source_url: "https://media.cnn.com/api/v1/images/stellar/prod/221219133629-messi-argentina-robe.jpg?c=original&q=w_2400,c_fill/f_webp"
         source_kind: "direct"
         author: "CNN"
@@ -3916,10 +3921,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-bisht.767e0d88.webp"
+        asset: "cromos/eterno-diciembre/messi-bisht.eb6eaaf7.webp"
         credit: "Foto: CNN · media.cnn.com"
-        fetched_at: "2026-06-03"
-        content_hash: "sha256:767e0d887338bfab1695cf41d2c5112fc3fe9ae466d766ceec14563c2ae0ea19"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:eb6eaaf732e3c766f3a3abf1144f173530941983d81285a2fe2db8714f8ec0dc"
       
   - id: "messi-besando-copa"
     name: "Messi besando la copa"
