@@ -8,6 +8,8 @@ node_modules
 .venv
 __pycache__/
 *.pyc
+# Output del discovery (regenerable; no es fuente de verdad)
+scripts/assets/candidates.json
 
 # Testing
 coverage

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +50,9 @@ def _yaml_scalar(value: str) -> str:
 class PhotoCard:
     card_id: str
     photo: Any  # CommentedMap del bloque photo — SOLO lectura
+    name: str | None = None
+    page: str | None = None
+    metadata: Any = field(default_factory=dict)  # CommentedMap del bloque metadata
 
     @property
     def source_url(self) -> str | None:
@@ -62,6 +65,24 @@ class PhotoCard:
     @property
     def status(self) -> str:
         return nullify(self.photo.get("status")) or "pending"
+
+    @property
+    def card_type(self) -> str | None:
+        """content.photo.type: official | video_capture | collage | social-media."""
+        return nullify(self.photo.get("type"))
+
+    @property
+    def layout(self) -> str | None:
+        """content.photo.layout (None → portrait en el pipeline)."""
+        return nullify(self.photo.get("layout"))
+
+    @property
+    def club(self) -> str | None:
+        """metadata.club (para armar queries de discovery)."""
+        if not isinstance(self.metadata, dict):
+            return None
+        v = self.metadata.get("club")
+        return nullify(v) if isinstance(v, str) else None
 
 
 @dataclass
@@ -79,7 +100,16 @@ class Catalog:
             photo = content.get("photo")
             if not isinstance(photo, dict):
                 continue
-            out.append(PhotoCard(card_id=card["id"], photo=photo))
+            md = card.get("metadata")
+            out.append(
+                PhotoCard(
+                    card_id=card["id"],
+                    photo=photo,
+                    name=card.get("name"),
+                    page=card.get("page"),
+                    metadata=md if isinstance(md, dict) else {},
+                )
+            )
         return out
 
     def update_card_photo(self, card_id: str, fields: dict[str, str | None]) -> None:
