@@ -13,8 +13,8 @@ Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
    tiene el mapa de discovery + 4 decisiones abiertas para agarrar en frío.
 2. **T-10 · filter chips colapsables en mobile** (P2: la apertura de francia queda
    bajo el fold en celu).
-3. **T-11 remanente · foto HD del 147** (P3 opcional: la atajada del Dibu entra como
-   landscape pero con foto floja; re-curar si aparece el frame icónico).
+3. ~~T-11 remanente · foto HD del 147~~ — ✅ HECHO (PR #47, 2026-06-04): atajada en
+   PANO con la foto icónica + bandas full-row solo argentinas. **Próximo real = T-08.**
 
 ---
 
@@ -174,13 +174,15 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 **Context:** Punto de cambio: `src/features/album/components/album-filter-bar.tsx`. Capturas en `~/.gstack/projects/Ezem98-cromiks/designs/design-audit-20260603/screenshots/m1-top.png`. **Priority:** P2 (antes de invitar la cohorte mobile-first idealmente).
 
+**Re-confirmado en vivo (/impeccable critique álbum, 2026-06-03):** medido 238px / ~28% del fold mobile (5 filas wrapped, 9 controles). Fix recomendado: colapsar tras un botón/sheet "Filtrar" (default cerrado, badge con conteo de filtros activos); dejar posesión como único control siempre visible, tiers + Destacadas adentro. Capturas en `.impeccable/critique/shots/album-mobile-top.png`.
+
 ---
 
 ## T-11 · Curación de layouts del bento de francia — ✅ HECHA (2026-06-03, commit 0b530c6)
 
 **Resuelto:** pasada foto-por-foto con el dueño. Cambios aplicados (yaml + re-crop R2 + const + tests + seed, todo en `feat/album-bento-francia`): 137/138→landscape, 143/144/164→portrait, 147→landscape (foto IG actual, sin foto nueva), 150/153→landscape, 139/148/155→bandas 21:9, 160→landscape; la tanda pasó de strip uniforme a CRESCENDO. Suite verde, verificado en vivo (19/19 imgs).
 
-**Remanente (P3, opcional):** la foto del 147 (atajada del Dibu) es floja — Kolo Muani de espaldas, de lejos; NO es el plano icónico de la atajada. Entra limpia como landscape pero si aparece la foto buena (Getty/FIFA, frame de la atajada de frente), re-curar `--only dibu-atajada-kolo-muani --force`. No bloquea.
+**Remanente — ✅ HECHO (2026-06-04, PR #47):** llegó la foto HD icónica (goal.com 1920×1080, Dibu estirando la pierna). 147 → PANO full-row con esa foto. De paso se corrigió la jerarquía de bandas: full-row es SOLO momentos argentinos (139/147/156); 148 y 155 (penales franceses) bajaron de banda; el alargue 143-146 pasó a flurry de 4 celdas chicas. Nada pendiente del 147.
 
 <details><summary>Contexto original (resuelto)</summary>
 
@@ -197,6 +199,38 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 **Depends on:** PR #44 mergeado (o sobre la misma rama antes del merge). **Priority:** P1 — es curación visible del contenido de la beta.
 
 </details>
+
+---
+
+## T-12 · Álbum vacío se lee como deuda — valle de apertura del hero-slot (primer uso de la beta)
+
+**What:** Para un usuario con poco llenado, la página francia abre con el primer cell = el díptico 136 (el XI campeón) que casi nadie tiene temprano → un vacío grande de puntos fantasma punteados como PRIMER impacto cada sesión. Diseñar el primer uso: spotlight celebratorio de los cromos que SÍ tenés + camino visible a abrir sobres + una invitación cálida en el díptico vacío en estados low-fill (sin tocar el bento de PR #44, que es fuerte).
+
+**Why:** El norte emocional del producto es asombro → nostalgia activa → orgullo (PRODUCT.md / DESIGN.md §2.4). El álbum es la sala de trofeos; abrir cada sesión contra un vacío invierte el peak-end (lo primero y lo último que ves es "lo que te falta", no "lo que lograste"). Encontrado en `/impeccable critique álbum` en vivo (2026-06-03), juzgado a dos niveles de llenado: a 63% es orgullo claro, a 27% el opening es un valle. El fantasma en sí está bien hecho (siluetas low-opacity, pip de tier de foreshadowing) — el problema es que el slot HERO esté vacío, no el tratamiento del fantasma.
+
+**Pros:** Hace orgullo el peak-end del primer uso de toda la beta de junio; ataca el red flag #1 del "coleccionista nostálgico" (daily login). **Cons:** Toca la composición de la apertura del álbum (no el bento per se); pide decidir entre seedear una carta de alto impacto arriba vs liderar con owned en low-fill vs invitación cálida en el díptico vacío.
+
+**Context:** Punto de cambio probable: `album-view.tsx` (orden/empty del hero) + posible coordinación con el primer sobre (qué cae). Relacionado con U-02 (empty states humanizados) y U-05 (onboarding visual) en [`docs/improvements.md`](docs/improvements.md), pero más específico. Pregunta abierta del critique: ¿el tratamiento "foto real atenuada detrás del vidrio" del diálogo de legendaria faltante podría llevarse a los slots fantasma de la grilla? (deuda → tease). Snapshot: `.impeccable/critique/2026-06-04T02-41-00Z__src-app-app-album-page-tsx.md`. Plan acordado: hacerlo DESPUÉS de la Tanda 1 (T-13 + U-09 + U-12).
+
+**Depends on:** nada técnico; idealmente antes de invitar la cohorte (es su primera impresión).
+
+**Priority:** P1
+
+---
+
+## T-13 · Color de tier se fuga al chrome del álbum (viola §4.5)
+
+**What:** Los chips de filtro activos de `album-filter-bar.tsx` usan color de tier (chip "Legendaria" gold, "Rara" celeste, "Destacadas" gold). Pasarlos al tratamiento neutro único (`--argentina-glow`, como ya hacen los chips de posesión). Si hace falta identidad de tier, un puntito de color adentro del chip — nunca el chip entero.
+
+**Why:** DESIGN.md §4.5 (principio 1 del design system) es explícito: el color de tier vive **exclusivamente en los cromos**, nunca en UI general. La fuga diluye el lenguaje de rareza (gold debería significar "cromo Legendary", no "filtro prendido") y genera un doble-activo visual (chip "Todas" azul + chip de tier gold prendidos a la vez = dos sistemas de "seleccionado" en conflicto). Detectado en vivo en `/impeccable critique álbum` (2026-06-03); el detector in-page también lo marcó (`ai-color-palette` sobre el violeta épico).
+
+**Pros:** Honra el principio 1 del design system; hace el register más confiado. **Cons:** Toca un componente compartido por todas las páginas del álbum (pide su mini-QA, igual que T-10).
+
+**Context:** Punto de cambio: `src/features/album/components/album-filter-bar.tsx`. **Decisión del dueño (2026-06-03): el filtro está mal, no la regla** — §4.5 manda. Ver también U-26 en [`docs/improvements.md`](docs/improvements.md) (mismo finding, este TODO es el home con contexto). Capturas: `.impeccable/critique/shots/album-filter-legendary.png`, `album-filter-empty.png`. Plan acordado: Tanda 1 (junto con U-09 contraste + U-12 touch targets).
+
+**Priority:** P2
+
+---
 
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 

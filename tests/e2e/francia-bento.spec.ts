@@ -37,12 +37,12 @@ test('bento de francia: 30 slots, díptico full-row, tanda de penales, clímax p
 
   // Proporciones del bento (con tolerancia por gaps de la grilla):
   const diptychBox = await slot(page, 136).boundingBox()
-  const penaltyBox = await slot(page, 149).boundingBox()
-  const otherPenaltyBox = await slot(page, 154).boundingBox()
-  const bandBox = await slot(page, 148).boundingBox()
-  const climaxBox = await slot(page, 156).boundingBox()
-  expect(diptychBox && penaltyBox && otherPenaltyBox && bandBox && climaxBox).toBeTruthy()
-  if (!diptychBox || !penaltyBox || !otherPenaltyBox || !bandBox || !climaxBox) return
+  const penaltyBox = await slot(page, 151).boundingBox() // truquito (portrait span1)
+  const otherPenaltyBox = await slot(page, 154).boundingBox() // Dybala (portrait span1)
+  const saveBandBox = await slot(page, 147).boundingBox() // atajada (PANO full-row)
+  const climaxBox = await slot(page, 156).boundingBox() // Montiel (PANO full-row)
+  expect(diptychBox && penaltyBox && otherPenaltyBox && saveBandBox && climaxBox).toBeTruthy()
+  if (!diptychBox || !penaltyBox || !otherPenaltyBox || !saveBandBox || !climaxBox) return
 
   // 1. El díptico del XI (136) ocupa la fila entera: ~4× el ancho de una
   //    celda portrait de la tanda (span 4 vs span 1, menos los gaps).
@@ -50,13 +50,14 @@ test('bento de francia: 30 slots, díptico full-row, tanda de penales, clímax p
   expect(ratio).toBeGreaterThan(3.4)
   expect(ratio).toBeLessThan(4.6)
 
-  // 2. Los penales convertidos son celdas uniformes: 149 y 154 miden lo mismo.
+  // 2. Las celdas portrait de la tanda son uniformes: 151 y 154 miden lo mismo.
   expect(Math.abs(penaltyBox.width - otherPenaltyBox.width)).toBeLessThan(2)
 
-  // 2b. La banda que abre la tanda (148, 21:9) es full-row pero MÁS BAJA que
-  //     el díptico (16:9) — la jerarquía de bandas de la curaduría T-11.
-  expect(Math.abs(bandBox.width - diptychBox.width)).toBeLessThan(2)
-  expect(bandBox.height).toBeLessThan(diptychBox.height)
+  // 2b. La atajada del Dibu (147, PANO full-row) es full-row pero MÁS BAJA que
+  //     el díptico (16:9) — la jerarquía de la curaduría: solo momentos
+  //     argentinos llegan a full-row.
+  expect(Math.abs(saveBandBox.width - diptychBox.width)).toBeLessThan(2)
+  expect(saveBandBox.height).toBeLessThan(diptychBox.height)
 
   // 3. El clímax (156, pano 2:1) también es full-row pero MÁS BAJO que el
   //    díptico (16:9): mismo ancho, menos alto.

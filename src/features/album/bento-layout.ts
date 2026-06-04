@@ -30,20 +30,19 @@
  *   │ 139 GOL MESSI DE PENAL 1-0 (21:9, full-row)        │ ← el primer grito
  *   ├─────────┬──────────────────────────┬──────────────┤
  *   │ 140 Asis│ 141 GOL DI MARÍA (LEG ×2)│ 142 Festejo  │ ← el 2-0
- *   ├─────────┼─────────┬────────────────┴──────────────┤
- *   │ 143     │ 144     │ 145 MESSI 3-2 (×2)            │ ← remontada + 3-2
- *   ├─────────┴─────────┴──┬────────────────────────────┤
- *   │ 146 Mbappé 3-3 (×2)  │ 147 ATAJADA DIBU (LEG ×2)  │ ← el alargue
- *   ├──────────────────────┴────────────────────────────┤
- *   │ 148 PENAL MBAPPÉ (21:9, full-row)                  │ ← abre la tanda
- *   ├─────────┬─────────────────────┬───────────────────┤
- *   │ 149     │ 150 Dibu-Coman (×2) │ 151               │ ← la tanda
- *   ├─────────┼─────────────────────┼───────────────────┤
- *   │ 152     │ 153 Tchouameni (×2) │ 154               │
- *   ├─────────┴─────────────────────┴───────────────────┤
- *   │ 155 PENAL KOLO MUANI (21:9, full-row)              │ ← última bala
- *   ├────────────────────────────────────────────────────┤
- *   │ 156 EL PENAL DE MONTIEL — CAMPEÓN (pano full, LEG) │ ← CLÍMAX
+ *   ├─────────┬─────────┬─────────┬─────────────────────┤
+ *   │ 143     │ 144     │ 145     │ 146                 │ ← flurry del alargue
+ *   │ Mbappé1 │ Mbappé2 │ Messi3-2│ Mbappé3-3 (4 chicas)│   (franceses no van banda)
+ *   ├─────────┴─────────┴─────────┴─────────────────────┤
+ *   │ 147 LA ATAJADA DEL DIBU (PANO full-row, LEG) ✦     │ ← EL momento del alargue
+ *   ├──────────────────────────┬────────────────────────┤
+ *   │ 148 Penal Mbappé (×2)    │ 149 Penal Messi (×2)   │ ← penal x penal
+ *   ├──────────────────────────┴──────┬─────────┬───────┤
+ *   │ 150 Dibu→Coman (×2)             │ 151     │ 152   │ ← la tanda en celdas
+ *   ├──────────────────────────┬──────┴─────────┴───────┤
+ *   │ 153 Tchouameni ERRA (×2) │ 154     │ 155 K.Muani  │
+ *   ├──────────────────────────┴────────────────────────┤
+ *   │ 156 EL PENAL DE MONTIEL — CAMPEÓN (PANO full, LEG) │ ← CLÍMAX ✦
  *   ├─────────┬──────────────────┬───────────────────────┤
  *   │ 157 Fest│ 158 Corren (×2)  │ 159 Llanto            │ ← desahogo
  *   ├─────────┴────────┬─────────┼───────────────────────┤
@@ -52,8 +51,10 @@
  *   │ 163     │ 164     │ 165 BESO A LA COPA (LEG ×2)    │ ← cierre
  *   └─────────┴─────────┴────────────────────────────────┘
  *
- * Jerarquía de bandas full-row (alto en unidades de columna):
- *   bandas 21:9 (139/148/155) 1.71u < clímax pano (156) 2u < díptico 16:9 (136) 2.25u
+ * Principio (curaduría dueño 2026-06-04): banda/pano full-row = SOLO momentos
+ * argentinos (139 gol Messi · 147 atajada · 156 Montiel). Goles y penales
+ * franceses van en celdas chicas, nunca glorificados con banda. Jerarquía de
+ * alturas: banda 139 (21:9, 1.71u) < panos 147/156 (2:1, 2u) < díptico (16:9, 2.25u).
  */
 
 export type CromoLayout = 'portrait' | 'landscape' | 'pano'
@@ -127,25 +128,26 @@ export const FRANCIA_BENTO: BentoCell[] = [
   { card: 140, layout: 'portrait', span: 1 },
   { card: 141, layout: 'landscape', span: 2 }, // LEGENDARY: gol de Di María
   { card: 142, layout: 'portrait', span: 1 },
-  // R5 — la remontada de Mbappé + el 3-2 de Messi
-  { card: 143, layout: 'portrait', span: 1 },
-  { card: 144, layout: 'portrait', span: 1 }, // la volea, plano cerrado (curaduría)
-  { card: 145, layout: 'landscape', span: 2 }, // epic: Messi 3-2
-  // R6 — el alargue: el 3-3 y LA atajada
-  { card: 146, layout: 'landscape', span: 2 },
-  { card: 147, layout: 'landscape', span: 2 }, // LEGENDARY: atajada a Kolo Muani
-  // R7 — la tanda abre con banda: el primer penal
-  { card: 148, layout: 'landscape', span: 4, aspectClass: 'aspect-[21/9]', ratio: 21 / 9 },
-  // R8-R9 — la tanda: penales en celdas, las atajadas/erradas anchas
-  { card: 149, layout: 'portrait', span: 1 },
+  // R5 — el flurry del alargue: 4 goles en celdas chicas (los franceses no se
+  //   glorifican; el 3-2 de Messi cede ancho para que LA atajada sea pano)
+  { card: 143, layout: 'portrait', span: 1 }, // Mbappé empate 1
+  { card: 144, layout: 'portrait', span: 1 }, // Mbappé empate 2 (volea)
+  { card: 145, layout: 'portrait', span: 1 }, // Messi 3-2 (cede ancho — ver R6)
+  { card: 146, layout: 'portrait', span: 1 }, // Mbappé 3-3
+  // R6 — EL momento del alargue: la atajada del Dibu, sola, a todo lo ancho
+  { card: 147, layout: 'pano', span: 4 }, // LEGENDARY: atajada a Kolo Muani (foto HD)
+  // R7 — penal x penal (el de Mbappé NO es banda — es común y dolió)
+  { card: 148, layout: 'landscape', span: 2 }, // Penal Mbappé convertido
+  { card: 149, layout: 'landscape', span: 2 }, // Penal Messi convertido
+  // R8 — la atajada del Dibu a Coman abre, los conversiones en celdas
   { card: 150, layout: 'landscape', span: 2 }, // epic: Dibu ataja a Coman
   { card: 151, layout: 'portrait', span: 1 },
   { card: 152, layout: 'portrait', span: 1 },
-  { card: 153, layout: 'landscape', span: 2 }, // Tchouameni la tira afuera
-  { card: 154, layout: 'portrait', span: 1 },
-  // R10 — la última bala de Francia, banda
-  { card: 155, layout: 'landscape', span: 4, aspectClass: 'aspect-[21/9]', ratio: 21 / 9 },
-  // R11 — clímax: campeones del mundo
+  // R9 — Tchouameni la tira afuera (alivio argentino, ancho); Kolo Muani en celda
+  { card: 153, layout: 'landscape', span: 2 }, // Tchouameni la manda al cielo
+  { card: 154, layout: 'portrait', span: 1 }, // Dybala convierte
+  { card: 155, layout: 'portrait', span: 1 }, // Penal Kolo Muani (común, dolió)
+  // R10 — clímax: campeones del mundo
   { card: 156, layout: 'pano', span: 4 }, // LEGENDARY: el penal de Montiel
   // R12 — desahogo
   { card: 157, layout: 'portrait', span: 1 },
