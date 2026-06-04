@@ -41,7 +41,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | **1. Auth & onboarding** | 5 | 0 | 1 | — |
 | **2. Daily loop (home)** | 4 | 0 | 0 | — |
 | **3. Pack opening 3D** | 9 | 0 | 4 | [link](./features/e1-pack-opening.md) |
-| **4. Album & detail** | 10 | 0 | 4 | [link](./features/e1-album.md) |
+| **4. Album & detail** | 14 | 1 | 1 | [link](./features/e1-album.md) |
 | **5. Misiones** | 7 | 0 | 4 | [link](./features/e2-missions.md) |
 | **6. Sharing** | 7 | 0 | 4 | [link](./features/e3-sharing.md) |
 | **7. Profile** | 6 | 0 | 7 | [link](./features/profile.md) |
@@ -102,20 +102,22 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | # | Feature | Status | Notas |
 |---|---|---|---|
 | 4.1 | Página `/album?page=N` | ✅ | Server component con search params |
-| 4.2 | 10 páginas, 205 cromos | ✅ | |
-| 4.3 | Grid responsive 4-7 cols | ✅ | Mobile-first |
+| 4.2 | Páginas narrativas, set scopeado a `is_active` | ✅ | Beta = francia (page 8, 30 cromos). Total global = set activo, no 205. Catálogo completo = 205 en 10 páginas |
+| 4.3 | Grid responsive 4-7 cols | ✅ | Mobile-first; bento de 4 cols fijas en páginas curadas |
 | 4.4 | Slot owned vs missing (diseño distinto) | ✅ | |
-| 4.5 | Nav prev/next + 10 dots con pageCompletion | ✅ | Dots muestran progreso parcial/lleno |
+| 4.5 | Nav prev/next + dots con pageCompletion | ✅ | Dots muestran progreso parcial/lleno (1 por página) |
 | 4.6 | Tooltip en dots ("P{n} · X/Y") | ✅ | |
 | 4.7 | CardDetailDialog (E1.4) modal | ✅ | Cromo + info + acciones |
 | 4.8 | Acciones: pin/unpin/dismantle/share | ✅ | Server actions con optimistic update |
 | 4.9 | LegendaryBrief defensivo | ✅ | Solo si tier=legendary + brief válido |
-| 4.10 | Filtros (por tier, completion, pineadas) | 🚧 | |
-| 4.11 | Loading skeleton | 🚧 | |
+| 4.10 | Filtros (posesión, tier, destacadas) | ✅ | `album-filter-bar.tsx` + `applyFilters`, client-side. ⚠️ `useState`, no URL-backed (se resetea al navegar/refrescar) |
+| 4.11 | Loading skeleton | ✅ | `album-skeleton.tsx` + `loading.tsx`, matchea layout (CLS-safe) |
 | 4.12 | Ordering options | 🚧 | |
-| 4.13 | "Saltar a página con cromos" CTA | 🚧 | UX improvement |
+| 4.13 | "Saltar a página con cromos" CTA | ✅ | `findPageWithOwned` en `album-view.tsx` (próxima página circular con ≥1 owned) |
 | 4.14 | Álbum scopeado a `pages.is_active` (T-04) | ✅ | `getAlbumData`/`getHomeData` vía `album/scope.ts` (`resolveActivePageIds`/`getAlbumScope`). Si ninguna página está activa → ungated (muestra todo, legacy). Total/completion sobre el set activo |
 | 4.15 | Holo en hover en la grilla (legendary/epic owned) | ✅ | `.cromo-slot-holo` en `album-slot.tsx` — CSS puro, sin pointer-JS, perf-safe (PR #29) |
+| 4.16 | Bento narrativo + díptico (PR #44) | ✅ | `bento-layout.ts` (`FRANCIA_BENTO`) + `diptych-slot.tsx`; curado foto-por-foto (T-11). Invariantes en `bento-layout.test.ts` |
+| 4.17 | Critique de calidad del álbum | 🟡 | `/impeccable critique` 2026-06-03 → 29/40. **Tanda 1 ✅ (2026-06-04): T-13 + U-09 + U-12.** Pendientes: T-12 (próximo), T-10, U-17. Ver [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40) |
 
 ---
 

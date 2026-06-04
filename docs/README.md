@@ -67,22 +67,22 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 
 ## 🚦 Estado actual del proyecto (snapshot)
 
-**Última sesión documentada**: 26 mayo 2026
+**Última sesión documentada**: 3 junio 2026
 
 | Área | Estado |
 |---|---|
 | Onboarding (signup + username) | ✅ Funcional |
 | Home (sobre diario + streak + misiones) | ✅ Funcional |
 | Apertura de sobre 3D | ✅ Cinematográfica completa |
-| Álbum (10 páginas, 205 cromos) | ✅ Con nav + pageCompletion |
+| Álbum (scopeado a `is_active`, beta = francia) | ✅ Bento narrativo + filtros + skeleton + critique 29/40 |
 | Detalle del cromo | ✅ Modal con pin/dismantle/share |
 | Misiones | ✅ Auto-progress + claim |
 | Sharing | ✅ OG image + página pública + sheet |
 | Perfil público `/u/[username]` | ✅ V1 con stats + pineados |
 | Badges (auto-unlock + UI en perfil + toast) | ✅ Cerrado |
-| **Pendientes grandes** | Custom fonts OG, avatar real, landing prelaunch |
+| **Pendientes grandes** | Tanda 1 del critique del álbum (T-13/U-09/U-12), T-12 onboard álbum vacío, T-08 detalle apaisado, contenido real beta, custom fonts |
 
-Ver detalle en [`roadmap.md`](./roadmap.md).
+Ver detalle en [`roadmap.md`](./roadmap.md), [`../TODOS.md`](../TODOS.md) (T-NN), y el critique del álbum en [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40).
 
 ---
 

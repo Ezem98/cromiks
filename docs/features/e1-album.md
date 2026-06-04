@@ -1,8 +1,12 @@
 # Feature · E1.3 + E1.4 — Álbum y detalle del cromo
 
-Vista de los 205 cromos distribuidos en 10 páginas, con detalle modal del cromo individual.
+Vista de los cromos del álbum `Eterno Diciembre` distribuidos en páginas narrativas, con detalle modal del cromo individual.
 
-**Estado**: ✅ Cerrado. Funcional con `pageCompletion` en el nav.
+**Estado**: ✅ Cerrado + iterado. Funcional con `pageCompletion` en el nav, **filtros** client-side, **loading skeleton**, **CTA "ir a una página con cromos"**, y **bento narrativo** en la página activa de la beta (PR #44).
+
+> **Scope de la beta (2026-06):** el álbum está scopeado a `pages.is_active` (T-04). La página activa hoy es **francia (page 8)** — 30 cromos, layout bento curado foto-por-foto (ver [`../../src/features/album/bento-layout.ts`](../../src/features/album/bento-layout.ts) y T-11 en [`../../TODOS.md`](../../TODOS.md)). El contador global "X / N" va sobre el set activo, no sobre los 205. (Nota: roadmap.md/TODOS.md todavía mencionan `croacia` como página héroe — drift de docs; la implementación vigente es francia.)
+>
+> **Última revisión de calidad:** `/impeccable critique album` en vivo (2026-06-03) → **29/40 (Good)**. Resumen y findings con sus IDs de tracking en [§ Critique](#critique-2026-06-03-live-29-40). Snapshot crudo en [`.impeccable/critique/`](../../.impeccable/critique/).
 
 ---
 
@@ -31,14 +35,23 @@ Vista de los 205 cromos distribuidos en 10 páginas, con detalle modal del cromo
 ### Feature
 ```
 src/features/album/
-├── queries.ts                  # getAlbumData(pageNumber)
+├── queries.ts                  # getAlbumData(pageNumber) + tipos (AlbumData, AlbumCardSlot, PageCompletionMap)
+├── scope.ts                    # resolveActivePageIds / getAlbumScope (gate is_active, T-04)
+├── bento-layout.ts             # placement curado por página (FRANCIA_BENTO) — fuente de verdad de PRESENTACIÓN
+├── bento-layout.test.ts        # invariantes del bento (filas suman 4, sin dense, armonía de alturas)
 ├── actions.ts                  # pinCard, unpinCard, dismantleCard
 └── components/
-    ├── album-view.tsx          # Vista cliente principal
-    ├── album-slot.tsx          # Slot individual (owned/missing)
+    ├── album-view.tsx          # Vista cliente principal (filtros + bento + nav + dialog)
+    ├── album-slot.tsx          # Slot individual (owned/missing) — recibe BentoCell opcional
+    ├── diptych-slot.tsx        # Slot díptico (un cromo ancho, dos paneles + gutter de álbum físico)
+    ├── album-filter-bar.tsx    # Filtros (posesión + destacadas + tier) + applyFilters
     ├── album-page-nav.tsx      # Nav prev/next + dots con completion
-    └── card-detail-dialog.tsx  # Modal de detalle (E1.4)
+    ├── album-skeleton.tsx      # Skeleton de la grilla (loading.tsx lo monta)
+    ├── card-detail-dialog.tsx  # Modal de detalle (E1.4)
+    └── legendary-moment.tsx    # "Volvé a verlo" — facade click-gated del clip (legendary)
 ```
+
+La ruta `src/app/(app)/album/loading.tsx` monta `<AlbumSkeleton>` como fallback de Suspense (matchea el layout final, CLS-safe).
 
 ---
 
@@ -92,12 +105,16 @@ type AlbumCardSlot = {
 
 | Sección | Detalle |
 |---|---|
-| **Header sticky** | "Eterno Diciembre" + progreso global `X/205` + barra % |
+| **Header sticky** | Eyebrow "Tu álbum" + título "Eterno Diciembre" + progreso global `X/N` (N = set activo) + barra % |
 | **Page header** | Número + título + subtitle + completion `X/Y` |
-| **Grid responsive** | 4 cols mobile → 5 sm → 6 md → 7 lg |
-| **Page nav abajo** | Prev/next buttons + 10 dots |
-| **Stagger fade-in** | Motion al cambiar página (`staggerChildren: 0.03`) |
-| **Empty state** | Mensaje si `pageOwned === 0` |
+| **CTA "ir a una página con cromos"** | Link a la próxima página (circular) con ≥1 cromo owned; se oculta si no hay otra con cromos (`findPageWithOwned`) |
+| **Filter bar** | Posesión (todas / tengo / faltan) + Destacadas + 5 chips de tier. Filtrado client-side (`applyFilters`, `useMemo`) |
+| **Grid** | Bento curado (4 cols fijas + col-span por celda) en páginas con bento; grilla uniforme `4 → 5 → 6 → 7` en el resto. **Con filtros activos cae a la grilla uniforme** (las filas del bento dejan de sumar 4) |
+| **Page nav abajo** | Prev/next buttons + un dot por página (en la beta, ~2) |
+| **Stagger fade-in** | Motion al cambiar página/filtro (`staggerChildren: 0.03`, key compuesta) |
+| **Empty states** | "No hay cromos con ese filtro" (filtro vacío) · "Aún no tenés cromos de esta página" (`pageOwned === 0`) |
+
+> ⚠️ **Estado de los filtros es client-side (`useState` en `AlbumView`), no URL-backed.** Sobrevive abrir/cerrar el dialog (`useMemo`) pero **se resetea al navegar de página o refrescar**. Mejora futura: subir a `searchParams` junto a `?page=`. Ver U-12-bis en [`../improvements.md`](../improvements.md).
 
 ### Componente `AlbumSlot`
 
@@ -115,7 +132,21 @@ type AlbumCardSlot = {
 - Número grande del cromo al centro (opacity 30%)
 - Hover: opacity 50%
 
-⚠️ **No usamos el componente `<Cromo>` completo** en el grid por performance. Las miniaturas son simplificadas.
+⚠️ **No usamos el componente `<Cromo>` completo** en el grid por performance. Las miniaturas son simplificadas. Los slots owned de tier legendary/epic tienen `.cromo-slot-holo` (foil liviano CSS-only en hover/focus, sin pointer-JS — ver [DESIGN.md §12.7](../../DESIGN.md)).
+
+### Bento narrativo (`bento-layout.ts`, PR #44)
+
+La página activa de la beta (francia, page 8) usa un **placement curado** en vez de la grilla uniforme. La fuente de verdad de PRESENTACIÓN es el const `FRANCIA_BENTO` (no la DB): qué cromo ocupa cuántas columnas y con qué aspect. Al ser un const, lo leen la grilla **y** el skeleton → el primer load no mueve nada (CLS).
+
+Reglas que enforcea `bento-layout.test.ts`:
+- Grilla base de **4 columnas en todos los breakpoints** (los cromos escalan, la estructura no).
+- **Sin `grid-auto-flow: dense`**: el orden de `card_number` ES la cronología de la final; dense la reordenaría.
+- Cada fila suma **exacto 4 columnas** en orden → cero huecos sin dense.
+- Armonía de alturas por fila (portrait span1 ↔ landscape span2 tilean; bandas 21:9, pano y díptico van en fila propia).
+
+Layouts: `portrait` (3:4, span 1), `landscape` (3:2, span 2), `pano` (2:1, span 4), + el **díptico** (`DiptychSlot`): un cromo ancho 16:9 a full-row partido por un gutter de "álbum físico" (presentación; la mecánica real de dos mitades es T-09, post-beta). Jerarquía de bandas full-row: 21:9 (1.71u) < pano clímax (2u) < díptico 16:9 (2.25u).
+
+El pipeline de imágenes (Python) lee su propio `layout` desde el catálogo YAML (`content.photo.layout`) — runtime distinto; el test de integridad evita que se desincronicen los nombres de layout. Curación foto-por-foto: T-11 (✅).
 
 ### `AlbumPageNav`
 
@@ -216,10 +247,33 @@ supabase
 
 | | |
 |---|---|
-| 🚧 | Filtros (por tier, por completion, pineadas) |
-| 🚧 | Loading skeleton |
+| ✅ | ~~Filtros (por tier, por completion, pineadas)~~ — construido (`album-filter-bar.tsx`, client-side) |
+| ✅ | ~~Loading skeleton~~ — construido (`album-skeleton.tsx` + `loading.tsx`) |
+| ✅ | ~~"Saltar a página con cromos owned" CTA~~ — construido (`findPageWithOwned`) |
 | 🚧 | Ordering options |
-| 🚧 | "Saltar a página con cromos owned" CTA si todas las páginas visibles están vacías |
+| 🚧 | Filtros URL-backed (hoy `useState`, se resetean al navegar/refrescar) |
+| 🚧 | T-08 · detalle/reveal respeta ratio apaisado (hoy el dialog siempre muestra portrait) — **P1 post-merge** |
+
+---
+
+## Critique (2026-06-03, live, 29/40) {#critique-2026-06-03-live-29-40}
+
+`/impeccable critique album` corrido en vivo autenticado (desktop 1440 + mobile 390, a dos niveles de llenado). Snapshot crudo: [`.impeccable/critique/2026-06-04T02-41-00Z__src-app-app-album-page-tsx.md`](../../.impeccable/critique/). Veredicto: **no parece IA** — el bento con fotos reales se lee como ensayo fotográfico curado; detector estático limpio (1 falso positivo, `<img>` en comentario JSDoc de `diptych-slot.tsx`).
+
+**Fuerte** (no tocar): bento narrativo + díptico; diálogo de legendaria faltante reverente (foto real al 40% detrás del prisma gold = anticipación); acción destructiva confirmada + voz argentina.
+
+**Findings → tracking** (cada uno tiene un único home; no duplicar):
+
+| Prio | Finding | Home | Estado |
+|---|---|---|---|
+| P1 | Valle de apertura: con poco llenado el primer cell (díptico 136) es un vacío de fantasmas — invierte el peak-end "orgullo" | T-12 ([`../../TODOS.md`](../../TODOS.md)) | 🚧 próximo |
+| P2 | Color de tier se fuga al chrome (chips gold/celeste) — viola §4.5. **Decisión: el filtro está mal** → chips al tratamiento neutro único | T-13 + [DESIGN.md §4.5](../../DESIGN.md) | ✅ 2026-06-04 |
+| P2 | Filter bar = muro de 9 controles, domina el fold mobile (238px/28%) | T-10 (re-confirmado live) | 🚧 |
+| P2 | Dots de nav 10px < 44px táctil (medido: 32×10 / 10×10, flechas 36×36) | U-12 ([`../improvements.md`](../improvements.md)) | ✅ 2026-06-04 (44×44 verificado live) |
+| P2 | Texto muted `#6b7585` = 4.2:1 (<4.5) + DESIGN.md §4.3 afirma 5.4:1 (dato MAL) | U-09 + [DESIGN.md §4.3](../../DESIGN.md) | ✅ 2026-06-04 (`#7a8392` = 5.06:1) |
+| P3 | Grilla `loading="lazy"` → warning LCP + flash de gradiente en frío | U-17 | 🚧 |
+
+**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo (type-check + lint + 21 tests verdes). **Próximo: T-12** (onboard del álbum vacío). T-10 (filter bar) y T-08 (detalle apaisado) en su propio turno.
 
 ---
 

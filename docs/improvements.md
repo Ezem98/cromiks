@@ -154,7 +154,10 @@ Item 3.12 ya está en backlog 🚧, pero quiero re-enfatizarlo: el `complete` es
 
 Animar el ícono de pin (rotación + scale + color) cuando se toggle. Optimistic update local antes del round-trip al server.
 
-### U-09 · Accesibilidad: contraste WCAG AA 🟡
+### U-09 · Accesibilidad: contraste WCAG AA 🔥 — ✅ `--text-muted` resuelto (2026-06-04)
+
+> ✅ **Hecho:** `--color-text-muted` subido de `#6b7585` (4.15:1, fallaba AA) a **`#7a8392` (5.06:1)** en `globals.css`; DESIGN.md §4.3 corregido (afirmaba 5.4:1, era falso). Verificado en vivo. **Resto del audit sigue abierto** (tier badges sobre navy, disabled states, gradientes rare/epic/legendary) → ver abajo.
+
 **Archivos**: design-system + componentes
 
 Verificar contrast ratios en:
@@ -163,6 +166,8 @@ Verificar contrast ratios en:
 - Texto en cards rare/epic/legendary con gradientes
 
 Tool: axe DevTools / Lighthouse. Si fallan, ajustar tokens del design system.
+
+> **Verificado en vivo (critique álbum 2026-06-03):** `--text-muted` (`#6b7585`) sobre `--surface-deep` (`#0a0e14`) mide **~4.2:1** — abajo del 4.5:1 que pide AA para texto normal. Se usa en captions/metadata (eyebrows mono, "En esta página", page completion). **Además `DESIGN.md §4.3` afirma 5.4:1 para ese token, que es un dato MAL.** Fix: subir `--text-muted` hacia el ink hasta ≥4.5:1 en `globals.css` + corregir §4.3. Subido a 🔥 (es a11y verificable, no hipótesis). Corre `pnpm lint` post-edición de CSS (pre-commit no lintea CSS).
 
 ### U-10 · `aria-label` y semántica en el álbum 🟡
 **Archivo**: [`album-slot.tsx`](../src/features/album/components/album-slot.tsx)
@@ -178,6 +183,15 @@ Verificar que `:focus-visible` tiene un outline gold consistente en todos los in
 **Archivos**: navbar / mobile-nav / album grid
 
 Auditar tap targets en mobile, especialmente los dots de página del álbum y los íconos pequeños del bottom nav.
+
+> **Medido en vivo (critique álbum 2026-06-03):** los dots de `album-page-nav.tsx` miden **32×10px** (actual) / **~10×10px** (resto), las flechas **36×36px** — todos bajo el mínimo de 44×44. Hoy lo tapa que la beta tiene ~2 páginas; se rompe cuando el álbum crezca.
+>
+> ✅ **Hecho (2026-06-04) para el álbum:** el `<Link>` del dot es ahora el área tappable (`min-h-11 min-w-11`) con el dot visual chico adentro; flechas a `size-11`. Verificado en vivo: dot y flechas **44×44**. Pendiente: auditar el resto (navbar / mobile-nav).
+
+### U-12-bis · Filtros del álbum URL-backed 🟡
+**Archivo**: [`album-view.tsx`](../src/features/album/components/album-view.tsx)
+
+El estado de filtros es `useState` local en `AlbumView`. Sobrevive abrir/cerrar el dialog (`useMemo`) pero **se resetea al navegar de página (re-render del server component) o al refrescar**. Para Casey (mobile, interrumpida) y Riley (refresca) la vista elegida se evapora sin aviso. Fix: subir a `searchParams` junto a `?page=` → sobrevive navegación, refresh y share. Detectado en el critique source-only (2026-06-03).
 
 ### U-13 · Visual feedback en el botón "Compartir" 🟢
 **Archivo**: [`share-sheet.tsx`](../src/features/sharing/components/share-sheet.tsx)
@@ -199,10 +213,12 @@ Renderizar el `/api/og/card/[cardId]` como thumbnail dentro del sheet, así el u
 
 Las transiciones entre `anticipation → tear → stack → summary` son cortes secos. Crossfade de 200ms suaviza.
 
-### U-17 · Imágenes con `sizes` prop optimizado 🟡
+### U-17 · Imágenes con `sizes` prop optimizado + `eager` en la primera fila 🟡
 **Archivos**: [`cromo.tsx`](../src/components/domain/cromo.tsx), profile, album
 
 Next/Image sin `sizes` carga imágenes más grandes de lo necesario en mobile. `sizes="(max-width: 640px) 160px, (max-width: 1024px) 240px, 320px"` ahorra bandwidth.
+
+> **Verificado en vivo (critique álbum 2026-06-03):** la grilla usa `loading="lazy"` en todas las imágenes → Next loguea un **warning de LCP** (la foto del penal above-the-fold es el LCP element y carga lazy), y en cold-cache la grilla pinta rectángulos de gradiente de tier antes de las fotos (flash). DESIGN.md §13.4 pide LCP < 1.8s. Fix: primera fila above-the-fold con `loading="eager"`/`priority`, el resto lazy.
 
 ### U-18 · "Saltar animación" más descubrible 🟢
 **Archivo**: [`pack-opening-flow.tsx:51`](../src/features/pack-opening/components/pack-opening-flow.tsx)
@@ -246,6 +262,16 @@ Cuando hay >10 páginas, scroll horizontal con la actual centrada. Hoy son 10 fi
 
 Volver al álbum después de abrir un dialog hoy resetea el scroll. Mantener offset (sessionStorage o referenced state) mejora flow.
 
+### U-26 · Color de tier se fuga al chrome del álbum (viola §4.5) 🔥 — ✅ HECHO (2026-06-04)
+
+> ✅ **Resuelto** junto con T-13: chips activos al tratamiento neutro único (argentina-glow), `tierActiveClasses` borrado, verificado en vivo. Detalle abajo.
+
+**Archivo**: [`album-filter-bar.tsx`](../src/features/album/components/album-filter-bar.tsx)
+
+Detectado en vivo (critique 2026-06-03): los chips de filtro activos usan color de tier (chip "Legendaria" gold, "Rara" celeste, "Destacadas" gold). DESIGN.md §4.5 es explícito: **el color de tier vive exclusivamente en los cromos, nunca en UI general**. Diluye el lenguaje de rareza (gold debería significar "cromo Legendary", no "filtro prendido") y crea un doble-activo visual (chip "Todas" azul + chip de tier gold prendidos a la vez).
+
+**Decisión (2026-06-03):** el filtro está mal (no la regla). Fix: todos los chips activos al tratamiento neutro único (`--argentina-glow`, como ya hacen los de posesión); si hace falta identidad de tier, un puntito de color adentro del chip, no el chip entero. Contexto rico + decisión en T-13 ([`../TODOS.md`](../TODOS.md)).
+
 ---
 
 ## Tabla resumen
@@ -275,15 +301,16 @@ Volver al álbum después de abrir un dialog hoy resetea el scroll. Mantener off
 | U-06 | 🟡 | UX | Countdown próximo sobre |
 | U-07 | 🟡 | UX | Variantes complete por rareza |
 | U-08 | 🟡 | UX | Microinteracciones pin |
-| U-09 | 🟡 | A11y | WCAG AA contrast audit |
+| U-09 | 🔥 | A11y | WCAG AA contrast — `--text-muted` mide 4.2:1 (verificado live; §4.3 dice 5.4:1, mal) |
 | U-10 | 🟡 | A11y | aria-label álbum |
 | U-11 | 🟡 | A11y | Focus visible consistente |
-| U-12 | 🟡 | A11y | Tap targets mobile ≥44px |
+| U-12 | 🟡 | A11y | Tap targets mobile ≥44px — dots del álbum miden 10px (medido live) |
+| U-12-bis | 🟡 | UX | Filtros del álbum URL-backed (hoy se resetean al navegar) |
 | U-13 | 🟢 | UX | "Copiado!" feedback |
 | U-14 | 🟢 | UX | Preview OG en ShareSheet |
 | U-15 | 🟢 | UX | Atajos teclado álbum |
 | U-16 | 🟢 | UX | Crossfade entre fases |
-| U-17 | 🟡 | Perf | Image sizes prop |
+| U-17 | 🟡 | Perf | Image sizes prop + `eager` 1ra fila álbum (warning LCP live) |
 | U-18 | 🟢 | UX | Skip animación descubrible |
 | U-19 | 🟡 | UX | CTA guest en /cromo |
 | U-20 | 🟢 | UX | text-balance en títulos |
@@ -292,6 +319,7 @@ Volver al álbum después de abrir un dialog hoy resetea el scroll. Mantener off
 | U-23 | 🟡 | UX | Haptics (vibrate) |
 | U-24 | 🟢 | UX | Nav álbum sticky/scroll |
 | U-25 | 🟢 | UX | Persistir scroll álbum |
+| U-26 | 🔥 | UX | Fuga de color de tier al chrome del álbum (§4.5) — ver T-13 |
 
 ---
 

@@ -218,7 +218,9 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
-## T-13 · Color de tier se fuga al chrome del álbum (viola §4.5)
+## T-13 · Color de tier se fuga al chrome del álbum (viola §4.5) — ✅ HECHA (2026-06-04)
+
+**Resuelto:** `album-filter-bar.tsx` usa un único `chipActive` (argentina-glow) para posesión, destacadas y tier; se borró `tierActiveClasses`. Verificado en vivo (los 3 chips activos rinden `rgb(107,185,255)`), type-check + lint + 21 tests verdes. Decisión registrada en [DESIGN.md §4.5](DESIGN.md). Contexto original abajo.
 
 **What:** Los chips de filtro activos de `album-filter-bar.tsx` usan color de tier (chip "Legendaria" gold, "Rara" celeste, "Destacadas" gold). Pasarlos al tratamiento neutro único (`--argentina-glow`, como ya hacen los chips de posesión). Si hace falta identidad de tier, un puntito de color adentro del chip — nunca el chip entero.
 
