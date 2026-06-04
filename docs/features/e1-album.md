@@ -273,7 +273,7 @@ supabase
 | P2 | Texto muted `#6b7585` = 4.2:1 (<4.5) + DESIGN.md §4.3 afirma 5.4:1 (dato MAL) | U-09 + [DESIGN.md §4.3](../../DESIGN.md) | ✅ 2026-06-04 (`#7a8392` = 5.06:1) |
 | P3 | Grilla `loading="lazy"` → warning LCP + flash de gradiente en frío | U-17 | ✅ 2026-06-04 (eager/priority 1ra fila + hero spotlight) |
 
-**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo. ✅ **T-12 HECHA (2026-06-04, PR #50)** = `AlbumSpotlight` (onboard del álbum low-fill). ✅ **T-10 HECHA (PR #51)** = filter bar colapsable. ✅ **T-08 HECHA (2026-06-04)** = detalle apaisado (reveal descopeado → T-15). ✅ **U-17 HECHA (2026-06-04)** = eager/priority 1ra fila + hero del spotlight. **Pendientes:** T-14 (smoke flaky, P2), T-15 (reveal apaisado, P3).
+**Plan acordado (2026-06-03):** ✅ **Tanda 1 HECHA (2026-06-04)** = T-13 (fuga de tier) + U-09 (contraste) + U-12 (touch targets), verificada en vivo. ✅ **T-12 HECHA (2026-06-04, PR #50)** = `AlbumSpotlight` (onboard del álbum low-fill). ✅ **T-10 HECHA (PR #51)** = filter bar colapsable. ✅ **T-08 HECHA (2026-06-04)** = detalle apaisado (reveal descopeado → T-15). ✅ **U-17 HECHA (2026-06-04)** = eager/priority 1ra fila + hero del spotlight. ✅ **T-14 HECHA (2026-06-04)** = smoke determinístico (pack pending sembrado en global-setup). **Re-run del critique 2026-06-04: 29 → 31/40.** **Pendientes (no bloquean la beta):** leyenda/ayuda (`clarify`), búsqueda+filtros-URL (`harden`), T-15 (reveal apaisado, P3).
 
 ---
 

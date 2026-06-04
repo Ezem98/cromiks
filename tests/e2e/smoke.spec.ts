@@ -11,22 +11,25 @@ import { expect, test } from '@playwright/test'
  *     ante el double-render del Server Component)
  *   - B-23 fix (error codes alineados con el RPC)
  *
- * El global-setup ya no pre-siembra user_cards: el flow real es la fuente
- * de truth.
+ * El global-setup pre-siembra un pack daily PENDING (T-14) — NO user_cards: las
+ * cartas las rola open_pack al abrir, así que el golden path real (open → álbum)
+ * sigue siendo la fuente de truth. Lo único que se pre-hace es el CLAIM, que
+ * dependía de claim_daily_pack en runtime (rate-limit + cold-start) y flakeaba.
  */
 test('smoke: golden path home → open pack → album', async ({ page }) => {
-  // 1. Home (en `/`): user fresh, sin pack pending → botón "Reclamar sobre diario".
-  // `/home` ahora redirige a `/` (home único), así que entramos por la raíz.
+  // 1. Home (en `/`): con el pack pending sembrado, el home muestra "Abrir sobre"
+  // (modo hasPending → router.push a /open, sin claim). `/home` redirige a `/`.
+  // Timeout amplio: primera compilación de la ruta en CI puede tardar (cold-start).
   await page.goto('/')
   await expect(page).toHaveURL(/localhost:\d+\/$/)
 
-  const claimButton = page.getByRole('button', { name: /reclamar sobre diario|abrir sobre/i })
-  await expect(claimButton).toBeVisible({ timeout: 10_000 })
-  await claimButton.click()
+  const openButton = page.getByRole('button', { name: /abrir sobre|reclamar sobre diario/i })
+  await expect(openButton).toBeVisible({ timeout: 25_000 })
+  await openButton.click()
 
-  // 2. handleClaim hace router.push(`/open/${packId}`) después del claim.
-  // El Server Component ejecuta openPack y NO debe redirigir a
-  // /?error=open_failed (B-22: RPC idempotente sobrevive al double-render).
+  // 2. PendingMode hace router.push(`/open/${packId}`). El Server Component ejecuta
+  // openPack y NO debe redirigir a /?error=open_failed (B-22: RPC idempotente
+  // sobrevive al double-render del prefetch + render).
   await expect(page).toHaveURL(/\/open\/[\w-]+/, { timeout: 15_000 })
 
   // 3. Saltar animación 3D. El botón con aria-label="Saltar animación" es
