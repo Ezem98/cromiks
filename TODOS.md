@@ -119,6 +119,8 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 **Context:** `<Cromo>` se usa solo en `card-detail-dialog.tsx`. El reveal NO usa `<Cromo>` (usa `card-mesh`). `card-mesh` ya parametriza `planeGeometry args={[w,h]}` → recibe otro w/h. **Depends on:** PR1 del bento. **Priority:** P2 (fast-follow post-PR1).
 
+**Feedback del dueño (2026-06-03, viendo PR #44 en vivo):** "cuando clickeás/tapeás un cromo para verlo en detalle la vista sigue siendo siempre portrait, no respeta si es horizontal" — fue lo PRIMERO que notó. Subir a **P1 post-merge**: hacer PR2 inmediatamente después de mergear PR1, antes de invitar testers.
+
 ---
 
 ## T-09 · "Se arma con 2 mitades" de verdad (post-beta, con pity)
@@ -142,6 +144,22 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 **Pros:** La página abre con el hero, no con UI utilitaria; menos scroll para llegar al contenido. **Cons:** Toca un componente compartido (filter bar) que usan todas las páginas del álbum; pide su propio mini-QA.
 
 **Context:** Punto de cambio: `src/features/album/components/album-filter-bar.tsx`. Capturas en `~/.gstack/projects/Ezem98-cromiks/designs/design-audit-20260603/screenshots/m1-top.png`. **Priority:** P2 (antes de invitar la cohorte mobile-first idealmente).
+
+---
+
+## T-11 · Pasada de curación de layouts del bento de francia (feedback del dueño)
+
+**What:** Revisar FOTO POR FOTO los 30 cromos de francia y corregir el layout asignado en PR #44: hay fotos que deberían ir horizontales (simple o doble) y quedaron portrait, y otras que se hicieron anchas y deberían volver a portrait. Cada corrección toca DOS lugares acoplados: `catalog/eterno-diciembre.yaml` (`content.photo.layout` → re-crop con `--force` + `pnpm seed`) y `src/features/album/bento-layout.ts` (el placement: las filas deben volver a sumar 4 con armonía de alturas — `bento-layout.test.ts` explota si no, intencionalmente).
+
+**Why:** Los layouts de PR1 se asignaron por TIPO de momento (gol → ancho) sin ver cada foto real; la pasada del dueño (2026-06-03) encontró mismatches en ambas direcciones. El layout correcto es una decisión por-foto, no por-categoría.
+
+**Caso específico — 147 (atajada del Dibu), corrige una nota equivocada del PR:** NO hace falta una foto de 2400px. El piso real del pano con tolerancia 1.12 es **≥1429px de ancho**; y la foto IG actual (1080) **probablemente ya pasa como `landscape`** (crop 1080×720 ≥ piso 1071 — verificar con `--dry-run`). Opciones: (a) re-tagear 147 a landscape hoy con la foto actual (la celda puede quedar pano —recorta 25% de alto, la atajada es horizontal, puede funcionar— o pasarse a landscape full-row), (b) curar cualquier fuente ≥1429px si se quiere mantener el crop pano nativo. Hoy 147 sigue sirviendo el WebP portrait viejo dentro de la celda pano (recortadísimo).
+
+**Pros:** El bento queda curado de verdad (por ojo, no por heurística); 147 deja de verse roto. **Cons:** Re-crops + re-pack del placement; toca el const y el catálogo en sincronía.
+
+**Cómo encararlo:** sesión asistida — el agente baja y MUESTRA cada foto de francia (puede leer imágenes), el dueño decide portrait/landscape/pano por cada una, y al final se re-empaqueta el placement una sola vez, se corre `cli.py --only <ids> --force` + `pnpm seed` + suite. Capturas de referencia del estado actual en `~/.gstack/projects/Ezem98-cromiks/designs/design-audit-20260603/`.
+
+**Depends on:** PR #44 mergeado (o sobre la misma rama antes del merge). **Priority:** P1 — es curación visible del contenido de la beta.
 
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
