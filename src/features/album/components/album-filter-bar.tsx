@@ -1,5 +1,7 @@
 'use client'
 
+import { ChevronDown, SlidersHorizontal } from 'lucide-react'
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import type { AlbumCardSlot } from '../queries'
 
@@ -92,6 +94,11 @@ export function AlbumFilterBar({
   totalCount,
 }: AlbumFilterBarProps) {
   const hasActiveFilters = !isDefault(filters)
+  // Disclosure mobile: la barra completa son 9 controles; colapsada por default.
+  const [expanded, setExpanded] = useState(false)
+  // Filtros activos, para el badge del toggle.
+  const activeCount =
+    (filters.ownership !== 'all' ? 1 : 0) + (filters.pinnedOnly ? 1 : 0) + filters.tiers.length
 
   const toggleTier = (tier: Tier) => {
     const next = filters.tiers.includes(tier)
@@ -108,77 +115,114 @@ export function AlbumFilterBar({
     <section
       aria-label="Filtros del álbum"
       className={cn(
-        'rounded-[10px] p-3 sm:p-4 space-y-3',
+        'rounded-[10px] p-3 sm:p-4',
         'bg-(--color-surface-base)/60 border border-white/[0.06]',
       )}
     >
-      {/* Ownership — segmented control (single-select) */}
-      <fieldset className="flex flex-wrap items-center gap-2 border-0 p-0 m-0">
-        <legend className="sr-only">Filtrar por posesión</legend>
-        {(['all', 'owned', 'missing'] as Ownership[]).map((value) => {
-          const active = filters.ownership === value
-          return (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => cycleOwnership(value)}
-              className={cn(chipBase, active ? chipActive : chipInactive)}
-            >
-              {ownershipLabels[value]}
-            </button>
-          )
-        })}
+      {/* Toggle "Filtrar" — solo mobile. La barra completa son 9 controles en
+          ~5 filas; en celu empujan el primer cromo bajo el fold (T-10). Default
+          colapsado; el badge muestra cuántos filtros hay activos. */}
+      <button
+        type="button"
+        className={cn(
+          'sm:hidden flex w-full items-center justify-between min-h-11',
+          'text-sm text-(--color-text-secondary)',
+          'rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow)',
+        )}
+        aria-expanded={expanded}
+        aria-controls="album-filter-panel"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <span className="inline-flex items-center gap-2">
+          <SlidersHorizontal className="size-4" aria-hidden="true" />
+          Filtrar
+          {activeCount > 0 && (
+            <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[11px] font-medium bg-(--color-argentina-glow)/15 text-(--color-argentina-glow)">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <ChevronDown
+          className={cn('size-4 transition-transform duration-200', expanded && 'rotate-180')}
+          aria-hidden="true"
+        />
+      </button>
 
-        {/* Pinned toggle */}
-        <button
-          type="button"
-          aria-pressed={filters.pinnedOnly}
-          onClick={() => onChange({ ...filters, pinnedOnly: !filters.pinnedOnly })}
-          className={cn(chipBase, 'gap-1.5', filters.pinnedOnly ? chipActive : chipInactive)}
-        >
-          <StarIcon className="size-3.5" />
-          Destacadas
-        </button>
-      </fieldset>
+      {/* Panel de filtros: oculto en mobile salvo expanded; siempre visible sm+ */}
+      <div
+        id="album-filter-panel"
+        className={cn('space-y-3', expanded ? 'block mt-3 sm:mt-0' : 'hidden sm:block')}
+      >
+        {/* Ownership — segmented control (single-select) */}
+        <fieldset className="flex flex-wrap items-center gap-2 border-0 p-0 m-0">
+          <legend className="sr-only">Filtrar por posesión</legend>
+          {(['all', 'owned', 'missing'] as Ownership[]).map((value) => {
+            const active = filters.ownership === value
+            return (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => cycleOwnership(value)}
+                className={cn(chipBase, active ? chipActive : chipInactive)}
+              >
+                {ownershipLabels[value]}
+              </button>
+            )
+          })}
 
-      {/* Tiers — multi-select chips */}
-      <fieldset className="flex flex-wrap items-center gap-2 border-0 p-0 m-0">
-        <legend className="sr-only">Filtrar por rareza</legend>
-        {TIER_ORDER.map((tier) => {
-          const active = filters.tiers.includes(tier)
-          return (
-            <button
-              key={tier}
-              type="button"
-              aria-pressed={active}
-              onClick={() => toggleTier(tier)}
-              className={cn(chipBase, active ? chipActive : chipInactive)}
-            >
-              {tierLabels[tier]}
-            </button>
-          )
-        })}
-      </fieldset>
-
-      {/* Result count + clear */}
-      <div className="flex items-center justify-between gap-3 pt-0.5">
-        <p className="text-mono text-[11px] uppercase tracking-[0.12em] text-(--color-text-muted)">
-          {resultCount === totalCount ? `${totalCount} cromos` : `${resultCount} de ${totalCount}`}
-        </p>
-        {hasActiveFilters && (
+          {/* Pinned toggle */}
           <button
             type="button"
-            onClick={() => onChange(defaultFilters)}
-            className={cn(
-              'inline-flex min-h-11 items-center text-sm text-(--color-text-secondary)',
-              'underline-offset-4 hover:text-(--color-text-primary) hover:underline',
-              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow) rounded-sm',
-            )}
+            aria-pressed={filters.pinnedOnly}
+            onClick={() => onChange({ ...filters, pinnedOnly: !filters.pinnedOnly })}
+            className={cn(chipBase, 'gap-1.5', filters.pinnedOnly ? chipActive : chipInactive)}
           >
-            Limpiar filtros
+            <StarIcon className="size-3.5" />
+            Destacadas
           </button>
-        )}
+        </fieldset>
+
+        {/* Tiers — multi-select chips */}
+        <fieldset className="flex flex-wrap items-center gap-2 border-0 p-0 m-0">
+          <legend className="sr-only">Filtrar por rareza</legend>
+          {TIER_ORDER.map((tier) => {
+            const active = filters.tiers.includes(tier)
+            return (
+              <button
+                key={tier}
+                type="button"
+                aria-pressed={active}
+                onClick={() => toggleTier(tier)}
+                className={cn(chipBase, active ? chipActive : chipInactive)}
+              >
+                {tierLabels[tier]}
+              </button>
+            )
+          })}
+        </fieldset>
+
+        {/* Result count + clear */}
+        <div className="flex items-center justify-between gap-3 pt-0.5">
+          <p className="text-mono text-[11px] uppercase tracking-[0.12em] text-(--color-text-muted)">
+            {resultCount === totalCount
+              ? `${totalCount} cromos`
+              : `${resultCount} de ${totalCount}`}
+          </p>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={() => onChange(defaultFilters)}
+              className={cn(
+                'inline-flex min-h-11 items-center text-sm text-(--color-text-secondary)',
+                'underline-offset-4 hover:text-(--color-text-primary) hover:underline',
+                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-argentina-glow) rounded-sm',
+              )}
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       </div>
     </section>
   )
