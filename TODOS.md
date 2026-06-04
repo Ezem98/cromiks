@@ -13,8 +13,8 @@ Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
    tiene el mapa de discovery + 4 decisiones abiertas para agarrar en frío.
 2. **T-10 · filter chips colapsables en mobile** (P2: la apertura de francia queda
    bajo el fold en celu).
-3. **T-11 remanente · foto HD del 147** (P3 opcional: la atajada del Dibu entra como
-   landscape pero con foto floja; re-curar si aparece el frame icónico).
+3. ~~T-11 remanente · foto HD del 147~~ — ✅ HECHO (PR #47, 2026-06-04): atajada en
+   PANO con la foto icónica + bandas full-row solo argentinas. **Próximo real = T-08.**
 
 ---
 
