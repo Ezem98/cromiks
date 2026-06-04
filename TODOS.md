@@ -360,6 +360,37 @@ sin foto no molesta hoy).
 
 ---
 
+## T-18 · Frame-grabber (F2) para los ~116 cromos `video_capture` — el grueso real del backlog
+
+**What:** Una herramienta que extraiga un still frame de un video (los bloques `video:` —
+`source_url`/`start`/`duration`— que YA están en el catálogo para los cromos de momento), lo
+normalice al layout del cromo (reusando `crop_ok`/`parse_focal` + el pipeline R2 existente) y lo
+publique como los demás assets. Probablemente `yt-dlp` (bajar/seekear) + `ffmpeg` (grab del frame
+en `start`) → bytes → `normalize_to_webp` → R2.
+
+**Why:** El eng-review del discovery pipeline (2026-06-04) midió el catálogo: **146/205 cromos son
+`type: video_capture`** y **~116 siguen TODO**. Openverse (el discovery de [`docs/image-discovery-pipeline.md`](docs/image-discovery-pipeline.md))
+solo cubre los ~40 `official`; los momentos (Messi/copa, atajada Dibu, goles) NO están en bancos
+CC — su único camino es frame extraction. Sin esta tool, el 75% del álbum (y los cromos más
+icónicos) nunca tiene foto. La CLI README ya lo anticipaba: "YouTube frames = más adelante (F2)".
+
+**Pros:** Desbloquea el grueso real del álbum completo; los bloques `video:` ya existen; reusa
+todo el pipeline de abajo (`crop_ok`, `normalize_to_webp`, R2, provenance, takedown).
+**Cons:** **Rights de video = máxima exposición legal** (un frame del broadcast es material de
+FIFA/canal, ver [T-01](#t-01--legendary-still-image-rights-pre-beta-risk)); build mayor (yt-dlp +
+ffmpeg + selección de frame/focal); algunos `source_url` de video pueden estar incompletos.
+
+**Context:** Surgido como la "miscalibración estratégica" de la voz externa del eng-review. Empezar
+por confirmar que los bloques `video:` tienen `source_url`+`start` utilizables, y resolver la
+postura de rights ANTES de publicar frames de los momentos más litigados. Punto de entrada:
+`scripts/assets/` (adapter `video`/`youtube` + un `grab_frame` en `imaging.py`).
+
+**Depends on:** [T-01](#t-01--legendary-still-image-rights-pre-beta-risk) (rights de still/video para
+los momentos legendarios). **Priority:** P2 post-beta (es el camino al álbum completo, pero no
+bloquea la beta de francia).
+
+---
+
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
 > **Página de la beta: francia (page 8, la final vs Francia), NO croacia.** croacia
