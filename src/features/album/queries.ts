@@ -1,5 +1,6 @@
 import 'server-only'
 import { getCardImageMap } from '@/lib/cards/card-image-map'
+import { type PhotoLayout, parsePhotoLayout } from '@/lib/cards/photo-layout'
 import { createClient } from '@/lib/supabase/server'
 import { resolveActivePageIds } from './scope'
 
@@ -34,6 +35,8 @@ export type AlbumCardSlot = {
   playerRole: string | null
   number: string | null
   imageUrl: string | null
+  /** Layout base de la foto (content.photo.layout): portrait | landscape | pano. */
+  layout: PhotoLayout
   /** Solo para legendaries: data del momento histórico (jsonb raw) */
   legendaryBrief: Record<string, unknown> | null
   /** URL/id de YouTube del momento oficial (content.video.source). null si es TODO/vacío. */
@@ -191,6 +194,10 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
           : null,
       number: metadata.number ? String(metadata.number) : null,
       imageUrl: cardImageMap.get(card.id) ?? null,
+      // Layout base de la foto (portrait default): el detalle lo usa para mostrar
+      // el cromo en su ratio, no recortado a 3:4 (T-08). El `content` jsonb ya lo
+      // trae (la query lo selecciona); es free.
+      layout: parsePhotoLayout(card.content),
       legendaryBrief:
         card.legendary_brief && typeof card.legendary_brief === 'object'
           ? (card.legendary_brief as Record<string, unknown>)

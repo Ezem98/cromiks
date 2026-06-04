@@ -15,9 +15,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { ShareSheet } from '@/features/sharing/components/share-sheet'
+import { PHOTO_LAYOUT_RATIO } from '@/lib/cards/photo-layout'
 import { errorCopy } from '@/lib/errors'
 import { cn } from '@/lib/utils'
 import { dismantleCard, pinCard, unpinCard } from '../actions'
+import { getBentoCell } from '../bento-layout'
 import type { AlbumCardSlot } from '../queries'
 import { LegendaryMoment } from './legendary-moment'
 
@@ -47,6 +49,11 @@ type CardDetailDialogProps = {
   onOpenChange: (open: boolean) => void
   /** Username del user logueado, para attribution en shares. Opcional. */
   username?: string | null
+  /**
+   * Página actual del álbum — para resolver el tratamiento de díptico (gutter)
+   * del cromo en el detalle vía `getBentoCell`. El ratio sale de `card.layout`.
+   */
+  pageNumber: number
 }
 
 const tierLabels: Record<AlbumCardSlot['tier'], string> = {
@@ -73,7 +80,13 @@ const coinReward: Record<AlbumCardSlot['tier'], number> = {
   legendary: 0,
 }
 
-export function CardDetailDialog({ card, open, onOpenChange, username }: CardDetailDialogProps) {
+export function CardDetailDialog({
+  card,
+  open,
+  onOpenChange,
+  username,
+  pageNumber,
+}: CardDetailDialogProps) {
   // Si el card es null cuando el dialog está cerrado, no renderea nada.
   // Pero mantenemos el componente montado para que las animaciones de close
   // tengan tiempo de correr antes de unmount.
@@ -99,7 +112,7 @@ export function CardDetailDialog({ card, open, onOpenChange, username }: CardDet
         </DialogDescription>
 
         {/* Header con cromo */}
-        <CardDetailHeader card={card} />
+        <CardDetailHeader card={card} pageNumber={pageNumber} />
 
         {/* Body con info + acciones */}
         <div className="px-6 pb-6 space-y-5">
@@ -137,7 +150,13 @@ export function CardDetailDialog({ card, open, onOpenChange, username }: CardDet
 /**
  * Header del modal — cromo grande con background tier-coded.
  */
-function CardDetailHeader({ card }: { card: AlbumCardSlot }) {
+function CardDetailHeader({ card, pageNumber }: { card: AlbumCardSlot; pageNumber: number }) {
+  // El cromo se muestra en su ratio BASE (content.photo.layout), no el override
+  // de grilla del bento (ej. 139 banda 21:9). El gutter de díptico (136) sí sale
+  // del bento — es su identidad de presentación. T-08.
+  const cell = getBentoCell(pageNumber, card.cardNumber)
+  const ratio = PHOTO_LAYOUT_RATIO[card.layout]
+
   return (
     <div
       className={cn(
@@ -163,6 +182,9 @@ function CardDetailHeader({ card }: { card: AlbumCardSlot }) {
         seed={card.id}
         imageUrl={card.imageUrl ?? undefined}
         size="md"
+        ratio={ratio}
+        diptych={cell?.diptych}
+        gutter={cell?.gutter}
         // Si el cromo no es owned, lo bajamos en opacity para indicar "silueta"
         className={cn(!card.owned && 'opacity-40 saturate-50')}
       />

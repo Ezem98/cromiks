@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { type CromoSize, cromoDimensions } from './cromo-dimensions'
 import { CromoPlaceholder } from './cromo-placeholder'
 
 /**
@@ -43,30 +44,38 @@ type CromoProps = {
   imageUrl?: string
   seed: string
   state?: 'idle' | 'new' | 'repeated'
-  size?: 'sm' | 'md' | 'lg'
+  size?: CromoSize
+  /**
+   * Ratio w/h del cromo (la foto en su layout: portrait 3/4 default, landscape
+   * 3/2, pano 2). El ancho queda fijo por `size`; el alto sale del ratio. Ver
+   * `@/lib/cards/photo-layout` (PHOTO_LAYOUT_RATIO) para los valores canónicos.
+   */
+  ratio?: number
+  /**
+   * Díptico: parte la foto en dos paneles con un gutter de álbum físico (la
+   * identidad "se arma con 2 mitades" del XI campeón, cromo 136). Espeja el
+   * gutter de la grilla (`diptych-slot.tsx`) en el detalle.
+   */
+  diptych?: boolean
+  /** Posición horizontal del gutter del díptico (0..1, default 0.5). */
+  gutter?: number
   className?: string
 }
 
 const sizeMap = {
   sm: {
-    width: 160,
-    height: 213,
     framePad: 6,
     nameSize: 'text-[14px]',
     roleSize: 'text-[8px]',
     numberSize: 'text-[15px]',
   },
   md: {
-    width: 240,
-    height: 320,
     framePad: 8,
     nameSize: 'text-[18px]',
     roleSize: 'text-[9px]',
     numberSize: 'text-[18px]',
   },
   lg: {
-    width: 320,
-    height: 427,
     framePad: 10,
     nameSize: 'text-[22px]',
     roleSize: 'text-[10px]',
@@ -118,9 +127,16 @@ export function Cromo({
   seed,
   state = 'idle',
   size = 'md',
+  ratio = 3 / 4,
+  diptych = false,
+  gutter = 0.5,
   className,
 }: CromoProps) {
   const dims = sizeMap[size]
+  const { width, height } = cromoDimensions(size, ratio)
+  // Cromo apaisado (landscape/pano): la nameplate baja su padding para no comerse
+  // la foto, que es más baja que en portrait. T-08.
+  const wide = ratio > 1
   const isLegendary = tier === 'legendary'
   const isRare = tier === 'rare'
   const isEpic = tier === 'epic'
@@ -159,7 +175,7 @@ export function Cromo({
       ref={rootRef}
       data-tier={tier}
       className={cn('cromo relative', state === 'repeated' && 'opacity-75', className)}
-      style={{ width: dims.width, height: dims.height }}
+      style={{ width, height }}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
@@ -198,7 +214,7 @@ export function Cromo({
                 src={imageUrl}
                 alt={name}
                 fill
-                sizes={`${dims.width}px`}
+                sizes={`${width}px`}
                 className="object-cover"
                 priority={isLegendary}
                 // La CLI ya entrega el WebP 3:4 en tamaño final → saltamos el
@@ -210,6 +226,21 @@ export function Cromo({
               <CromoPlaceholder seed={seed} tier={tier} />
             )}
           </div>
+
+          {/* Díptico: el gutter de álbum físico parte la foto en dos paneles.
+              Mismo lenguaje que `diptych-slot.tsx` en la grilla; va sobre la foto
+              y el foil (z-10) pero debajo del número/nameplate (z-20). */}
+          {diptych && (
+            <div
+              data-testid="cromo-diptych-gutter"
+              className="pointer-events-none absolute inset-y-0 z-10 w-1.5 -translate-x-1/2 bg-(--color-surface-deep)"
+              style={{ left: `${(gutter * 100).toFixed(1)}%` }}
+              aria-hidden="true"
+            >
+              <div className="absolute inset-y-0 left-0 w-px bg-white/10" />
+              <div className="absolute inset-y-0 right-0 w-px bg-white/10" />
+            </div>
+          )}
 
           {/* Rare: scanlines foil (estático, sutil) */}
           {isRare && (
@@ -281,7 +312,7 @@ export function Cromo({
               que cruzaba toda la carta sobre el gradiente transparente. El gradiente
               solo ya separa el panel; el borde sobraba y quedaba feo. */}
           <div
-            className="relative z-20 px-4 pt-7 pb-4"
+            className={cn('relative z-20 px-4', wide ? 'pt-5 pb-3' : 'pt-7 pb-4')}
             style={{
               background:
                 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.92) 100%)',

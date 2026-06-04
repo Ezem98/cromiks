@@ -215,6 +215,7 @@ export function AlbumView({ data, username }: AlbumViewProps) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         username={username}
+        pageNumber={currentPage.pageNumber}
       />
     </div>
   )

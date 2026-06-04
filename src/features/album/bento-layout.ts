@@ -57,7 +57,10 @@
  * alturas: banda 139 (21:9, 1.71u) < panos 147/156 (2:1, 2u) < díptico (16:9, 2.25u).
  */
 
-export type CromoLayout = 'portrait' | 'landscape' | 'pano'
+import { PHOTO_LAYOUT_RATIO, type PhotoLayout } from '@/lib/cards/photo-layout'
+
+/** Layout base de la foto (alias del tipo canónico de `@/lib/cards/photo-layout`). */
+export type CromoLayout = PhotoLayout
 
 export type BentoCell = {
   /** card_number del cromo (la grilla matchea contra AlbumCardSlot.cardNumber) */
@@ -86,12 +89,8 @@ export type BentoCell = {
 /** Columnas de la grilla bento — mismas en todos los breakpoints. */
 export const BENTO_COLS = 4
 
-/** Ratio w/h por layout (espeja RATIO_PRESETS del pipeline Python). */
-export const LAYOUT_RATIO: Record<CromoLayout, number> = {
-  portrait: 3 / 4,
-  landscape: 3 / 2,
-  pano: 2,
-}
+/** Ratio w/h por layout — fuente única en `@/lib/cards/photo-layout`. */
+export const LAYOUT_RATIO = PHOTO_LAYOUT_RATIO
 
 /** Clases Tailwind LITERALES (el JIT escanea este archivo). */
 export const LAYOUT_ASPECT_CLASS: Record<CromoLayout, string> = {

@@ -8,13 +8,14 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
 
-1. **T-08 · PR2 — detalle + reveal con ratios** (P1, lo más urgente: rompe la
-   experiencia del ancho HOY, fue lo primero que notó el dueño en vivo). Ver abajo,
-   tiene el mapa de discovery + 4 decisiones abiertas para agarrar en frío.
-2. **T-10 · filter chips colapsables en mobile** (P2: la apertura de francia queda
-   bajo el fold en celu).
-3. ~~T-11 remanente · foto HD del 147~~ — ✅ HECHO (PR #47, 2026-06-04): atajada en
-   PANO con la foto icónica + bandas full-row solo argentinas. **Próximo real = T-08.**
+1. ~~**T-08 · detalle con ratios apaisados**~~ — ✅ HECHO (2026-06-04, rama
+   `fix/album-detail-ratio`): el modal respeta el ratio base del cromo. El reveal
+   quedó **descopeado** (solo-detalle, decisión del dueño) → ver T-15.
+2. ~~**T-10 · filter chips colapsables en mobile**~~ — ✅ HECHO (PR #51).
+3. ~~T-11 remanente · foto HD del 147~~ — ✅ HECHO (PR #47, 2026-06-04).
+
+**Próximo recomendado:** U-17 (eager/priority en la primera fila, P3 — warning LCP +
+flash de gradiente en frío) o T-14 (smoke E2E flaky, P2). Ver abajo.
 
 ---
 
@@ -123,7 +124,36 @@ Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
 
 ---
 
-## T-08 · PR2 del bento — detalle + reveal con ratios apaisados (fast-follow)
+## T-08 · detalle del cromo con ratios apaisados — ✅ HECHA (2026-06-04, rama `fix/album-detail-ratio`)
+
+**Resuelto (solo-detalle):** el modal de detalle muestra el cromo en su ratio BASE
+(portrait 3:4 / landscape 3:2 / pano 2:1), no recortado a 3:4. Cambios:
+- **Fuente única del layout** en `src/lib/cards/photo-layout.ts` (`PhotoLayout`,
+  `PHOTO_LAYOUT_RATIO`, `parsePhotoLayout`). `bento-layout.ts` reexporta el ratio
+  desde ahí (sin duplicar números). El layout sale de `content.photo.layout`, que el
+  seed ya guarda en `cards.content` → `queries.ts` lo proyecta a `AlbumCardSlot.layout`
+  (free, el `content` ya se traía).
+- **`<Cromo>`** toma `ratio` (ancho fijo por `size`, alto = ancho/ratio; portrait
+  reproduce EXACTO los tamaños viejos), `diptych` + `gutter` (overlay del gutter de
+  álbum físico). Dimensiones en `cromo-dimensions.ts` (puro, testeado). Nameplate baja
+  padding en cromos anchos (`wide`) para no comerse la foto.
+- **`card-detail-dialog.tsx`** recibe `pageNumber`, resuelve el ratio de `card.layout`
+  y el díptico de `getBentoCell` (su identidad de grilla).
+
+**Decisiones (resueltas con el dueño 2026-06-04):**
+1. Fuente del layout → **(b)** `content.photo.layout` (PR1 ya mergeado; la objeción
+   "toca el read-path" quedó obsoleta).
+2. Ratio del detalle → **base del cromo**, no el override de grilla (139 detalle = 3:2,
+   no banda 21:9). Verificado por test.
+3. Díptico 136 → **conserva el gutter** en el detalle.
+4. Reveal → **descopeado** (solo-detalle). Ver T-15.
+
+**Verificación:** e2e `tests/e2e/album-detail-ratio.spec.ts` (mide el bounding box del
+`.cromo` por layout — determinístico, NO depende del backend como el smoke) + 8 unit
+tests (`photo-layout.test.ts`, `cromo-dimensions.test.ts`) + type-check + lint. Capturas
+de portrait/landscape/pano/díptico OK en vivo (el díptico muestra el gutter).
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** Adaptar `src/components/domain/cromo.tsx` (`sizeMap` 3:4 fijo → ratios variables: frame/nameplate/número apaisados) y `src/features/pack-opening/components/3d/card-mesh.tsx` (pasar w/h apaisado al `planeGeometry`) para que los cromos anchos se vean en su ratio en el detalle y en el reveal del sobre.
 
@@ -149,6 +179,34 @@ Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
 
 ### Tests
 vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un ancho.
+
+</details>
+
+---
+
+## T-15 · Reveal del sobre apaisado (descopeado de T-08)
+
+**What:** Que el reveal del sobre muestre los cromos anchos en su ratio. Dos partes:
+(a) la geometría del card-mesh 3D + el stack (240×320 fijo en `phase-stack.tsx`) + el
+summary (`phase-summary.tsx`), que hoy asumen portrait; (b) plumbear el `layout` al
+`RevealedCard` para que el fallback **lite** (que usa `<Cromo>`, ya ratio-ready tras
+T-08) renderee apaisado.
+
+**Why:** En T-08 (2026-06-04) el dueño descopeó el reveal a "solo detalle". El reveal 3D
+es **procedural** — NO muestra la foto (caja + borde de tier + avatar + texto HTML), así
+que respetar el ratio ahí es geometría cosmética. La foto en su ratio solo se vería en el
+fallback lite (raro: solo en devices de baja capacidad / context-loss de WebGL).
+
+**Context / por qué no se hizo en T-08:** el `layout` vive en `cards.content`, no en
+`card_assets` (lo que ya trae el open_pack vía `getCardImageMap`). Plumbearlo al
+`RevealedCard` exige **un round-trip extra en el hot-path de CADA apertura** (query a
+`cards`) o agregar la columna al SELECT del RPC `open_pack`. Lo segundo es lo correcto
+(cero round-trip) y va con esta tarea, no taxando el open_pack por un fallback raro.
+`<Cromo>` ya acepta `ratio` desde T-08, así que el lite es ~3 líneas una vez que el dato
+llega. Punto de cambio: `open_pack` (SQL, agregar `content->'photo'->>'layout'`) o
+`actions.ts` (fetch defensivo) → `types.ts` (RevealedCard.layout) → `phase-stack.tsx`
+(lite pasa `ratio`) + geometría 3D si se quiere (a). **Priority:** P3 (post-beta; el 3D
+sin foto no molesta hoy).
 
 ---
 

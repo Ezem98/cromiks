@@ -80,7 +80,7 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | Sharing | ✅ OG image + página pública + sheet |
 | Perfil público `/u/[username]` | ✅ V1 con stats + pineados |
 | Badges (auto-unlock + UI en perfil + toast) | ✅ Cerrado |
-| **Pendientes grandes** | Tanda 1 del critique del álbum (T-13/U-09/U-12), T-12 onboard álbum vacío, T-08 detalle apaisado, contenido real beta, custom fonts |
+| **Pendientes grandes** | Critique del álbum ✅ Tanda 1 + T-12 + T-10 + T-08 (quedan U-17 LCP, T-14 smoke flaky, T-15 reveal apaisado), contenido real beta, custom fonts |
 
 Ver detalle en [`roadmap.md`](./roadmap.md), [`../TODOS.md`](../TODOS.md) (T-NN), y el critique del álbum en [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40).
 

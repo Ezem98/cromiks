@@ -117,7 +117,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 4.14 | Álbum scopeado a `pages.is_active` (T-04) | ✅ | `getAlbumData`/`getHomeData` vía `album/scope.ts` (`resolveActivePageIds`/`getAlbumScope`). Si ninguna página está activa → ungated (muestra todo, legacy). Total/completion sobre el set activo |
 | 4.15 | Holo en hover en la grilla (legendary/epic owned) | ✅ | `.cromo-slot-holo` en `album-slot.tsx` — CSS puro, sin pointer-JS, perf-safe (PR #29) |
 | 4.16 | Bento narrativo + díptico (PR #44) | ✅ | `bento-layout.ts` (`FRANCIA_BENTO`) + `diptych-slot.tsx`; curado foto-por-foto (T-11). Invariantes en `bento-layout.test.ts` |
-| 4.17 | Critique de calidad del álbum | 🟡 | `/impeccable critique` 2026-06-03 → 29/40. **✅ (2026-06-04): Tanda 1 (T-13 + U-09 + U-12) + T-12 (`AlbumSpotlight`, PR #50).** Pendientes: T-10, U-17, T-08. Ver [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40) |
+| 4.17 | Critique de calidad del álbum | 🟡 | `/impeccable critique` 2026-06-03 → 29/40. **✅ (2026-06-04): Tanda 1 (T-13 + U-09 + U-12), T-12 (`AlbumSpotlight`, PR #50), T-10 (filtros colapsables, PR #51), T-08 (detalle apaisado).** Pendientes: U-17 (LCP), T-14 (smoke flaky), T-15 (reveal apaisado). Ver [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40) |
 
 ---
 
