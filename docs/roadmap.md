@@ -44,7 +44,7 @@ Estado actual del proyecto, pendientes, y orden sugerido de próximos sprints.
 - **Dominios comprados**: cromiks.app (live en Railway) + cromiks.com; redirect `.com → .app` en curso. El nombre puede quedar "Cromiks" placeholder para la beta.
 - **Expansión del pool** = `UPDATE pages SET is_active = true WHERE ...` (una línea, sin reseed) cuando el set héroe se complete — ver T-02 en [`TODOS.md`](../TODOS.md).
 
-Bloqueantes restantes de la soft-beta: el cutover a prod (activar `francia`, seed/push, reset de cuentas de prueba) + dominio. El contenido de `francia` ya está curado (fotos + videos + briefs) y el sobre 3D ya está re-texturizado (era doc viejo). Checklist completo en [`TODOS.md`](../TODOS.md).
+Estado de la soft-beta (2026-06-04): cutover a prod ✅ HECHO (solo `francia` activa, 30/30 cromos con foto published — cero placeholders), contenido de `francia` ✅ curado, sobre 3D ✅ re-texturizado. **Lo único que queda**: confirmar el dominio/link a compartir + una pasada manual del flujo de usuario nuevo en prod, y elegir cuándo invitar. Checklist completo en [`TODOS.md`](../TODOS.md).
 
 ---
 
@@ -70,7 +70,7 @@ Después del cierre de badges + el trabajo de la beta, los candidatos al próxim
 
 - ~~Contenido real de la página héroe~~ ✅ francia curada (fotos + videos + briefs)
 - ~~Re-texturizar el sobre~~ ✅ hecho (ver [`assets/3d-pack.md`](./assets/3d-pack.md))
-- Cutover a prod (activar `francia`, seed/push, reset cuentas) + dominio — bloqueantes restantes
+- ~~Cutover a prod~~ ✅ hecho (solo `francia` activa, 30/30 published). Queda: confirmar dominio/link + pasada manual de usuario nuevo en prod
 - `/help` (FAQ)
 - Tip jar Mercado Pago integrado
 - Custom fonts (Inter + serif display + mono)
