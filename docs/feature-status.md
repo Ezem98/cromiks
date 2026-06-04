@@ -26,7 +26,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 |---|---|
 | Features core implementadas | 9 / 9 ✅ |
 | Bugs conocidos sin resolver | 0 |
-| Pendientes bloqueantes para soft-beta | Ninguno técnico. ✅ cutover (solo `francia` activa, 30/30 published), ✅ contenido francia, ✅ sobre 3D. Queda: confirmar dominio/link + pasada manual de usuario nuevo en prod + elegir cuándo invitar. |
+| Pendientes bloqueantes para soft-beta | **Ninguno técnico — beta lista para invitar.** ✅ cutover (solo `francia` activa, 30/30 published), ✅ contenido francia, ✅ sobre 3D, ✅ auth de prod (login Google/email verificado en prod 2026-06-04, PR #59). Queda solo decisión: confirmar link a DMear + a quién/cuándo invitar (conocidos primero). |
 | Pendientes no-bloqueantes priorizados | 5 (/misiones expandida, custom fonts OG, avatar, OG perfil, paginación pineados) |
 | Estado general | ✅ MVP completo + calidad de cromo y gate de beta listos; falta contenido real de la página héroe |
 

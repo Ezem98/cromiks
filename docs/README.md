@@ -62,6 +62,8 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | [`improvements.md`](./improvements.md) | ✨ Mejoras de código + UX/UI priorizadas |
 | [`feature-ideas.md`](./feature-ideas.md) | 💡 Ideas de features nuevas exploratorias |
 | [`tech-proposals.md`](./tech-proposals.md) | 🧪 Librerías/servicios a sumar al stack + compatibilidad |
+| [`scrapling-evaluacion.md`](./scrapling-evaluacion.md) | 🔎 Evaluación de Scrapling para poblar cromos (veredicto: NO) |
+| [`image-discovery-pipeline.md`](./image-discovery-pipeline.md) | 🛰️ Diseño del pipeline de discovery de imágenes (curaduría asistida, multi-álbum) |
 
 ---
 
@@ -80,7 +82,7 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | Sharing | ✅ OG image + página pública + sheet |
 | Perfil público `/u/[username]` | ✅ V1 con stats + pineados |
 | Badges (auto-unlock + UI en perfil + toast) | ✅ Cerrado |
-| **Pendientes grandes** | Critique del álbum **31/40 — backlog CERRADO** (Tanda 1 + T-08/T-10/T-12/T-14/U-17 + leyenda/ayuda + búsqueda/filtros-URL + T-15). Beta lista: ✅ cutover (solo `francia` activa, 30/30 published), ✅ contenido francia, ✅ sobre 3D. Queda: confirmar dominio/link + pasada manual usuario nuevo + custom fonts (lindo-de-tener). |
+| **Pendientes grandes** | Critique del álbum **31/40 — backlog CERRADO** (Tanda 1 + T-08/T-10/T-12/T-14/U-17 + leyenda/ayuda + búsqueda/filtros-URL + T-15). **Beta lista para invitar** (cero bloqueantes técnicos): ✅ cutover (`francia` activa, 30/30 published), ✅ contenido, ✅ sobre 3D, ✅ auth de prod (login verificado, PR #59). Queda solo decisión: link a DMear + a quién/cuándo. (Lindo-de-tener: custom fonts, /help.) |
 
 Ver detalle en [`roadmap.md`](./roadmap.md), [`../TODOS.md`](../TODOS.md) (T-NN), y el critique del álbum en [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40).
 
