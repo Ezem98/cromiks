@@ -236,6 +236,20 @@ vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un anc
 
 ---
 
+## T-14 · Smoke E2E flaky (depende del estado vivo del backend)
+
+**What:** Hacer el smoke golden-path (`tests/e2e/smoke.spec.ts`: home → reclamar sobre → abrir → álbum) determinístico, para que no flakee en PRs que no tocan ese flow.
+
+**Why:** El test crea un usuario fresh (global-setup vía generateLink) y **reclama un sobre diario REAL** contra Supabase + el pool `pages.is_active` + Upstash. Es no-determinístico: un render lento del home (>10s en cold-start CI), un daily-pack no reclamable, o un blip de Supabase tumban el test sin importar el diff. Confirmado: falló en PR #49 (solo-docs, no toca home ni el contador del álbum) buscando el botón "Reclamar sobre diario" (línea 24) y el contador "X / N" (línea 51); al re-correr con los MISMOS docs pasó limpio (2026-06-04). Los retries de Playwright no ayudan porque el estado del backend persiste entre intentos (si el user quedó sin pack reclamable, sigue sin pack).
+
+**Pros:** CI confiable; deja de asustar/bloquear en PRs no relacionados. **Cons:** Trabajo de test infra; mockear el backend reduce la cobertura "real" del golden path (que es justamente lo que valida B-22/B-23, la idempotencia del open_pack).
+
+**Context:** Opciones — (a) seedear un pack pending determinístico en `global-setup` en vez de depender de `claim_daily_pack` en runtime; (b) tolerar el caso "ya reclamado" (si el user ya tiene pack pending, saltar el claim y abrir el pending); (c) subir timeouts del home (cold-start CI a veces > 10s); (d) aislar el flow del estado del pool activo. Recomendado: (a) + (c) — mantiene la cobertura del open_pack real pero saca la dependencia del claim runtime. Punto de cambio: `tests/e2e/smoke.spec.ts` + `tests/e2e/global-setup.*`. Ver [[cromiks-local-visual-qa-quirks]] (el daemon e2e y la sesión fresca por generateLink).
+
+**Priority:** P2 (molesta pero no bloquea; el rerun lo resuelve mientras tanto).
+
+---
+
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
 ### Bloqueante (P0)
