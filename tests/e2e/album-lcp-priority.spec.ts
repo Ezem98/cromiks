@@ -19,10 +19,18 @@ loadEnv({ path: '.env.local' })
 const CARD_FIRST_ROW = 'francia-11-inicial-argentina' // 136, díptico, fila 1
 const CARD_BELOW_FOLD = 'messi-besando-copa' // 165, última celda
 
+// Un cromo owned solo renderiza <img> si la base pública de R2 está configurada
+// (resolveCardImage; sin base → placeholder sin <img>). El CI corre sin
+// NEXT_PUBLIC_R2_PUBLIC_BASE a propósito (e2e hermético, sin fetch al CDN), así que
+// el atributo de carga no es observable ahí. Skippeamos cuando no hay R2 — la lógica
+// de QUÉ cromos van priority la cubre el unit test first-row-priority.test.ts.
+const HAS_R2 = Boolean(process.env.NEXT_PUBLIC_R2_PUBLIC_BASE)
+
 const slot = (page: import('@playwright/test').Page, n: number) =>
   page.getByRole('button', { name: new RegExp(`cromo ${n}\\b`, 'i') }).first()
 
 test.beforeAll(async () => {
+  if (!HAS_R2) return // sin imágenes no hay nada que verificar → no sembramos
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SECRET_KEY
   const email = process.env.PLAYWRIGHT_TEST_USER_EMAIL
@@ -50,6 +58,10 @@ test.beforeAll(async () => {
 })
 
 test('la primera fila carga eager+high, el resto lazy', async ({ page }) => {
+  test.skip(
+    !HAS_R2,
+    'sin NEXT_PUBLIC_R2_PUBLIC_BASE los cromos owned caen a placeholder sin <img> (el CI corre sin R2)',
+  )
   await page.goto('/album?page=8')
   await expect(page.getByRole('heading', { name: /francia/i })).toBeVisible({ timeout: 15_000 })
 
