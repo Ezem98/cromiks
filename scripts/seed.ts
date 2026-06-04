@@ -443,8 +443,13 @@ const MISSION_TEMPLATES = [
     weight: 50,
   },
   {
+    // OJO: type='collect_rarity', NO 'open_pack'. Con only_new=true el trigger
+    // de open_pack (que avanza con contexto vacío) la rechaza siempre y la
+    // misión nunca completa. El progress per-cromo lo da el trigger de
+    // collect_rarity (user_cards INSERT con is_new=true). Ver migración
+    // 20260604222239_fix_user_coins_total_earned.sql.
     id: 'new_5_cards',
-    type: 'open_pack',
+    type: 'collect_rarity',
     title: 'Sumá 5 cromos nuevos',
     description: 'Pegá 5 cromos que todavía no tenías. Las repetidas no cuentan.',
     config: { target_count: 5, only_new: true },

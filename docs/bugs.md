@@ -61,6 +61,24 @@ Si `getHomeData()` o el query de `profiles`/`user_coins` tira (network blip, RLS
 
 ---
 
+### B-22 · ~~`claim_mission` escribe en columna inexistente `user_coins.lifetime_earned`~~ ✅ FIXED (4 jun 2026)
+**Archivos**: [`supabase/migrations/20260526130000_add_claim_mission.sql`](../supabase/migrations/20260526130000_add_claim_mission.sql), [`src/features/missions/actions.ts`](../src/features/missions/actions.ts)
+
+La tabla `user_coins` tiene `balance, total_earned, total_spent`, pero el RPC `claim_mission` insertaba/actualizaba `lifetime_earned` (columna que no existe). Como **toda** misión diaria da `reward_coins > 0`, cada "Reclamar" tiraba `ERROR: column "lifetime_earned" of relation "user_coins" does not exist`; la action lo caía al branch `unknown` y el usuario veía un toast genérico. Drift de esquema entre la tabla y las RPCs.
+
+**Fix**: migración [`20260604222239_fix_user_coins_total_earned.sql`](../supabase/migrations/20260604222239_fix_user_coins_total_earned.sql) reescribe `claim_mission` usando `total_earned`. Aplicada a prod + verificada (PR #61).
+
+---
+
+### B-23 · ~~Misión `new_5_cards` mal tipada nunca completa~~ ✅ FIXED (4 jun 2026)
+**Archivos**: [`scripts/seed.ts`](../scripts/seed.ts), [`supabase/migrations/20260526140000_add_mission_progress_triggers.sql`](../supabase/migrations/20260526140000_add_mission_progress_triggers.sql)
+
+*"Sumá 5 cromos nuevos"* estaba como `type='open_pack'` con `only_new=true`, combinación que ningún trigger puede satisfacer: el trigger de `open_pack` avanza con contexto `{}` y el filtro `only_new` la rechaza siempre; el de `collect_rarity` no la mira por tener otro `type`. La migración `140000` ya la había corregido a `collect_rarity`, pero `seed.ts` la volvía a pisar a `open_pack` en cada `seed`/`reset`. En prod: 6 activas, 0 completadas nunca.
+
+**Fix**: migración `20260604222239` re-aplica `type='collect_rarity'` + `seed.ts` corregido para no revertirlo. Las activas se auto-curan vía el trigger per-cromo (`user_cards INSERT`).
+
+---
+
 ## 🟡 Medio
 
 ### B-06 · ~~`assignDailyMissions` + re-fetch dispara doble query~~ ✅ FIXED (26 may 2026)
@@ -162,6 +180,15 @@ Con `<Suspense fallback={null}>` mientras carga el GLTF el usuario ve la pantall
 
 ---
 
+### B-24 · ~~`open_pack` también escribe `lifetime_earned` (rama de repetidas)~~ ✅ FIXED (4 jun 2026)
+**Archivo**: [`src/features/pack-opening/actions.ts`](../src/features/pack-opening/actions.ts) (RPC `open_pack`)
+
+Mismo drift que [B-22](#b-22) pero en `open_pack`, solo en la rama que acredita monedas por cromos repetidos (`v_total_earned > 0`). Abrir un sobre de cromos nuevos andaba; el primer sobre con una repetida iba a tirar el mismo `column "lifetime_earned" ... does not exist`. Latente en beta (álbum chico → todavía pocas repetidas).
+
+**Fix**: misma migración `20260604222239`, `lifetime_earned` → `total_earned` en `open_pack`.
+
+---
+
 ## 🟢 Menor
 
 ### B-17 · ~~Tilt del overlay HTML hardcodeado en grados~~ ✅ FIXED (26 may 2026)
@@ -218,6 +245,9 @@ Las animaciones inline asumen que los `@keyframes` viven en algún CSS global. S
 | B-19 | 🟢 | CSS | `sm:col-span-1 col-span-1` redundante |
 | B-20 | 🟢 | i18n | Strings hardcoded |
 | B-21 | 🟢 | CSS | Keyframes globales sin co-locación |
+| B-22 | 🔴 | Misiones/Coins | `claim_mission` escribe `lifetime_earned` (no existe) → error al reclamar |
+| B-23 | 🔴 | Misiones | `new_5_cards` mal tipada (`open_pack`+`only_new`) nunca completa |
+| B-24 | 🟡 | Pack opening | `open_pack` escribe `lifetime_earned` en la rama de repetidas |
 
 ---
 
