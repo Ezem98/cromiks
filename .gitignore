@@ -69,3 +69,18 @@ Thumbs.db
 # Codegraph
 .codegraph
 .gstack/
+
+# Agents
+.agents/
+
+# Claude
+.claude/
+
+# Github
+.github/
+
+# Impeccable
+.impeccable/
+
+# Skills
+skills-lock.json
