@@ -132,7 +132,7 @@ export async function getAlbumData(pageNumber = 1): Promise<AlbumData | null> {
   const effectivePages = activeIdSet ? allPages.filter((p) => activeIdSet.has(p.id)) : allPages
 
   // Página actual: normalizar el pageNumber pedido al set efectivo. Si pidió una
-  // página inactiva (ej. /album?page=1 con solo croacia live), caemos a la primera.
+  // página inactiva (ej. /album?page=1 con solo francia live), caemos a la primera.
   const currentPageRow =
     effectivePages.find((p) => p.page_number === pageNumber) ?? effectivePages[0]
   if (!currentPageRow) return null

@@ -80,7 +80,7 @@ Empezá por [`00-product-vision.md`](./00-product-vision.md) si necesitás recor
 | Sharing | ✅ OG image + página pública + sheet |
 | Perfil público `/u/[username]` | ✅ V1 con stats + pineados |
 | Badges (auto-unlock + UI en perfil + toast) | ✅ Cerrado |
-| **Pendientes grandes** | Critique del álbum **31/40 — backlog CERRADO** (Tanda 1 + T-08/T-10/T-12/T-14/U-17 + leyenda/ayuda + búsqueda/filtros-URL + T-15). Queda: contenido real beta (croacia), re-texturizar sobre 3D, cutover, custom fonts |
+| **Pendientes grandes** | Critique del álbum **31/40 — backlog CERRADO** (Tanda 1 + T-08/T-10/T-12/T-14/U-17 + leyenda/ayuda + búsqueda/filtros-URL + T-15). Queda para la beta: cutover a prod (activar `francia`) + dominio + custom fonts. (Contenido de `francia` ✅ curado; sobre 3D ✅ re-texturizado.) |
 
 Ver detalle en [`roadmap.md`](./roadmap.md), [`../TODOS.md`](../TODOS.md) (T-NN), y el critique del álbum en [`features/e1-album.md`](./features/e1-album.md#critique-2026-06-03-live-29-40).
 
