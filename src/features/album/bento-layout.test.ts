@@ -70,24 +70,38 @@ describe('FRANCIA_BENTO — integridad del placement', () => {
     }
   })
 
-  it('la tanda escala como crescendo: bandas 21:9 en 148/155, paradas anchas, penales en celdas', () => {
-    // Las bandas que abren y cierran la tanda (cinemascope, curaduría T-11)
-    for (const n of [148, 155]) {
+  it('bandas/panos full-row = SOLO momentos argentinos (139/147/156); franceses nunca', () => {
+    // Los 3 momentos argentinos con tratamiento full-row
+    expect(getBentoCell(8, 139)?.span).toBe(BENTO_COLS) // gol Messi 1-0 (banda)
+    expect(getBentoCell(8, 147)?.span).toBe(BENTO_COLS) // atajada Dibu (pano)
+    expect(getBentoCell(8, 147)?.layout).toBe('pano')
+    expect(getBentoCell(8, 156)?.span).toBe(BENTO_COLS) // Montiel (pano)
+    expect(getBentoCell(8, 156)?.layout).toBe('pano')
+    // Goles/penales franceses: NUNCA full-row (no se glorifican)
+    for (const n of [143, 144, 146, 148, 155]) {
       const cell = getBentoCell(8, n)
-      expect(cell?.span, `la banda ${n} no es full-row`).toBe(BENTO_COLS)
-      expect(cell?.aspectClass).toBe('aspect-[21/9]')
+      expect(cell?.span, `el cromo francés ${n} no debería ser banda`).toBeLessThan(BENTO_COLS)
     }
-    // Las intervenciones del arquero / la errada, anchas
-    for (const n of [150, 153]) {
+  })
+
+  it('el alargue es un flurry de 4 celdas chicas (143-146) → la atajada pano (147)', () => {
+    for (const n of [143, 144, 145, 146]) {
       const cell = getBentoCell(8, n)
-      expect(cell?.layout).toBe('landscape')
-      expect(cell?.span).toBe(2)
-    }
-    // Los penales convertidos, celdas portrait chicas
-    for (const n of [149, 151, 152, 154]) {
-      const cell = getBentoCell(8, n)
-      expect(cell?.layout).toBe('portrait')
+      expect(cell?.layout, `el gol ${n} debería ser celda chica`).toBe('portrait')
       expect(cell?.span).toBe(1)
+    }
+  })
+
+  it('la tanda: paradas/erradas argentinas anchas, conversiones y penal francés en celdas', () => {
+    // Dibu ataja a Coman (150) y Tchouameni la erra (153): alivio argentino, anchas
+    for (const n of [150, 153]) {
+      expect(getBentoCell(8, n)?.layout).toBe('landscape')
+      expect(getBentoCell(8, n)?.span).toBe(2)
+    }
+    // Penales convertidos en celdas + el penal de Kolo Muani (francés) chico
+    for (const n of [151, 152, 154, 155]) {
+      expect(getBentoCell(8, n)?.layout).toBe('portrait')
+      expect(getBentoCell(8, n)?.span).toBe(1)
     }
   })
 

@@ -3485,7 +3485,6 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
         source_url: "https://www.infobae.com/resizer/v2/XZ4QDOOQCL2I4VIZG25FTEWUTE.jpg?auth=45aaf01d9b2b46c7c3ded7ebfd21d339bdb84c9798e335451028ebb060687f9e&smart=true&width=2400&height=1700&quality=75"
         source_kind: "direct"
         author: "Infobae"
@@ -3493,10 +3492,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/messi-gol-3-2.e306cb45.webp"
+        asset: "cromos/eterno-diciembre/messi-gol-3-2.902ad701.webp"
         credit: "Foto: Infobae · infobae.com"
-        fetched_at: "2026-06-03"
-        content_hash: "sha256:e306cb450831de343f0066d40d45f23d5178fe8855926413b116a541f95eaf32"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:902ad7010daf09724235bdfdab64887b8b1a027aa751dd5695312eba9e68ff1c"
       video: { type: "extract", source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10 }
       relator_clip: { source: "https://www.youtube.com/shorts/F3jp34b8E_w", start: 0, duration: 10, relator: "Pablo Giralt" }
     metadata:
@@ -3511,7 +3510,6 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
         source_url: "https://media.cnn.com/api/v1/images/stellar/prod/221218130930-20-world-cup-final-1215.jpg?q=w_2400,c_fill/f_webp"
         source_kind: "direct"
         author: "CNN"
@@ -3519,10 +3517,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/mbappe-empate-3-3.eba6fe03.webp"
+        asset: "cromos/eterno-diciembre/mbappe-empate-3-3.3a456f9b.webp"
         credit: "Foto: CNN · media.cnn.com"
-        fetched_at: "2026-06-03"
-        content_hash: "sha256:eba6fe03d12a341c88246514546915a5af1c4fac9c17eff3a1cb5e4cf32f635c"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:3a456f9bff4feb14f8f7864340166a732d9c4bd91736eddeedbb3a7d28667c46"
     metadata:
       minute: "118"
       
@@ -3535,19 +3533,18 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
-        focal: "50% 35%"
-        source_url: "https://www.instagram.com/p/DD66u1rRgH4/?img_index=2"
-        source_kind: "instagram"
+        layout: "pano"
+        source_url: "https://assets.goal.com/images/v3/blt84e9ea2c377edc99/emiliano_martinez_kolo_muani.jpg?format=pjpg&quality75&auto=webp&width=2400"
+        source_kind: "direct"
         author: "@fifaworldcup"
         license: "All rights reserved"
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/dibu-atajada-kolo-muani.43b3ff7f.webp"
-        credit: "Foto: @fifaworldcup · Instagram"
+        asset: "cromos/eterno-diciembre/dibu-atajada-kolo-muani.dd73213f.webp"
+        credit: "Foto: @fifaworldcup · assets.goal.com"
         fetched_at: "2026-06-04"
-        content_hash: "sha256:43b3ff7f1816203d57b56ce91fefd4e720cf4fe019848b3789e77642e1b45454"
+        content_hash: "sha256:dd73213f6289ce29129d10db5ca5ed612f41738c6de6582cb184f59f6eb39ef4"
       video: { type: "extract", source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
       relator_clip: { source: "https://www.youtube.com/watch?v=0JXErRqlhNg", start: 2, duration: 8 }
     metadata:
@@ -3585,6 +3582,7 @@ cards:
     content:
       photo:
         type: "video_capture"
+        layout: "landscape"
         source_url: "https://i.guim.co.uk/img/media/ca517a599d45e4221122e1c94f10c094be496eb2/0_0_3500_2475/master/3500.jpg?width=1900&dpr=1&s=none&crop=none"
         source_kind: "direct"
         author: "The Guardian"
@@ -3592,10 +3590,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-messi-final.b86c8245.webp"
+        asset: "cromos/eterno-diciembre/penal-messi-final.d818ccc6.webp"
         credit: "Foto: The Guardian · i.guim.co.uk"
-        fetched_at: "2026-06-02"
-        content_hash: "sha256:b86c82459961a0bf8a913ffc463c69310a78f67b76afaf23f03763350e2edd62"
+        fetched_at: "2026-06-04"
+        content_hash: "sha256:d818ccc61451d4672b41e2151616788eb66cb6d0f03164e65bd4e09a68ea5c1f"
       
   - id: "dibu-ataja-coman"
     name: "Dibu ataja a Coman"
@@ -3717,7 +3715,6 @@ cards:
     content:
       photo:
         type: "video_capture"
-        layout: "landscape"
         source_url: "https://www.canal26.com/resizer/v2/KGUZEBDU2ZDSFMTXDLXXGXV6R4.jpg?auth=265cf0ce97a335bbc1ebd3e5b2343bd2c37287fd23518c21e29ac7f770753b58&smart=true&width=2400&height=1350&quality=70"
         source_kind: "direct"
         author: "Canal 26"
@@ -3725,10 +3722,10 @@ cards:
         legal_posture: "takedown"
         status: "published"
         # --- completa la CLI, no editar a mano ---
-        asset: "cromos/eterno-diciembre/penal-kolo-muani.c7136f4e.webp"
+        asset: "cromos/eterno-diciembre/penal-kolo-muani.a58f4475.webp"
         credit: "Foto: Canal 26 · canal26.com"
         fetched_at: "2026-06-04"
-        content_hash: "sha256:c7136f4ea459acc5ba7f4e4d97a6181c7bc50dd60560ba7f074ef86be9305fe8"
+        content_hash: "sha256:a58f44754a99456a4e90821d5b3dfa54a508fbb4e7dd46531312ad9a17f10859"
       
   - id: "penal-montiel"
     name: "El penal de Montiel"
