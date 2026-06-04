@@ -1,3 +1,12 @@
+# Design Context
+
+Generado por `/impeccable init` (2026-06-03). Antes de cualquier trabajo de diseño/UI, leé:
+
+- **[PRODUCT.md](./PRODUCT.md)** — capa estratégica: register (`product`, con override brand para landing/pack opening/detalle de cromo), usuarios, propósito, personalidad, anti-referencias y principios de diseño.
+- **[DESIGN.md](./DESIGN.md)** — fuente de verdad del design system: tokens, tipografía (Anton/Geist/Geist Mono), color (dark-only), motion, voice & tone (voseo rioplatense), anatomía de cromos por tier.
+
+Regla central: los colores de tier y efectos (foil, glow, prisma) viven SOLO en los cromos; la UI general es sobria. Tokens reales en `src/app/globals.css`.
+
 # gstack
 
 This project uses [gstack](https://github.com/garrytan/gstack) for browser automation and dev workflows.
