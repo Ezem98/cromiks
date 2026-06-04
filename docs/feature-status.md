@@ -26,7 +26,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 |---|---|
 | Features core implementadas | 9 / 9 ✅ |
 | Bugs conocidos sin resolver | 0 |
-| Pendientes bloqueantes para soft-beta | 2 (contenido real de la página héroe `croacia`, re-texturizado del sobre 3D) |
+| Pendientes bloqueantes para soft-beta | Ninguno técnico. ✅ cutover (solo `francia` activa, 30/30 published), ✅ contenido francia, ✅ sobre 3D. Queda: confirmar dominio/link + pasada manual de usuario nuevo en prod + elegir cuándo invitar. |
 | Pendientes no-bloqueantes priorizados | 5 (/misiones expandida, custom fonts OG, avatar, OG perfil, paginación pineados) |
 | Estado general | ✅ MVP completo + calidad de cromo y gate de beta listos; falta contenido real de la página héroe |
 
@@ -202,7 +202,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 | 9.3 | Completar ~50 cromos restantes (descriptions, metadata) | 🟡 | Hay placeholders, falta data real |
 | 9.4 | Photo URLs reales (HTTPS públicas) | 🚧 | Hoy `content.photo.source: TODO` en la mayoría. Workflow + fuentes en [`assets/photos.md`](./assets/photos.md) |
 | 9.5 | Audio assets para legendaries (futuro) | 🚧 | Idea original del producto. Diferido a T-03 (ver [`TODOS.md`](../TODOS.md)) |
-| 9.6 | Contenido real de la página héroe `croacia` (~15 cromos + 2 YouTube + briefs voseo) | 🟡 | Bloqueante de la soft-beta. La mecánica del pool (`pages.is_active`) está; falta el contenido. Rama `content/croacia-beta`. Ver [`TODOS.md`](../TODOS.md) checklist beta |
+| 9.6 | Contenido real de la página héroe `francia` (la final, 30 cromos + YouTube + briefs voseo) | ✅ | Curado foto-por-foto (T-11): fotos reales + videos/relator_clips + `legendary_brief` en las legendarias. (croacia fue candidata vieja, no se construyó.) Ver [`TODOS.md`](../TODOS.md) checklist beta |
 
 ---
 
@@ -222,7 +222,7 @@ Dashboard del estado de cada feature. Vista de snapshot — para "qué falta" es
 
 ## 11. Pre-launch & marketing
 
-Items críticos antes del launch público de junio 2026. La soft-beta a la waitlist va primero (página héroe `croacia`) — ver [`roadmap.md`](./roadmap.md).
+Items críticos antes del launch público de junio 2026. La soft-beta a la waitlist va primero (página héroe `francia`, la final) — ver [`roadmap.md`](./roadmap.md).
 
 | # | Feature | Status |
 |---|---|---|
@@ -240,7 +240,7 @@ Items críticos antes del launch público de junio 2026. La soft-beta a la waitl
 | 11.12 | Custom fonts (Inter + serif display + mono) | 🚧 |
 | 11.13 | Decidir fundación tip jar (Garrahan / Conin / Refugio Sin Cadenas) | 🚧 |
 | 11.14 | Re-texturizar sobre final (sin IP) | 🟡 |
-| 11.15 | Estrategia de lanzamiento de la beta (soft-beta a waitlist, `croacia` como página héroe, gate de cohorte = unannounced-open) | ✅ Decidido (ver [`roadmap.md`](./roadmap.md) + [`TODOS.md`](../TODOS.md)) |
+| 11.15 | Estrategia de lanzamiento de la beta (soft-beta a waitlist, `francia` —la final— como página héroe, gate de cohorte = unannounced-open) | ✅ Decidido (ver [`roadmap.md`](./roadmap.md) + [`TODOS.md`](../TODOS.md)) |
 | 11.16 | Pulido de UX pre-beta (global-error branded, voseo, CTAs pack, a11y skip-link/touch targets, créditos de fuentes `/about`) | ✅ PR #28 |
 
 ---

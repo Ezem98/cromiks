@@ -1,6 +1,8 @@
 # Re-Texturizado del Sobre — Brief de Diseño
 
-Este sobre se basa en el modelo GLTF "Trading Card Pack" by goonmize1 (CC-BY-4.0). La textura actual de `body_baseColor.png` contiene IP de Pokémon Trading Card Game (logo, personaje Blastoise) y **NO se puede usar en producción**.
+> ✅ **HECHO (2026-06-04).** `body_baseColor.png` ya es la textura Cromiks (navy oscuro + sol de mayo dorado + "Eterno Diciembre" / "Cromiks" / "11 cromos" + art-deco), pre-espejada para el UV. La IP de Pokémon quedó reemplazada. Este brief queda como referencia histórica del diseño. La atribución CC-BY-4.0 del MODELO (goonmize1) sigue vigente — ver `../../CREDITS.md`.
+
+Este sobre se basa en el modelo GLTF "Trading Card Pack" by goonmize1 (CC-BY-4.0). La textura ORIGINAL de `body_baseColor.png` contenía IP de Pokémon Trading Card Game (logo, personaje Blastoise) y **no se podía usar en producción** — por eso este brief.
 
 Tu trabajo: reemplazar `body_baseColor.png` con una textura propia con identidad Cromiks/Argentina. El `body_normal.png` se mantiene como está (no contiene IP, es solo geometría del foil arrugado del envase).
 

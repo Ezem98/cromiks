@@ -4,7 +4,7 @@ Vista de los cromos del álbum `Eterno Diciembre` distribuidos en páginas narra
 
 **Estado**: ✅ Cerrado + iterado. Funcional con `pageCompletion` en el nav, **filtros** client-side, **loading skeleton**, **CTA "ir a una página con cromos"**, y **bento narrativo** en la página activa de la beta (PR #44).
 
-> **Scope de la beta (2026-06):** el álbum está scopeado a `pages.is_active` (T-04). La página activa hoy es **francia (page 8)** — 30 cromos, layout bento curado foto-por-foto (ver [`../../src/features/album/bento-layout.ts`](../../src/features/album/bento-layout.ts) y T-11 en [`../../TODOS.md`](../../TODOS.md)). El contador global "X / N" va sobre el set activo, no sobre los 205. (Nota: roadmap.md/TODOS.md todavía mencionan `croacia` como página héroe — drift de docs; la implementación vigente es francia.)
+> **Scope de la beta (2026-06):** el álbum está scopeado a `pages.is_active` (T-04). La página activa hoy es **francia (page 8)** — 30 cromos, layout bento curado foto-por-foto (ver [`../../src/features/album/bento-layout.ts`](../../src/features/album/bento-layout.ts) y T-11 en [`../../TODOS.md`](../../TODOS.md)). El contador global "X / N" va sobre el set activo, no sobre los 205. (La página de la beta es **francia**, no croacia — croacia fue candidata vieja; las referencias en roadmap.md/TODOS.md se actualizaron 2026-06-04.)
 >
 > **Última revisión de calidad:** `/impeccable critique album` en vivo (2026-06-03) → **29/40 (Good)**. Resumen y findings con sus IDs de tracking en [§ Critique](#critique-2026-06-03-live-29-40). Snapshot crudo en [`.impeccable/critique/`](../../.impeccable/critique/).
 

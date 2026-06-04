@@ -16,7 +16,7 @@ Este documento lista los recursos de terceros usados en Cromiks y sus respectiva
 - Uso: Sobre 3D en el flow de apertura de packs (`/open/[packId]`)
 - Atribución requerida: Sí — incluir el nombre del autor + link al original donde el modelo sea visible al usuario
 
-> ⚠️ **PENDIENTE de re-texturizar antes del launch público:** la textura `body_baseColor.png` actual contiene IP de Pokémon Trading Card Game (logo, personajes Blastoise). Hay que reemplazarla por una textura propia con identidad Cromiks/Argentina antes del soft-launch. El normal map (`body_normal.png`) se reusa tal cual — es geometría del foil arrugado, sin IP.
+> ✅ **Re-texturizado (2026-06-04).** `body_baseColor.png` es la textura propia de Cromiks (navy oscuro `--surface-deep`, sol de mayo dorado, "Eterno Diciembre" + "Cromiks" + "11 cromos", esquinas art-deco) — **sin IP de terceros**. El texto va pre-espejado porque el UV del modelo voltea la textura (en el render se lee bien). El normal map (`body_normal.png`) se reusa tal cual (geometría del foil arrugado, sin IP). La atribución **CC-BY-4.0 del MODELO** (goonmize1, arriba) sigue siendo requerida — eso no cambia con el re-texturizado.
 
 ### Modelo alternativo (no usado actualmente)
 
@@ -45,7 +45,7 @@ Ver `package.json` para el listado completo. Principales:
 
 ## TODO antes del launch público
 
-- [ ] Re-texturizar `body_baseColor.png` del sobre con identidad Cromiks
+- [x] ~~Re-texturizar `body_baseColor.png` del sobre con identidad Cromiks~~ — hecho (2026-06-04)
 - [ ] Agregar página `/about` o `/credits` con atribuciones visibles
 - [ ] Incluir créditos del HDRI usado (drei `<Environment preset="warehouse" />` — verificar licencia de drei para el preset)
 - [ ] Verificar fuentes del proyecto (Outfit, Roboto) — ambas son SIL Open Font License (OFL), uso libre

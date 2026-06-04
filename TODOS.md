@@ -42,7 +42,7 @@ fila, PR #53), **T-14 (smoke determinístico)**, leyenda/ayuda, búsqueda + filt
 
 **Context:** Options to evaluate — licensed stills (Getty/AP), self-produced illustration of the moment, or a deliberately stylized non-photographic legendary treatment. The clip embed stays regardless. Affects the curated beta page since it must contain legendaries (see beta plan step 3).
 
-**Depends on:** Which hero page is chosen for the beta (determines which legendaries' stills are needed first). croacia was floated (Gvardiol gambeta + Julián run).
+**Depends on:** La página héroe de la beta es **francia (la final)** → las legendarias cuyos stills importan son 141 (Di María), 147 (atajada del Dibu), 156 (Montiel) y 165 (beso a la copa). (croacia fue candidata vieja, descartada como página de beta.)
 
 **Estado (2026-05-31):** Se consideró resolverlo con ilustración de firma para los héroes (cero IP en los stills) pero el usuario **descartó la ilustración: el álbum va foto real en los 205**. Por lo tanto T-01 **sigue ABIERTO** — los stills de legendarios van por la postura foto + crédito + takedown del pipeline de imágenes (design doc `~/.gstack/projects/Ezem98-cromiks/emachado-feat-pack-opening-render-tier-design-*.md`), que es la máxima exposición legal del álbum. Si la postura takedown no alcanza para los momentos más litigados, este TODO es dónde reconsiderarlo.
 
@@ -78,9 +78,11 @@ fila, PR #53), **T-14 (smoke determinístico)**, leyenda/ayuda, búsqueda + filt
 
 ---
 
-## T-04 · El álbum no refleja la restricción de página activa (beta UX)
+## T-04 · El álbum no refleja la restricción de página activa (beta UX) — ✅ HECHA
 
-**What:** En la beta, el álbum muestra las 10 páginas y 205 slots como obtenibles, pero solo croacia (~15 cromos) se puede sortear (`pages.is_active`). El contador "X / 205" se topa en ~15 y las otras 9 páginas no se completan nunca.
+**Resuelto:** `getAlbumData` (`queries.ts`) scopea al set activo vía `resolveActivePageIds` — solo muestra las páginas `is_active` y el contador "X / N" va sobre lo obtenible (no sobre 205). La beta queda en **francia** (page 8): el álbum muestra francia y el contador sobre sus 30. Contexto original abajo.
+
+**What:** En la beta, el álbum mostraba las 10 páginas y 205 slots como obtenibles, pero solo la página activa (francia, ~30 cromos) se puede sortear (`pages.is_active`). El contador "X / 205" se topaba y las otras páginas no se completaban nunca.
 
 **Why:** `getAlbumData` (`src/features/album/queries.ts`) trae las 10 páginas y `totalCards: 205` hardcodeado, sin filtrar por `is_active` — solo `roll_cards` respeta la restricción. Un beta-tester ve 9 páginas que no puede llenar y un progreso que nunca llega a 205 → confuso, parece roto. Encontrado verificando el flujo e2e (2026-05-30).
 
@@ -336,13 +338,18 @@ sin foto no molesta hoy).
 
 Camino crítico para invitar los 10-15. El código ya está (PR #25 mergeado). Lo que falta:
 
+> **Página de la beta: francia (page 8, la final vs Francia), NO croacia.** croacia
+> quedó como candidata vieja (es una página real del álbum —la semi— pero NO la
+> activa para la beta). Toda la curaduría de la beta (bento, fotos, critique) se
+> hizo sobre francia.
+
 ### Bloqueante (P0)
-- [ ] **Contenido de croacia** — ilustrar los 15 cromos + 2 URLs de YouTube (123, 124) + descripciones/`legendary_brief` en voseo. Rama `content/croacia-beta`. Ver `docs/assets/photos.md`.
-- [ ] **Re-texturizar el sobre 3D** — `body_baseColor.png` TODAVÍA tiene IP de Pokémon (sin cambios desde 2026-05-27; el rebrand nunca se aplicó). Aplicar la textura nueva (espejada por el UV), verificar en 3D, commitear. Ver `public/models/pack/REBRAND_BRIEF.md`.
-- [ ] **Álbum respeta `is_active`** — T-04 (arriba).
-- [ ] **Cutover** — `pnpm seed` → `pnpm db:push` → `UPDATE pages SET is_active=true WHERE id='croacia'` → `pnpm tsx scripts/test-roll-cards.ts` contra prod. Resetear el inventario de las 4 cuentas de prueba.
-- [ ] **Dominio + URL compartible** — comprar/apuntar un dominio (el nombre puede quedar "Cromiks" placeholder).
-- [ ] **Confirmar flujo end-to-end de usuario NUEVO** en prod con croacia-only (signup → onboarding → sobre → abrir → álbum se llena, sin placeholders).
+- [x] ~~**Contenido de la página de beta (francia)**~~ — ✅ francia está curada: 30 cromos con foto REAL (T-11, pasada foto-por-foto), videos YouTube + relator_clips + `legendary_brief` en las legendarias (141/147/156/165). Sustancialmente listo (vs croacia, que nunca se construyó).
+- [x] ~~**Re-texturizar el sobre 3D**~~ — ✅ HECHO: `body_baseColor.png` ya es la textura Cromiks (navy + sol de mayo dorado + "Eterno Diciembre" + art-deco, sin IP). Los docs decían "pendiente/tiene Pokémon" pero el rebrand estaba aplicado y committeado desde antes — eran docs viejos (corregidos 2026-06-04). Ver `CREDITS.md` / `docs/assets/3d-pack.md`.
+- [x] ~~**Álbum respeta `is_active`**~~ — ✅ HECHO (T-04): `getAlbumData` scopea al set activo (`resolveActivePageIds`) y el contador "X / N" va sobre lo obtenible.
+- [x] ~~**Cutover a prod**~~ — ✅ HECHO con francia (confirmado 2026-06-04). Verificado read-only: **solo `francia` (page 8) está `is_active`** (las otras 9 inactivas → no se muestran páginas sin llenar) y **las 30 cartas de francia tienen asset `published`** → cero placeholders en la beta.
+- [ ] **Dominio + URL compartible** — `cromiks.app` ya está live en Railway (ver [[cromiks-prod-railway]]); confirmar el link final a compartir.
+- [ ] **Confirmar flujo end-to-end de usuario NUEVO** — el golden path (home → reclamar/abrir → álbum) lo cubre el smoke E2E (verde) contra esta DB, y la data está OK (francia activa, 30/30 published). Falta solo la pasada manual real: signup por la UI → onboarding → sobre → abrir → álbum, en prod, antes de DMear el link.
 
 ### Decisiones baratas
 - [ ] **Gate de cohorte** — recomendado: unannounced-open (DM el link, cero build). Allowlist solo si aparece un random.

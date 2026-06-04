@@ -1,6 +1,6 @@
 # Assets · Modelo 3D del sobre
 
-Modelo GLTF del sobre + texturas + rebrand pendiente.
+Modelo GLTF del sobre + texturas + rebrand ✅ hecho (2026-06-04).
 
 ---
 
@@ -11,9 +11,9 @@ public/models/pack/
 ├── scene.gltf                  # Modelo
 ├── scene.bin                   # Binary geometry
 ├── license.txt                 # Atribución CC-BY-4.0
-├── REBRAND_BRIEF.md            # ⚠️ Brief para re-texturizar
+├── REBRAND_BRIEF.md            # Brief del re-texturizado (histórico, ya aplicado)
 └── textures/
-    ├── body_baseColor.png      # ⚠️ Tiene IP de Pokemon (placeholder dev-only)
+    ├── body_baseColor.png      # ✅ textura Cromiks (sol de mayo, sin IP)
     └── body_normal.png         # OK, sin IP
 ```
 
@@ -35,13 +35,9 @@ public/models/pack/
 
 ## Status de la textura
 
-### `body_baseColor.png` — ⚠️ PLACEHOLDER
+### `body_baseColor.png` — ✅ RE-TEXTURIZADA (2026-06-04)
 
-**Problema**: contiene IP de Pokémon Trading Card Game (logo + Blastoise). **NO se puede usar en producción**.
-
-**Estado actual**: dev-only en localhost. Marcado en CREDITS.md.
-
-**Acción pendiente**: re-texturizar antes del launch.
+Textura propia de Cromiks: navy oscuro, **sol de mayo dorado** al centro, "Eterno Diciembre" + "Cromiks" + "11 cromos", esquinas art-deco. **Sin IP de terceros** (la IP de Pokémon del placeholder original quedó reemplazada). El texto va pre-espejado a propósito (el UV del modelo voltea la textura → en 3D se lee bien). La atribución CC-BY-4.0 sigue siendo del **modelo** (goonmize1), no de la textura.
 
 ### `body_normal.png` — ✅ OK
 
@@ -49,7 +45,7 @@ No contiene IP. Define la geometría del foil arrugado. **No tocar**.
 
 ---
 
-## Rebrand workflow (en curso)
+## Rebrand workflow (✅ hecho — histórico)
 
 ### Brief detallado
 
@@ -70,7 +66,7 @@ Ver `public/models/pack/REBRAND_BRIEF.md` creado durante esta sesión.
 3. ✅ Prompt regenerado con aspect 2:3 vertical
 4. ✅ Imagen Gemini vertical recibida — diseño OK
 5. ✅ Composición en Photopea: voltear horizontal + escalar + borrar watermark
-6. ⚠️ **Pending**: probar el resultado renderizado en 3D y refinar si hace falta
+6. ✅ Aplicada y committeada — es la textura vigente que carga `scene.gltf`. (El render headless de Playwright no pinta el WebGL sin GPU; verificación visual sobre el PNG + en navegador con GPU.)
 
 ### Diseño elegido del frente
 

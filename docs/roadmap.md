@@ -39,12 +39,12 @@ Estado actual del proyecto, pendientes, y orden sugerido de próximos sprints.
 ## 🚀 Decisiones de la beta (30 mayo 2026)
 
 - **Soft-beta a la waitlist primero**, no launch público abierto. Se invita una cohorte chica (10–15) para observar comportamiento antes de abrir.
-- **Página héroe = `croacia`** (Gvardiol gambeta + Julián run): es el único set activo en el arranque (`pages.is_active`). El pool restringido evita mostrar cromos placeholder y hace la beta curada.
+- **Página héroe = `francia`** (la final, page 8): es el único set activo en el arranque (`pages.is_active`). El pool restringido evita mostrar cromos placeholder y hace la beta curada. (croacia se barajó al principio pero la beta se construyó sobre francia: bento narrativo + fotos reales curadas foto-por-foto, T-11.)
 - **Gate de cohorte = unannounced-open**: DM del link, cero build de allowlist. Allowlist solo si aparece un random.
 - **Dominios comprados**: cromiks.app (live en Railway) + cromiks.com; redirect `.com → .app` en curso. El nombre puede quedar "Cromiks" placeholder para la beta.
 - **Expansión del pool** = `UPDATE pages SET is_active = true WHERE ...` (una línea, sin reseed) cuando el set héroe se complete — ver T-02 en [`TODOS.md`](../TODOS.md).
 
-Bloqueantes restantes de la soft-beta: contenido real de `croacia` (~15 cromos + 2 YouTube + briefs) y re-texturizado del sobre 3D. Checklist completo en [`TODOS.md`](../TODOS.md).
+Estado de la soft-beta (2026-06-04): cutover a prod ✅ HECHO (solo `francia` activa, 30/30 cromos con foto published — cero placeholders), contenido de `francia` ✅ curado, sobre 3D ✅ re-texturizado. **Lo único que queda**: confirmar el dominio/link a compartir + una pasada manual del flujo de usuario nuevo en prod, y elegir cuándo invitar. Checklist completo en [`TODOS.md`](../TODOS.md).
 
 ---
 
@@ -68,8 +68,9 @@ Después del cierre de badges + el trabajo de la beta, los candidatos al próxim
 
 (Cuando se cierren features de producto, prioridad pre-launch)
 
-- Contenido real de `croacia` (bloqueante de la soft-beta)
-- Re-texturizar el sobre (ver [`assets/3d-pack.md`](./assets/3d-pack.md)) — bloqueante de la soft-beta
+- ~~Contenido real de la página héroe~~ ✅ francia curada (fotos + videos + briefs)
+- ~~Re-texturizar el sobre~~ ✅ hecho (ver [`assets/3d-pack.md`](./assets/3d-pack.md))
+- ~~Cutover a prod~~ ✅ hecho (solo `francia` activa, 30/30 published). Queda: confirmar dominio/link + pasada manual de usuario nuevo en prod
 - `/help` (FAQ)
 - Tip jar Mercado Pago integrado
 - Custom fonts (Inter + serif display + mono)
@@ -197,7 +198,7 @@ Sesión del 30 mayo 2026 (PRs #25–#29):
 3. **Cromo holo finish** (#27) — foil holográfico pointer-driven + tilt + glare + frame TCG
 4. **UX polish** (#28) — global-error branded, dedupe `/home` → `/`, voseo, créditos de fuentes, ShareSheet, CTAs del pack, a11y
 5. **Foil por rareza + holo en grilla** (#29) — colores de foil por tier + `.cromo-slot-holo` + barrido suave
-6. **Decisiones de la beta** — soft-beta a waitlist, `croacia` como página héroe, gate unannounced-open, dominios comprados
+6. **Decisiones de la beta** — soft-beta a waitlist, `francia` como página héroe (la final), gate unannounced-open, dominios comprados
 
 ---
 
