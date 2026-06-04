@@ -4,6 +4,20 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 ---
 
+## ▶️ Próximos pasos del bento de francia (orden recomendado, 2026-06-03)
+
+Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
+
+1. **T-08 · PR2 — detalle + reveal con ratios** (P1, lo más urgente: rompe la
+   experiencia del ancho HOY, fue lo primero que notó el dueño en vivo). Ver abajo,
+   tiene el mapa de discovery + 4 decisiones abiertas para agarrar en frío.
+2. **T-10 · filter chips colapsables en mobile** (P2: la apertura de francia queda
+   bajo el fold en celu).
+3. **T-11 remanente · foto HD del 147** (P3 opcional: la atajada del Dibu entra como
+   landscape pero con foto floja; re-curar si aparece el frame icónico).
+
+---
+
 ## T-01 · Legendary still-image rights (pre-beta risk)
 
 **What:** Decide and implement a rights-safe source for the *still image* on each legendary cromo.
@@ -119,7 +133,22 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 **Context:** `<Cromo>` se usa solo en `card-detail-dialog.tsx`. El reveal NO usa `<Cromo>` (usa `card-mesh`). `card-mesh` ya parametriza `planeGeometry args={[w,h]}` → recibe otro w/h. **Depends on:** PR1 del bento. **Priority:** P2 (fast-follow post-PR1).
 
-**Feedback del dueño (2026-06-03, viendo PR #44 en vivo):** "cuando clickeás/tapeás un cromo para verlo en detalle la vista sigue siendo siempre portrait, no respeta si es horizontal" — fue lo PRIMERO que notó. Subir a **P1 post-merge**: hacer PR2 inmediatamente después de mergear PR1, antes de invitar testers.
+**Feedback del dueño (2026-06-03, viendo PR #44 en vivo):** "cuando clickeás/tapeás un cromo para verlo en detalle la vista sigue siendo siempre portrait, no respeta si es horizontal" — fue lo PRIMERO que notó. **P1 post-merge** (PR #45), antes de invitar testers.
+
+### Discovery map (para agarrar en frío)
+- **Detalle:** `src/components/domain/cromo.tsx` — `sizeMap` 3:4 fijo (sm 160×213, md 240×320, lg 320×427); frame/bisel, nameplate (`pt-7 pb-4`) y badge de número asumen portrait. Foil/glare/holo YA es ratio-agnóstico (`background-size: %`). Se usa SOLO en `card-detail-dialog.tsx` (pasa `size="md"` fijo).
+- **Reveal:** `src/features/pack-opening/components/3d/card-mesh.tsx` — ya parametriza `planeGeometry args={[w,h]}` por props; recibe otro w/h. Ojo `phase-stack.tsx` / `phase-summary.tsx` (stack + resumen, asumen vertical).
+- **Layout source:** vive en 2 lados que no se hablan — catálogo `content.photo.layout` (pipeline Python) y const frontend `src/features/album/bento-layout.ts` (keyed por page+cardNumber, solo francia). Presets: portrait 3:4 / landscape 3:2 / pano 2:1 (`LAYOUT_RATIO`).
+
+### Decisiones abiertas (resolver con el dueño ANTES de implementar)
+1. **De dónde sale el `layout` de un cromo cualquiera** para detalle/reveal:
+   (a) lookup desde `bento-layout.ts` por (page, cardNumber), default portrait — el reveal tiene que saber la página; (b) proyectar `layout` en `queries.ts`/rolled cards — una fuente para todas las superficies pero toca el read-path que evitamos en PR1.
+2. **Ratio del detalle:** ¿base del cromo (139 = landscape 3:2) o el override del bento (139 se muestra banda 21:9 en grilla)? Instinto: base; las bandas 21:9 son solo diagramación de grilla.
+3. **El díptico (136) en el detalle:** ¿mantiene el gutter de álbum físico (identidad) o landscape normal? 1 caso especial.
+4. **Reveal apaisado:** cómo cae una landscape/pano en el stack 3D + en el summary que hoy asume vertical, sin romper la animación.
+
+### Tests
+vitest + playwright (sin RTL): render del cromo en cada ratio + reveal de un ancho.
 
 ---
 
