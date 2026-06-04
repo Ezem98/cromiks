@@ -49,6 +49,21 @@ const ownershipLabels: Record<Ownership, string> = {
 }
 
 /**
+ * Dot de color por tier — leyenda mínima color→rareza dentro del chip. Es la
+ * ÚNICA excepción que DESIGN.md §4.5 permite al "tier color solo en cromos": un
+ * puntito, nunca el chip entero (el estado activo sigue siendo argentina-glow).
+ * Le devuelve al first-timer el mapeo color→nombre que se perdió al neutralizar
+ * los chips en T-13. Mismos tokens que el cromo (legendary = gold).
+ */
+const tierDotColor: Record<Tier, string> = {
+  common: 'bg-(--color-tier-common)',
+  uncommon: 'bg-(--color-tier-uncommon)',
+  rare: 'bg-(--color-tier-rare)',
+  epic: 'bg-(--color-tier-epic)',
+  legendary: 'bg-(--color-gold)',
+}
+
+/**
  * Tratamiento ÚNICO de chip seleccionado en toda la barra (posesión, destacadas
  * y tier). El color de tier NO se usa acá: vive exclusivamente en los cromos
  * (DESIGN.md §4.5, principio "la rareza se gana la pantalla"). El tier ya queda
@@ -153,8 +168,12 @@ export function AlbumFilterBar({
               type="button"
               aria-pressed={active}
               onClick={() => toggleTier(tier)}
-              className={cn(chipBase, active ? chipActive : chipInactive)}
+              className={cn(chipBase, 'gap-2', active ? chipActive : chipInactive)}
             >
+              <span
+                className={cn('size-2 shrink-0 rounded-full', tierDotColor[tier])}
+                aria-hidden="true"
+              />
               {tierLabels[tier]}
             </button>
           )
