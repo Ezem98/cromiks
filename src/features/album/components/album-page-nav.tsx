@@ -27,15 +27,35 @@ type AlbumPageNavProps = {
    * Si no se pasa, los dots se muestran neutros.
    */
   pageCompletion?: Map<number, { owned: number; total: number }>
+  /**
+   * Querystring de filtros (sin `page`) a preservar al navegar de página, para
+   * que los filtros/búsqueda sobrevivan el cambio de página. '' = sin filtros.
+   */
+  query?: string
 }
 
-export function AlbumPageNav({ pages, currentPageNumber, pageCompletion }: AlbumPageNavProps) {
+/** Href a una página preservando los filtros activos (?page=N&<filtros>). */
+function pageHref(pageNumber: number, query?: string): string {
+  return `/album?page=${pageNumber}${query ? `&${query}` : ''}`
+}
+
+export function AlbumPageNav({
+  pages,
+  currentPageNumber,
+  pageCompletion,
+  query,
+}: AlbumPageNavProps) {
   const prevPage = currentPageNumber > 1 ? currentPageNumber - 1 : null
   const nextPage = currentPageNumber < pages.length ? currentPageNumber + 1 : null
 
   return (
     <div className="flex items-center justify-between gap-4 w-full">
-      <PageArrowButton targetPage={prevPage} direction="prev" ariaLabel="Página anterior" />
+      <PageArrowButton
+        targetPage={prevPage}
+        direction="prev"
+        ariaLabel="Página anterior"
+        query={query}
+      />
 
       <div className="flex items-center gap-2 flex-1 justify-center max-w-md">
         {pages.map((page) => (
@@ -44,11 +64,17 @@ export function AlbumPageNav({ pages, currentPageNumber, pageCompletion }: Album
             page={page}
             isCurrent={page.pageNumber === currentPageNumber}
             completion={pageCompletion?.get(page.pageNumber)}
+            query={query}
           />
         ))}
       </div>
 
-      <PageArrowButton targetPage={nextPage} direction="next" ariaLabel="Siguiente página" />
+      <PageArrowButton
+        targetPage={nextPage}
+        direction="next"
+        ariaLabel="Siguiente página"
+        query={query}
+      />
     </div>
   )
 }
@@ -61,10 +87,12 @@ function PageDot({
   page,
   isCurrent,
   completion,
+  query,
 }: {
   page: AlbumPage
   isCurrent: boolean
   completion?: { owned: number; total: number }
+  query?: string
 }) {
   const owned = completion?.owned ?? 0
   const total = completion?.total ?? 0
@@ -74,7 +102,7 @@ function PageDot({
 
   return (
     <Link
-      href={`/album?page=${page.pageNumber}`}
+      href={pageHref(page.pageNumber, query)}
       scroll={false}
       // El <Link> es el área tappable (≥44×44, WCAG 2.5.5 / DESIGN.md §13.3);
       // el dot visual chico vive en el <span> de adentro. Antes el dot ERA el
@@ -146,10 +174,12 @@ function PageArrowButton({
   targetPage,
   direction,
   ariaLabel,
+  query,
 }: {
   targetPage: number | null
   direction: 'prev' | 'next'
   ariaLabel: string
+  query?: string
 }) {
   const Icon = direction === 'prev' ? ChevronLeftIcon : ChevronRightIcon
 
@@ -169,7 +199,7 @@ function PageArrowButton({
 
   return (
     <Link
-      href={`/album?page=${targetPage}`}
+      href={pageHref(targetPage, query)}
       scroll={false}
       className={cn(
         'flex items-center justify-center size-11 rounded-full transition-all duration-200',

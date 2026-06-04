@@ -2,12 +2,14 @@
 
 import { motion } from 'motion/react'
 import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { BENTO_COLS, getBentoCell, pageHasBento, SPAN_CLASS, spanClamp } from '../bento-layout'
+import { albumFiltersToParams, albumFiltersToQuery, parseAlbumFilters } from '../filters-url'
 import { firstRowPriorityIds } from '../first-row-priority'
 import type { AlbumCardSlot, AlbumData, PageCompletionMap } from '../queries'
-import { AlbumFilterBar, type AlbumFilters, applyFilters, defaultFilters } from './album-filter-bar'
+import { AlbumFilterBar, type AlbumFilters, applyFilters } from './album-filter-bar'
 import { AlbumPageNav } from './album-page-nav'
 import { AlbumSlot } from './album-slot'
 import { AlbumSpotlight, shouldShowSpotlight } from './album-spotlight'
@@ -54,9 +56,14 @@ export function AlbumView({ data, username }: AlbumViewProps) {
     pageTotalCards,
     pageCompletion,
   } = data
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const [selectedCard, setSelectedCard] = useState<AlbumCardSlot | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [filters, setFilters] = useState<AlbumFilters>(defaultFilters)
+  // Los filtros arrancan desde la URL (sobreviven page-nav / back / refresh /
+  // share). Initializer: se lee una vez al montar; después el estado vive acá y
+  // espejamos a la URL en cada cambio. T-flexibilidad.
+  const [filters, setFilters] = useState<AlbumFilters>(() => parseAlbumFilters(searchParams))
 
   // Filtrado client-side de la página actual. useMemo así no recalcula en
   // cada render (ej. al abrir el dialog).
@@ -93,6 +100,20 @@ export function AlbumView({ data, username }: AlbumViewProps) {
     setDialogOpen(true)
   }
 
+  // Cambio de filtros: estado local (filtrado instantáneo, sin re-fetch) +
+  // espejo a la URL vía replaceState (no dispara navegación de Next). Así la
+  // barra de direcciones queda shareable y el refresh restaura los filtros.
+  const handleFiltersChange = (next: AlbumFilters) => {
+    setFilters(next)
+    const params = albumFiltersToParams(next)
+    params.set('page', String(currentPage.pageNumber))
+    window.history.replaceState(null, '', `${pathname}?${params.toString()}`)
+  }
+
+  // Querystring de filtros (sin `page`) para que los page-links los preserven →
+  // los filtros sobreviven al cambiar de página.
+  const filterQuery = albumFiltersToQuery(filters)
+
   return (
     <div className="min-h-screen pb-24">
       {/* === Header sticky con info global === */}
@@ -122,7 +143,7 @@ export function AlbumView({ data, username }: AlbumViewProps) {
         {/* === CTA: saltar a una página con cromos tuyos === */}
         {jumpToPage !== null && (
           <Link
-            href={`/album?page=${jumpToPage}`}
+            href={`/album?page=${jumpToPage}${filterQuery ? `&${filterQuery}` : ''}`}
             scroll={false}
             className={cn(
               'group inline-flex min-h-11 items-center gap-2 rounded-md px-4 py-2.5',
@@ -144,7 +165,7 @@ export function AlbumView({ data, username }: AlbumViewProps) {
         {/* === Filtros de la página actual === */}
         <AlbumFilterBar
           filters={filters}
-          onChange={setFilters}
+          onChange={handleFiltersChange}
           resultCount={visibleCards.length}
           totalCount={cards.length}
         />
@@ -221,6 +242,7 @@ export function AlbumView({ data, username }: AlbumViewProps) {
             pages={pages}
             currentPageNumber={currentPage.pageNumber}
             pageCompletion={pageCompletion}
+            query={filterQuery}
           />
         </div>
 

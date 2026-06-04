@@ -9,17 +9,21 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
 
 Critique del álbum (re-run 2026-06-04: **29 → 31/40**). Cerrado: T-08 (detalle apaisado,
-PR #52), T-10 (filtros colapsables, PR #51), T-11 (foto HD 147, PR #47), T-12
-(spotlight, PR #50), T-13 + U-09 + U-12 (Tanda 1), U-17 (eager/priority 1ra fila,
-PR #53), **T-14 (smoke determinístico)**.
+PR #52), T-10 (filtros colapsables, PR #51 — ⚠️ regresó, restaurado), T-11 (foto HD 147,
+PR #47), T-12 (spotlight, PR #50), T-13 + U-09 + U-12 (Tanda 1), U-17 (eager/priority 1ra
+fila, PR #53), **T-14 (smoke determinístico)**, leyenda/ayuda, búsqueda + filtros-URL.
 
 **Pendientes del critique (no bloquean la beta), orden acordado con el dueño:**
 1. ~~**Leyenda/ayuda**~~ — ✅ HECHO (2026-06-04, rama `feat/album-legend-help`):
    dot de tier en cada chip de filtro (leyenda color→nombre, §4.5-OK), helper de
    "Destacar" → perfil público, y canje con copy claro ("Canjear 1 repetida por N
    monedas", sin el ● críptico ni prometer un sink que no existe).
-2. **Búsqueda + filtros en URL** (heur. Flexibilidad = 2): persistir filtros en la
-   querystring + búsqueda por nombre/número. → `/impeccable harden`
+2. ~~**Búsqueda + filtros en URL**~~ — ✅ HECHO (2026-06-04, rama
+   `feat/album-search-url-filters`): buscador por nombre/número (siempre visible) +
+   filtros persistidos en la querystring (`q`/`own`/`pinned`/`tiers`) vía
+   `history.replaceState` (sin re-fetch) + los page-links cargan los filtros. De paso
+   **se restauró el colapso mobile de T-10**, que había regresado (el commit de Tanda 1
+   pisó el de PR #51 — ver T-10 abajo). Lib pura `filters-url.ts` + tests.
 3. **T-15** · reveal del sobre apaisado (descopeado de T-08, P3). Ver abajo.
 
 ---
@@ -227,7 +231,9 @@ sin foto no molesta hoy).
 
 ---
 
-## T-10 · Filter chips colapsables en mobile (la apertura del álbum queda bajo el fold)
+## T-10 · Filter chips colapsables en mobile — ✅ HECHA (PR #51) · ⚠️ REGRESÓ · ✅ RESTAURADA (2026-06-04, rama `feat/album-search-url-filters`)
+
+**Resuelto + regresión:** toggle "Filtrar" (solo mobile, `sm:hidden`) con badge de conteo; posesión + destacadas + rarezas colapsan adentro, el buscador queda siempre visible. Se shippeó en PR #51 (commit `b2bd37d`) pero **regresó**: el commit de Tanda 1 / T-13 (`7f81cc9`), cortado de un main pre-T-10, pisó `album-filter-bar.tsx` al mergear después (y también borró esta nota del doc — por eso quedó el "What" viejo abajo). Detectado al arrancar búsqueda+filtros-URL (git: `b2bd37d` no estaba en la lineage del archivo). **Restaurado** junto con el buscador. Lección: rama cortada de main viejo que toca el mismo archivo que una hermana ya mergeada → clobber silencioso; ver [[git-commit-hook-slash]] vecino. Contexto original abajo.
 
 **What:** En mobile (375px) los chips del filtro del álbum (`album-filter-bar.tsx`) ocupan ~3 filas (Todas / Las que tengo / Las que me faltan / Destacadas / Común / Poco común / Rara / Épica / Legendaria) ANTES del primer cromo — el díptico hero de francia queda medio empujado bajo el fold. Colapsar: una fila scrolleable horizontal, o un botón "Filtrar" que expande.
 
