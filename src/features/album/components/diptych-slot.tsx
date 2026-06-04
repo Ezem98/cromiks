@@ -31,9 +31,11 @@ type DiptychSlotProps = {
   card: AlbumCardSlot
   cell: BentoCell
   onClick?: () => void
+  /** Primera fila above-the-fold: el díptico hero es el LCP → eager (U-17). */
+  priority?: boolean
 }
 
-export function DiptychSlot({ card, cell, onClick }: DiptychSlotProps) {
+export function DiptychSlot({ card, cell, onClick, priority = false }: DiptychSlotProps) {
   const aspect = cellAspectClass(cell)
   const gutterLeft = `${((cell.gutter ?? 0.5) * 100).toFixed(1)}%`
 
@@ -97,7 +99,9 @@ export function DiptychSlot({ card, cell, onClick }: DiptychSlotProps) {
           src={card.imageUrl}
           alt=""
           className="absolute inset-0 size-full object-cover object-[50%_62%]"
-          loading="lazy"
+          // El díptico hero (136) abre la página → si es above-the-fold, es el LCP (U-17).
+          loading={priority ? 'eager' : 'lazy'}
+          fetchPriority={priority ? 'high' : undefined}
         />
       ) : (
         <div
