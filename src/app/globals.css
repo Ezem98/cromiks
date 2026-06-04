@@ -16,7 +16,8 @@
 
   --color-text-primary: #f0f4f8;
   --color-text-secondary: #b0bac8;
-  --color-text-muted: #6b7585;
+  /* #6b7585 medía 4.15:1 sobre --surface-deep (falla AA 4.5). #7a8392 = 5.06:1 ✓ (U-09) */
+  --color-text-muted: #7a8392;
   --color-text-ghost: #3a4250;
 
   --color-argentina-glow: #6bb9ff;

@@ -76,33 +76,44 @@ function PageDot({
     <Link
       href={`/album?page=${page.pageNumber}`}
       scroll={false}
-      className={cn(
-        'group relative flex items-center justify-center h-2.5 rounded-full transition-all duration-200',
-        // Width: la página actual se ensancha
-        isCurrent ? 'w-8' : 'w-2.5',
-        // Background base
-        isCurrent && 'bg-(--color-argentina-glow)',
-        !isCurrent && isComplete && 'bg-(--color-gold)',
-        !isCurrent && !isComplete && hasAny && 'bg-(--color-gold)/25 hover:bg-(--color-gold)/40',
-        !isCurrent && !hasAny && 'bg-(--color-surface-elevated) hover:bg-white/15',
-        // Halo sutil en páginas completadas (no current)
-        !isCurrent && isComplete && 'shadow-[0_0_8px_rgba(212,169,60,0.4)]',
-      )}
+      // El <Link> es el área tappable (≥44×44, WCAG 2.5.5 / DESIGN.md §13.3);
+      // el dot visual chico vive en el <span> de adentro. Antes el dot ERA el
+      // link (h-2.5 = 10px → target inalcanzable con el pulgar).
+      className="group relative flex items-center justify-center min-h-11 min-w-11"
       aria-label={`Página ${page.pageNumber}: ${page.title}${
         completion ? ` (${owned} de ${total})` : ''
       }`}
       aria-current={isCurrent ? 'page' : undefined}
     >
-      {/* Relleno parcial — solo en páginas non-current con completion parcial */}
-      {!isCurrent && !isComplete && hasAny && (
-        <span
-          className="absolute inset-0 rounded-full bg-(--color-gold)/70"
-          style={{
-            clipPath: `inset(0 ${100 - ratio * 100}% 0 0)`,
-          }}
-          aria-hidden="true"
-        />
-      )}
+      {/* Dot visual */}
+      <span
+        className={cn(
+          'relative flex items-center justify-center h-2.5 rounded-full transition-all duration-200',
+          // Width: la página actual se ensancha
+          isCurrent ? 'w-8' : 'w-2.5',
+          // Background base
+          isCurrent && 'bg-(--color-argentina-glow)',
+          !isCurrent && isComplete && 'bg-(--color-gold)',
+          !isCurrent &&
+            !isComplete &&
+            hasAny &&
+            'bg-(--color-gold)/25 group-hover:bg-(--color-gold)/40',
+          !isCurrent && !hasAny && 'bg-(--color-surface-elevated) group-hover:bg-white/15',
+          // Halo sutil en páginas completadas (no current)
+          !isCurrent && isComplete && 'shadow-[0_0_8px_rgba(212,169,60,0.4)]',
+        )}
+        aria-hidden="true"
+      >
+        {/* Relleno parcial — solo en páginas non-current con completion parcial */}
+        {!isCurrent && !isComplete && hasAny && (
+          <span
+            className="absolute inset-0 rounded-full bg-(--color-gold)/70"
+            style={{
+              clipPath: `inset(0 ${100 - ratio * 100}% 0 0)`,
+            }}
+          />
+        )}
+      </span>
 
       {/* Tooltip — aparece al hover */}
       {completion && (
@@ -146,7 +157,7 @@ function PageArrowButton({
     return (
       <span
         className={cn(
-          'flex items-center justify-center size-9 rounded-full',
+          'flex items-center justify-center size-11 rounded-full',
           'bg-(--color-surface-elevated)/40 text-(--color-text-muted)/40 cursor-not-allowed',
         )}
         aria-hidden="true"
@@ -161,7 +172,7 @@ function PageArrowButton({
       href={`/album?page=${targetPage}`}
       scroll={false}
       className={cn(
-        'flex items-center justify-center size-9 rounded-full transition-all duration-200',
+        'flex items-center justify-center size-11 rounded-full transition-all duration-200',
         'bg-(--color-surface-elevated) text-(--color-text-primary)',
         'hover:bg-white/[0.08] active:scale-95',
       )}
