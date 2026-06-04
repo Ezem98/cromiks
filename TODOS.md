@@ -8,14 +8,17 @@ Deferred work captured during reviews. Each item has enough context to pick up c
 
 Tras PR #44 (bento base) + PR #45 (design-review fixes + curación de layouts):
 
-1. ~~**T-08 · detalle con ratios apaisados**~~ — ✅ HECHO (2026-06-04, rama
-   `fix/album-detail-ratio`): el modal respeta el ratio base del cromo. El reveal
-   quedó **descopeado** (solo-detalle, decisión del dueño) → ver T-15.
-2. ~~**T-10 · filter chips colapsables en mobile**~~ — ✅ HECHO (PR #51).
-3. ~~T-11 remanente · foto HD del 147~~ — ✅ HECHO (PR #47, 2026-06-04).
+Critique del álbum (re-run 2026-06-04: **29 → 31/40**). Cerrado: T-08 (detalle apaisado,
+PR #52), T-10 (filtros colapsables, PR #51), T-11 (foto HD 147, PR #47), T-12
+(spotlight, PR #50), T-13 + U-09 + U-12 (Tanda 1), U-17 (eager/priority 1ra fila,
+PR #53), **T-14 (smoke determinístico)**.
 
-**Próximo recomendado:** U-17 (eager/priority en la primera fila, P3 — warning LCP +
-flash de gradiente en frío) o T-14 (smoke E2E flaky, P2). Ver abajo.
+**Pendientes del critique (no bloquean la beta), orden acordado con el dueño:**
+1. **Leyenda/ayuda** (heur. Ayuda = 2): glosar tiers + monedas + "Destacar" para el
+   first-timer. → `/impeccable clarify`
+2. **Búsqueda + filtros en URL** (heur. Flexibilidad = 2): persistir filtros en la
+   querystring + búsqueda por nombre/número. → `/impeccable harden`
+3. **T-15** · reveal del sobre apaisado (descopeado de T-08, P3). Ver abajo.
 
 ---
 
@@ -294,7 +297,11 @@ sin foto no molesta hoy).
 
 ---
 
-## T-14 · Smoke E2E flaky (depende del estado vivo del backend)
+## T-14 · Smoke E2E flaky (depende del estado vivo del backend) — ✅ HECHA (2026-06-04, rama `test/smoke-deterministic`)
+
+**Resuelto (opción a + c):** `global-setup` siembra un pack daily PENDING (admin insert, bypassa RLS) → el home muestra "Abrir sobre" (modo `hasPending`), así el smoke abre ESE pack en vez de reclamar uno en runtime. Saca la dependencia de `claim_daily_pack` (rate-limit Upstash + disponibilidad diaria + cold-start del home) que flakeaba. `open_pack` sigue rolando las cartas al abrir → la cobertura del golden path real (B-22/B-23 idempotencia) se mantiene; solo el CLAIM se pre-hace en setup. Además (c): se warmea `/album` en global-setup y se subió el timeout del primer botón del home a 25s (cold-compile CI). Verificado: 2 corridas full verdes local (golden path + debug UI), type-check + lint. **Tradeoff:** el claim runtime ya no se ejercita en e2e (es lógica simple; lo valioso es la idempotencia del open). Contexto original abajo.
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** Hacer el smoke golden-path (`tests/e2e/smoke.spec.ts`: home → reclamar sobre → abrir → álbum) determinístico, para que no flakee en PRs que no tocan ese flow.
 
@@ -305,6 +312,8 @@ sin foto no molesta hoy).
 **Context:** Opciones — (a) seedear un pack pending determinístico en `global-setup` en vez de depender de `claim_daily_pack` en runtime; (b) tolerar el caso "ya reclamado" (si el user ya tiene pack pending, saltar el claim y abrir el pending); (c) subir timeouts del home (cold-start CI a veces > 10s); (d) aislar el flow del estado del pool activo. Recomendado: (a) + (c) — mantiene la cobertura del open_pack real pero saca la dependencia del claim runtime. Punto de cambio: `tests/e2e/smoke.spec.ts` + `tests/e2e/global-setup.*`. Ver [[cromiks-local-visual-qa-quirks]] (el daemon e2e y la sesión fresca por generateLink).
 
 **Priority:** P2 (molesta pero no bloquea; el rerun lo resuelve mientras tanto).
+
+</details>
 
 ---
 

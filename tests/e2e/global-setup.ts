@@ -85,6 +85,21 @@ export default async function globalSetup(config: FullConfig) {
     )
   if (profileErr) throw new Error(`[e2e setup] upsert profiles falló: ${profileErr.message}`)
 
+  // 3b) Seed determinístico de un pack daily PENDING (T-14). El smoke abre ESTE
+  // pack ("Abrir sobre" en el home) en vez de reclamar uno en runtime: saca la
+  // dependencia de claim_daily_pack (rate-limit Upstash + disponibilidad diaria +
+  // cold-start del home) que hacía flakear el smoke en PRs que no tocan ese flow.
+  // open_pack sigue rolando las cartas al abrir, así que la cobertura real del
+  // golden path (B-22 idempotencia) se mantiene; solo el claim se pre-hace acá.
+  const { error: packErr } = await admin.from('packs').insert({
+    user_id: userId,
+    type: 'daily',
+    card_count: 4,
+    status: 'pending',
+    expires_at: null,
+  })
+  if (packErr) throw new Error(`[e2e setup] seed pending pack falló: ${packErr.message}`)
+
   // 4) Magic link → action_link que redirige al callback con tokens en hash
   const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
     type: 'magiclink',
@@ -159,6 +174,11 @@ export default async function globalSetup(config: FullConfig) {
       `[e2e setup] Cookies inyectadas pero /home redirigió a /signin. URL final: ${page.url()}`,
     )
   }
+
+  // Warm-up del dev server: compilar /album una vez acá para que el smoke no pague
+  // el cold-compile (>10s en CI) dentro de su propia ventana de timeout (T-14).
+  // (`/` ya quedó compilada por el goto a /home de arriba.)
+  await page.goto(`${baseURL}/album`, { waitUntil: 'domcontentloaded' }).catch(() => {})
 
   await mkdir(dirname(storageStatePath), { recursive: true })
   await ctx.storageState({ path: storageStatePath })
