@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import Link from 'next/link'
 import { Cromo } from '@/components/domain/cromo'
 import { Button } from '@/components/ui/button'
+import { PHOTO_LAYOUT_RATIO } from '@/lib/cards/photo-layout'
 import type { OpenPackResult } from '../types'
 
 /**
@@ -51,8 +52,10 @@ export function PhaseSummary({ result, onContinue }: PhaseSummaryProps) {
         </p>
       </div>
 
-      {/* Grid 2x2 de cromos */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Grid 2x2 de cromos. place-items-center: los cromos anchos (landscape/
+          pano) son más bajos, los centramos en su celda en vez de alinearlos
+          arriba — la fila queda prolija aunque haya ratios mezclados (T-15). */}
+      <div className="grid grid-cols-2 gap-3 place-items-center">
         {result.cards.map((card, i) => (
           <motion.div
             key={card.cardId}
@@ -68,6 +71,7 @@ export function PhaseSummary({ result, onContinue }: PhaseSummaryProps) {
               seed={card.seed}
               imageUrl={card.imageUrl ?? undefined}
               size="sm"
+              ratio={PHOTO_LAYOUT_RATIO[card.layout]}
               state={card.isNew ? 'new' : 'repeated'}
             />
           </motion.div>

@@ -26,6 +26,7 @@ export const debugMockResult: OpenPackResult = {
       isNew: true,
       reward: null,
       imageUrl: null,
+      layout: 'portrait',
       seed: 'paredes',
     },
     {
@@ -37,6 +38,7 @@ export const debugMockResult: OpenPackResult = {
       isNew: true,
       reward: null,
       imageUrl: null,
+      layout: 'landscape',
       seed: 'dibu-debug',
     },
     {
@@ -48,6 +50,7 @@ export const debugMockResult: OpenPackResult = {
       isNew: false,
       reward: 12,
       imageUrl: null,
+      layout: 'portrait',
       seed: 'julian-debug',
     },
     {
@@ -59,6 +62,7 @@ export const debugMockResult: OpenPackResult = {
       isNew: true,
       reward: null,
       imageUrl: null,
+      layout: 'portrait',
       seed: 'messi-debug',
     },
   ],
