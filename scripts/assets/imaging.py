@@ -183,6 +183,40 @@ def resolve_layout(layout: object) -> tuple[str, dict]:
     return name, preset
 
 
+def _cover_crop_dims(src_w: int, src_h: int, target_ratio: float) -> tuple[int, int]:
+    """
+    Dimensiones (crop_w, crop_h) del mayor cover-crop de una fuente src_w x src_h al
+    ratio target. Es la MISMA cuenta que usa normalize_to_webp para recortar — vive
+    acá para que el gate de resolución (crop_ok) y el crop real no puedan driftear.
+    """
+    if src_w <= 0 or src_h <= 0:
+        return 0, 0
+    if src_w / src_h >= target_ratio:
+        return round(src_h * target_ratio), src_h
+    return src_w, round(src_w / target_ratio)
+
+
+def _floor_dims(target_w: int, target_h: int) -> tuple[int, int]:
+    """Piso de resolución del preset, con la tolerancia de upscale (_MAX_UPSCALE)."""
+    return round(target_w / _MAX_UPSCALE), round(target_h / _MAX_UPSCALE)
+
+
+def crop_ok(src_w: int, src_h: int, layout: object = None) -> bool:
+    """
+    ¿Una fuente de src_w x src_h alcanza para un cover-crop al `layout` pedido sin
+    upscalear más allá de la tolerancia? Predicado PURO (no baja la imagen): lo usa
+    discover.py para pre-filtrar candidatas con el width/height que devuelve la API,
+    y es EXACTAMENTE el gate que aplica normalize_to_webp al procesar (misma fuente
+    de verdad → no driftean). Layout None → portrait. Layout desconocido →
+    NormalizeError (igual que resolve_layout).
+    """
+    _, preset = resolve_layout(layout)
+    target_w, target_h = int(preset["w"]), int(preset["h"])
+    crop_w, crop_h = _cover_crop_dims(src_w, src_h, target_w / target_h)
+    floor_w, floor_h = _floor_dims(target_w, target_h)
+    return crop_w >= floor_w and crop_h >= floor_h
+
+
 def normalize_to_webp(
     data: bytes,
     *,
@@ -225,14 +259,11 @@ def normalize_to_webp(
             im = im.convert("RGB")
             w, h = im.size
 
-            # Gate de min-resolución: el mayor crop al ratio target debe alcanzar
-            # el tamaño del preset (con la tolerancia de upscale).
-            src_ratio = w / h
-            if src_ratio >= target_ratio:
-                crop_h, crop_w = h, round(h * target_ratio)
-            else:
-                crop_w, crop_h = w, round(w / target_ratio)
-            floor_w, floor_h = round(target_w / _MAX_UPSCALE), round(target_h / _MAX_UPSCALE)
+            # Gate de min-resolución: el mayor crop al ratio target debe alcanzar el
+            # tamaño del preset (con la tolerancia de upscale). MISMA cuenta que crop_ok()
+            # — discover.py reusa ese predicado para pre-filtrar sin bajar la imagen.
+            crop_w, crop_h = _cover_crop_dims(w, h, target_ratio)
+            floor_w, floor_h = _floor_dims(target_w, target_h)
             if crop_w < floor_w or crop_h < floor_h:
                 raise NormalizeError(
                     f"resolución insuficiente: el crop {layout_name} da {crop_w}x{crop_h}, "

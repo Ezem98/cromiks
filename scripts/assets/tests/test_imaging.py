@@ -3,7 +3,7 @@ import io
 import pytest
 from PIL import Image
 
-from imaging import NormalizeError, _sniff, normalize_to_webp, parse_focal
+from imaging import NormalizeError, _sniff, crop_ok, normalize_to_webp, parse_focal
 
 
 def _png(w: int, h: int) -> bytes:
@@ -163,3 +163,60 @@ def test_focal_compone_con_landscape():
     cr = Image.open(io.BytesIO(webp_right)).convert("RGB").getpixel((600, 400))
     assert cl[0] > cl[2]  # crop izquierdo: rojizo
     assert cr[2] > cr[0]  # crop derecho: azulado
+
+
+# ── crop_ok: predicado de resolución compartido (lo reusa discover.py) ──
+
+
+def test_crop_ok_portrait():
+    assert crop_ok(2000, 3000) is True
+    assert crop_ok(400, 600) is False  # muy chica: igual que el gate la rechaza
+    assert crop_ok(760, 1014) is True  # arriba del piso (tolerancia 1.12)
+    # (la frontera exacta del piso la cubre test_crop_ok_coincide_con_el_gate_real)
+
+
+def test_crop_ok_landscape_y_pano():
+    assert crop_ok(3000, 2000, "landscape") is True
+    assert crop_ok(900, 700, "landscape") is False  # crop 900x600, debajo del piso
+    assert crop_ok(1080, 1350, "landscape") is True  # el caso IG que motivó la tolerancia
+    assert crop_ok(4000, 2000, "pano") is True
+    assert crop_ok(1000, 700, "pano") is False
+
+
+def test_crop_ok_default_es_portrait():
+    assert crop_ok(2000, 3000) == crop_ok(2000, 3000, None) == crop_ok(2000, 3000, "portrait")
+
+
+def test_crop_ok_layout_desconocido_falla():
+    with pytest.raises(NormalizeError, match="layout desconocido"):
+        crop_ok(2000, 3000, "widescreen")
+
+
+def test_crop_ok_dimensiones_invalidas():
+    assert crop_ok(0, 0) is False
+    assert crop_ok(-100, 500) is False
+
+
+@pytest.mark.parametrize(
+    "w,h,layout",
+    [
+        (2000, 3000, None),
+        (400, 600, None),
+        (760, 1014, None),
+        (3000, 2000, "landscape"),
+        (900, 700, "landscape"),
+        (1080, 1350, "landscape"),
+        (4000, 2000, "pano"),
+        (1000, 700, "pano"),
+    ],
+)
+def test_crop_ok_coincide_con_el_gate_real(w, h, layout):
+    # REGRESIÓN: el predicado puro debe decir EXACTAMENTE lo mismo que el gate embebido
+    # en normalize_to_webp (que crop_ok no cambió el comportamiento al extraerse).
+    predicted = crop_ok(w, h, layout)
+    try:
+        normalize_to_webp(_png(w, h), layout=layout)
+        gate_passed = True
+    except NormalizeError:
+        gate_passed = False
+    assert predicted == gate_passed
