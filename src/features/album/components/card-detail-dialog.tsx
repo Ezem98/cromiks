@@ -394,15 +394,22 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
   return (
     <>
       <div className="grid gap-2">
-        <Button
-          variant={isPinnedLocal ? 'primary' : 'ghost'}
-          onClick={handlePinToggle}
-          disabled={isPending}
-          className="w-full"
-        >
-          <PinIcon className="size-4 mr-1.5" />
-          {isPinnedLocal ? 'Destacada' : 'Destacar en mi perfil'}
-        </Button>
+        <div>
+          <Button
+            variant={isPinnedLocal ? 'primary' : 'ghost'}
+            onClick={handlePinToggle}
+            disabled={isPending}
+            className="w-full"
+          >
+            <PinIcon className="size-4 mr-1.5" />
+            {isPinnedLocal ? 'Destacada' : 'Destacar en mi perfil'}
+          </Button>
+          {/* Glosa para el first-timer: qué hace "Destacar" (Jordan no sabe del
+              perfil público). T-clarify. */}
+          <p className="text-(--color-text-muted) text-[11px] leading-snug mt-1.5 px-1">
+            Las destacadas aparecen primero en tu perfil público.
+          </p>
+        </div>
 
         {canDismantle && (
           <Button
@@ -412,8 +419,7 @@ function CardActions({ card, username }: { card: AlbumCardSlot; username?: strin
             className="w-full"
           >
             <CoinsIcon className="size-4 mr-1.5" />
-            Canjear 1 copia por {reward}
-            <span className="text-(--color-gold) ml-0.5">●</span>
+            Canjear 1 repetida por {reward} monedas
           </Button>
         )}
 

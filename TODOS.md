@@ -14,8 +14,10 @@ PR #52), T-10 (filtros colapsables, PR #51), T-11 (foto HD 147, PR #47), T-12
 PR #53), **T-14 (smoke determinístico)**.
 
 **Pendientes del critique (no bloquean la beta), orden acordado con el dueño:**
-1. **Leyenda/ayuda** (heur. Ayuda = 2): glosar tiers + monedas + "Destacar" para el
-   first-timer. → `/impeccable clarify`
+1. ~~**Leyenda/ayuda**~~ — ✅ HECHO (2026-06-04, rama `feat/album-legend-help`):
+   dot de tier en cada chip de filtro (leyenda color→nombre, §4.5-OK), helper de
+   "Destacar" → perfil público, y canje con copy claro ("Canjear 1 repetida por N
+   monedas", sin el ● críptico ni prometer un sink que no existe).
 2. **Búsqueda + filtros en URL** (heur. Flexibilidad = 2): persistir filtros en la
    querystring + búsqueda por nombre/número. → `/impeccable harden`
 3. **T-15** · reveal del sobre apaisado (descopeado de T-08, P3). Ver abajo.
