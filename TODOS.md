@@ -141,7 +141,16 @@ como trampa. **Priority:** ~~P1/P3~~ cerrado.
 
 ---
 
-## T-07 · `generatePlaceholders` muerto + `rarity_distribution` desfasado (limpieza seed)
+## T-07 · `generatePlaceholders` muerto + `rarity_distribution` desfasado — ✅ HECHA (2026-06-05, rama `chore/seed-cleanup`)
+
+**Resuelto:** confirmado en vivo — el YAML define los **205 `card_number` exactos (1-205, sin huecos ni duplicados)** → `generatePlaceholders` generaba 0. Cambios:
+- **`scripts/seed.ts`**: borrada la función `generatePlaceholders` (~62 líneas muertas), quitado `rarity_distribution` del interface `YamlCatalog`, y `seedCards` siembra `yamlRows` directo (sin `allRows = [...yaml, ...placeholders]`). Comentarios obsoletos al día.
+- **`catalog/eterno-diciembre.yaml`**: eliminado el bloque `rarity_distribution` (era su único consumidor; cero uso en runtime).
+- **`docs/operations/seeding.md`**: actualizada (decía "~155 cromos + 50 placeholders"; ahora "205 desde YAML", sin placeholders ni rarity_distribution).
+
+**Decisión: eliminar, no reconciliar** — un resumen duplicado se re-desfasa con cada cambio de catálogo; la fuente de verdad es la lista `cards`. De paso se aclaró el "desfase": la distribución real de las 205 numeradas es common 113 / uncommon 57 / rare 17 / epic 7 / legendary 11; los bonus (`bonus_cards:`, incluido el `copa-3d` legendary) van en clave aparte y el seed NO los siembra desde `cards`. **Verificado:** `pnpm type-check` verde + cero referencias colgantes. Ver [[cromiks-catalog-saturates-205]].
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** El catálogo ya define los 205 `card_number` sin huecos → `generatePlaceholders` (`scripts/seed.ts:175`) genera 0 placeholders, y `rarity_distribution` del YAML está desfasado (uncommon 57≠55, rare 17≠14, epic 7≠12). Borrar/simplificar la lógica muerta y reconciliar o eliminar `rarity_distribution`.
 
@@ -150,6 +159,8 @@ como trampa. **Priority:** ~~P1/P3~~ cerrado.
 **Pros:** Limpia una fuente de confusión; el seed dice la verdad. **Cons:** Toca seed.ts sin valor de feature; mejor no mezclarlo con un PR de feature.
 
 **Context:** Ver [[cromiks-catalog-saturates-205]]. Hacer en un PR de limpieza aparte. **Priority:** P3.
+
+</details>
 
 ---
 
