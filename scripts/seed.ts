@@ -77,7 +77,6 @@ interface YamlCatalog {
     album_name: string
     total_cards: number
   }
-  rarity_distribution: Record<Rarity, number>
   pages: YamlPage[]
   cards: YamlCard[]
 }
@@ -156,7 +155,7 @@ async function seedPages(catalog: YamlCatalog) {
 }
 
 // ============================================================
-// Step 3: Seed cards (cargados + placeholders)
+// Step 3: Seed cards
 // ============================================================
 
 interface CardRow {
@@ -172,73 +171,10 @@ interface CardRow {
   legendary_brief: Record<string, unknown> | null
 }
 
-function generatePlaceholders(catalog: YamlCatalog, definedCards: YamlCard[]): CardRow[] {
-  const definedByNumber = new Set(definedCards.map((c) => c.card_number))
-  const definedByRarity = definedCards.reduce(
-    (acc, c) => {
-      acc[c.rarity] = (acc[c.rarity] || 0) + 1
-      return acc
-    },
-    { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0 } as Record<Rarity, number>,
-  )
-
-  // Cuánto falta de cada rareza para llegar al target
-  const missing: Record<Rarity, number> = {
-    common: catalog.rarity_distribution.common - definedByRarity.common,
-    uncommon: catalog.rarity_distribution.uncommon - definedByRarity.uncommon,
-    rare: catalog.rarity_distribution.rare - definedByRarity.rare,
-    epic: catalog.rarity_distribution.epic - definedByRarity.epic,
-    legendary: catalog.rarity_distribution.legendary - definedByRarity.legendary,
-  }
-
-  log(
-    'placeholders',
-    `faltan: ${Object.entries(missing)
-      .filter(([, n]) => n > 0)
-      .map(([r, n]) => `${n} ${r}`)
-      .join(', ')}`,
-  )
-
-  // Pool de rarezas a asignar
-  const pool: Rarity[] = []
-  for (const [rarity, count] of Object.entries(missing) as [Rarity, number][]) {
-    for (let i = 0; i < Math.max(0, count); i++) {
-      pool.push(rarity)
-    }
-  }
-
-  // Encontrar números faltantes
-  const placeholders: CardRow[] = []
-  let poolIndex = 0
-
-  for (const page of catalog.pages) {
-    const [start, end] = page.card_range
-    for (let n = start; n <= end; n++) {
-      if (!definedByNumber.has(n) && poolIndex < pool.length) {
-        const rarity = pool[poolIndex++]
-        placeholders.push({
-          id: `placeholder-${n}`,
-          album_id: catalog.meta.album_id,
-          page_id: page.id,
-          card_number: n,
-          name: `[TODO] Cromo #${n}`,
-          description: 'Placeholder generado por el seed. Reemplazar editando el YAML.',
-          rarity,
-          metadata: { placeholder: true },
-          content: [],
-          legendary_brief: null,
-        })
-      }
-    }
-  }
-
-  return placeholders
-}
-
 async function seedCards(catalog: YamlCatalog) {
   log('cards', 'sembrando…')
 
-  // 1. Convertir cromos del YAML al shape de DB
+  // Convertir cromos del YAML al shape de DB
   const yamlRows: CardRow[] = catalog.cards.map((c) => {
     const { legendary_brief, ...restMetadata } = c.metadata ?? {}
     return {
@@ -255,20 +191,12 @@ async function seedCards(catalog: YamlCatalog) {
     }
   })
 
-  // 2. Generar placeholders para llegar a 205
-  const placeholders = generatePlaceholders(catalog, catalog.cards)
+  log('cards', `${yamlRows.length} cromos desde YAML`)
 
-  const allRows = [...yamlRows, ...placeholders]
-
-  log(
-    'cards',
-    `${yamlRows.length} desde YAML + ${placeholders.length} placeholders = ${allRows.length} total`,
-  )
-
-  // 3. Upsert en batches de 50 (Supabase tiene límites en payloads grandes)
+  // Upsert en batches de 50 (Supabase tiene límites en payloads grandes)
   const BATCH_SIZE = 50
-  for (let i = 0; i < allRows.length; i += BATCH_SIZE) {
-    const batch = allRows.slice(i, i + BATCH_SIZE)
+  for (let i = 0; i < yamlRows.length; i += BATCH_SIZE) {
+    const batch = yamlRows.slice(i, i + BATCH_SIZE)
     const { error } = await supabase.from('cards').upsert(batch, { onConflict: 'id' })
 
     if (error) {
@@ -277,9 +205,9 @@ async function seedCards(catalog: YamlCatalog) {
     }
   }
 
-  ok(`${allRows.length} cromos sembrados`)
+  ok(`${yamlRows.length} cromos sembrados`)
 
-  // 4. Verificar distribución
+  // Verificar distribución
   const { count: totalCount } = await supabase
     .from('cards')
     .select('*', { count: 'exact', head: true })
@@ -299,8 +227,8 @@ async function seedCards(catalog: YamlCatalog) {
 // Proyecta el bloque content.photo de cada cromo a la tabla card_assets vía la
 // RPC upsert_card_asset. Idempotente (la RPC hace upsert por card_id) y respeta
 // el INVARIANTE LEGAL: si una fila ya está en 'takedown', el guard de la RPC NO
-// la revive — el reseed la deja como está. Los cromos sin bloque photo (placeholders
-// generados por el seed) se saltean.
+// la revive — el reseed la deja como está. Los cromos sin bloque photo (bonus de
+// página, o cromos sin fuente curada todavía) se saltean.
 
 interface YamlPhoto {
   type?: string | null

@@ -28,9 +28,7 @@ Hace upserts (no destructivo). Podés correrlo cuantas veces quieras sin duplica
 1. **Lee `catalog/eterno-diciembre.yaml`** — definición del álbum + páginas + cromos
 2. **Seed pages** — 10 páginas del álbum
 3. **Seed cards**:
-   - Carga los cromos definidos en el YAML (~155)
-   - Genera **placeholders** (`id: 'placeholder-N'`) para llegar a 205 exactos
-   - Distribuye rarities según `rarity_distribution` del YAML
+   - Carga los 205 cromos definidos en el YAML (la `key: cards`; los `bonus_cards` no se siembran acá)
 4. **Seed mission_templates** — 6 templates definidos en el script
 5. **Seed badges** — 15 badges definidas en el script (categorías: progress, rarity, engagement, social)
 
@@ -40,12 +38,11 @@ Hace upserts (no destructivo). Podés correrlo cuantas veces quieras sin duplica
 ━━━ Cromiks seed ━━━
 
 [catalog] cargando /path/to/eterno-diciembre.yaml
-[catalog] 10 páginas, 155 cromos definidos
+[catalog] 10 páginas, 205 cromos definidos
 [pages] sembrando…
 ✓ 10 páginas sembradas
 [cards] sembrando…
-[placeholders] faltan: 30 common, 15 uncommon, 5 rare
-[cards] 155 desde YAML + 50 placeholders = 205 total
+[cards] 205 cromos desde YAML
 ✓ 205 cromos sembrados
 ✓ distribución correcta: 205 cromos en total
 [missions] sembrando templates…
@@ -59,8 +56,6 @@ Hace upserts (no destructivo). Podés correrlo cuantas veces quieras sin duplica
 ### Idempotencia
 
 Los upserts usan `onConflict: 'id'`. Si una row ya existe con ese ID, se actualizan los campos (no se duplica).
-
-⚠️ **Excepción**: los placeholders se generan con IDs `placeholder-N` predecibles. Si cambia el orden de generación entre runs, podrían "moverse" de página. En la práctica esto no pasa porque el algoritmo es deterministic.
 
 ---
 
@@ -112,13 +107,6 @@ meta:
   album_id: eterno-diciembre
   album_name: Eterno Diciembre
   total_cards: 205
-
-rarity_distribution:
-  common: 130
-  uncommon: 40
-  rare: 20
-  epic: 14
-  legendary: 11    # Los 11 momentos del Mundial
 
 pages:
   - id: el-debut             # uuid o slug
