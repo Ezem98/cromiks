@@ -247,7 +247,7 @@ Ver detalle en [`03-design-system.md`](./03-design-system.md).
 | **No GSAP** | Motion + useFrame + react-spring cubren 95% — menos deps |
 | **Card 3D híbrido** (3D + HTML overlay) | Drei `<Text>` incompatible con three r0.184 |
 | **`typedRoutes: false`** en next.config | Demasiado strict para dev rapid |
-| **SQL versionado en `supabase/migrations/`** | Antes vivía solo en Supabase Studio. Decisión de 26 mayo 2026 |
+| **SQL versionado en `supabase/migrations/`** | Antes vivía solo en Supabase Studio (26 mayo 2026). Desde el **baseline** (5 jun 2026) el repo es self-contained: `00000000000000_baseline.sql` recrea el schema entero con `supabase start`/`db reset` |
 | **Output columns SQL con `out_`** | Evitar ambigüedad con columnas reales (`card_id`, `card_number`). Resuelve bugs como "ambiguous column reference" |
 | **Inner join `cards!inner(album_id)`** en queries de user_cards | Filtra automáticamente huérfanos de seeds anteriores |
 | **Username único en tabla `profiles`** | Separado de `auth.users.user_metadata` — más queryeable y con constraint UNIQUE |

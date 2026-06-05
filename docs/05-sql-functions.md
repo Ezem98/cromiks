@@ -2,6 +2,8 @@
 
 Todas las RPCs (`supabase.rpc(...)`) y triggers que tiene el proyecto. Cada una con su contrato, errores posibles, y la migration que la creó.
 
+> **Nota (baseline 2026-06-05):** las migraciones que se citan abajo (`20260526120000`, etc.) fueron squasheadas en `supabase/migrations/00000000000000_baseline.sql` y archivadas en `supabase/_archived_migrations/`. Las referencias se mantienen como contexto histórico de cada cambio; la definición vigente de todo está en el baseline. Ver [`04-database.md`](./04-database.md).
+
 ---
 
 ## Functions RPC (llamadas desde server actions)

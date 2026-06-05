@@ -252,16 +252,9 @@ Ver detalle en [`05-sql-functions.md`](./05-sql-functions.md).
 
 ## Migrations versionadas
 
-A partir del 26 mayo 2026, todos los cambios SQL se versionan en `supabase/migrations/`.
+✅ **Baseline (2026-06-05):** el repo ya es **self-contained**. `supabase/migrations/00000000000000_baseline.sql` es un dump del schema completo de prod (tablas, enums, RLS, funciones, triggers + el `CREATE TRIGGER on_auth_user_created` en `auth.users`). Las ~18 migraciones incrementales que vivían en `supabase/migrations/` fueron **squasheadas** en el baseline y archivadas en `supabase/_archived_migrations/` (con README). `supabase start` / `db reset` recrean la DB entera desde cero — ya no hace falta Studio para bootstrap.
 
-| Archivo | Aporte |
-|---|---|
-| `20260526120000_fix_open_pack_ambiguous_column.sql` | Renombra output columns con prefijo `out_` para resolver "ambiguous column reference" |
-| `20260526130000_add_claim_mission.sql` | RPC `claim_mission(user_mission_id)` |
-| `20260526140000_add_mission_progress_triggers.sql` | `_advance_missions` + 3 triggers (open_pack, collect_rarity, pin_card) |
-| `20260526150000_e3_sharing_trigger.sql` | Tabla `share_events` + trigger `share_card` |
-
-⚠️ Estas son las migrations creadas **a partir de esta sesión**. El schema base (tablas, enums, RLS inicial) vive solo en Supabase Studio y todavía no está versionado. **Acción pendiente**: hacer un dump del schema actual y guardarlo como `00000000000000_initial_schema.sql` para reproducibilidad completa.
+Para correr local: ver [`operations/migrations.md`](./operations/migrations.md) (necesita Docker). Las RPCs/triggers y su historia (qué migración los introdujo) siguen documentadas en [`05-sql-functions.md`](./05-sql-functions.md); los archivos originales están en `_archived_migrations/`.
 
 ---
 

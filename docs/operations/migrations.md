@@ -40,8 +40,9 @@ completo del schema de prod (tablas, enums, RLS, funciones, triggers + el `CREAT
 on_auth_user_created` en `auth.users`, que `db dump` no captura). Las incrementales de la tabla de
 arriba fueron **squasheadas** en él y archivadas en `supabase/_archived_migrations/` (ver su
 README). Por eso `supabase start` / `supabase db reset` recrean la DB entera desde cero — el repo
-ya es self-contained. **Pendiente al mergear el baseline a prod:** alinear el migration history con
-`supabase migration repair` (NO ejecuta SQL; ver el README del archivo).
+ya es self-contained. El **`migration repair` en prod ya se corrió** (2026-06-05, al mergear el
+baseline): `supabase migration list` muestra local y remoto alineados (solo `00000000000000`). Detalle
+en `_archived_migrations/README.md`.
 
 ---
 
@@ -206,7 +207,7 @@ En CI esto lo hace `.github/workflows/ci.yml` (job `e2e`) automáticamente:
 |---|---|
 | ✅ | ~~Dump del schema inicial~~ → `00000000000000_baseline.sql` (2026-06-05) |
 | ✅ | ~~Configurar Supabase CLI~~ → `config.toml` + `supabase start`/`db push` |
-| 🚧 | Alinear el migration history de prod con el baseline (`supabase migration repair`, ver `_archived_migrations/README.md`) |
+| ✅ | ~~Alinear el migration history de prod con el baseline~~ (`migration repair` corrido 2026-06-05; local y remoto alineados) |
 | 🚧 | CI que valide que las migrations son idempotentes (`DROP IF EXISTS` + `CREATE`) |
 | 🚧 | Script `pnpm db:status` que muestre qué migrations están aplicadas y cuáles faltan |
 
