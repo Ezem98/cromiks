@@ -379,8 +379,9 @@ prod. Salió en **2 PRs**:
 
 **Verificado local (Docker):** `supabase start` aplica el baseline exit 0; el seed corre
 (205 cromos, 31 published); **los 11 e2e pasan contra `127.0.0.1:54321`** (incl. el smoke golden
-path), no contra prod. **Pendiente al mergear PR1:** `supabase migration repair` en prod (ver
-`_archived_migrations/README.md`). Contexto original abajo.
+path), no contra prod. **Mergeado (PRs #64+#65, 2026-06-05)** y el smoke nuevo (supabase local)
+quedó **verde en CI**. El **`migration repair` en prod ya se corrió** — `migration list` muestra
+local y remoto alineados (solo `00000000000000`). Contexto original abajo.
 
 <details><summary>Contexto original (resuelto)</summary>
 

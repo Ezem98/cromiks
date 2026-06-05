@@ -117,9 +117,15 @@ pnpm seed:reset           # ⚠️ DESTRUCTIVO — borra todo y resemea
 
 # Tipos generados de Supabase
 pnpm db:types             # Regenera src/types/database.types.ts desde el schema actual
+
+# Supabase local (Docker) — para e2e y probar migraciones sin tocar prod
+pnpx supabase start       # Levanta el stack y aplica el baseline (supabase/migrations/*)
+pnpx supabase stop        # Lo apaga
 ```
 
 ⚠️ **Después de aplicar una migration SQL siempre correr `pnpm db:types`**, sino el TS no sabe de columnas/funciones nuevas.
+
+> El **e2e** (`pnpm test:e2e`) corre contra el Supabase **local** (no prod): `supabase start` → exportar sus env → `pnpm seed` → `pnpm test:e2e`. Detalle en [`operations/migrations.md`](./operations/migrations.md). El repo es self-contained desde el baseline (`00000000000000_baseline.sql`).
 
 ---
 
@@ -167,7 +173,9 @@ cromiks/
 │   ├── lib/               # Utilities, supabase clients
 │   └── types/             # database.types.ts (generado)
 ├── supabase/
-│   └── migrations/        # SQL versionado
+│   ├── config.toml        # config del stack local (supabase start; analytics/storage off)
+│   ├── migrations/        # SQL versionado (00000000000000_baseline.sql)
+│   └── _archived_migrations/  # incrementales pre-baseline (squasheadas, NO se ejecutan)
 └── docs/                  # ← Estás acá
 ```
 

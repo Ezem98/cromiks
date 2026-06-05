@@ -26,11 +26,11 @@ migración original siguen en git). Correrlas DESPUÉS del baseline rompería co
 hacen `DROP FUNCTION` + recrean versiones **intermedias** de `open_pack`/`roll_cards`
 que el baseline ya tiene en su forma final.
 
-## ⚠️ Paso pendiente en PROD al mergear
+## ✅ Repair de PROD — YA CORRIDO (2026-06-05)
 
-Prod ya tiene estas 18 en su `supabase_migrations.schema_migrations`. Tras mergear el
-baseline hay que **alinear el historial** para que un `supabase db push` futuro no se
-confunda. `supabase migration repair` **NO ejecuta SQL** — solo actualiza el bookkeeping:
+Prod tenía estas 18 en su `supabase_migrations.schema_migrations`. Al mergear el baseline se
+**alineó el historial** para que un `supabase db push` futuro no se confunda. `supabase migration
+repair` **NO ejecuta SQL** — solo actualiza el bookkeeping. Lo que se corrió:
 
 ```bash
 # marcar las 18 viejas como revertidas (ya no están en el repo)
@@ -38,9 +38,10 @@ supabase migration repair --status reverted 20260526120000 20260526130000 \
   20260526140000 20260526150000 20260526160000 20260527100000 20260527120000 \
   20260527130000 20260529030000 20260529125447 20260529140000 20260530120000 \
   20260530120100 20260530120200 20260531120000 20260601120000 20260602183702 \
-  20260604222239
+  20260604222437   # ← OJO: prod tenía 222437, NO 222239 (el nombre del archivo difería del registrado)
 # marcar el baseline como aplicado (prod YA tiene ese schema, no re-ejecutar)
 supabase migration repair --status applied 00000000000000
 ```
 
-Verificar con `supabase migration list` que local y remoto quedan alineados.
+Resultado verificado: `supabase migration list` muestra local y remoto alineados (solo
+`00000000000000`). No hay que volver a correrlo.
