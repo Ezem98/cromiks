@@ -114,7 +114,20 @@ fila, PR #53), **T-14 (smoke determinístico)**, leyenda/ayuda, búsqueda + filt
 
 ---
 
-## T-06 · `parse_focal` borrado en `chore/react-doctor-cleanup` (posible baja no intencional)
+## T-06 · `parse_focal` borrado en `chore/react-doctor-cleanup` — ✅ HECHA (2026-06-05): falso riesgo, la rama es stale
+
+**Resuelto:** NO hay regresión ni nada que revertir. (1) La rama `chore/react-doctor-cleanup`
+(tip `e5d7902`, 2026-06-02) **ya es ancestro de `origin/main`** — 0 commits propios, 69 detrás:
+está completamente contenida en main, así que el escenario "si se mergea rompe el crop focal" es
+imposible. (2) `parse_focal` está **vivo en main** (`imaging.py:121`), **cableado** al pipeline
+(`cli.py:128` lo usa para el crop focal real) y **bien testeado** (`test_imaging.py`:
+`test_parse_focal`, `test_focal_default_es_centrado`, `test_focal_ancla_el_crop`,
+`test_focal_compone_con_landscape`). (3) La historia lo explica: la rama lo borró en su momento,
+pero `8a1febf feat(assets): punto focal configurable…` lo (re)introdujo en main después.
+**Rama stale borrada** (local + `origin`, 2026-06-05) — no aportaba ningún commit y solo quedaba
+como trampa. **Priority:** ~~P1/P3~~ cerrado.
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** Revisar el diff de la rama `chore/react-doctor-cleanup`: borró `parse_focal` + el crop focal de `scripts/assets/imaging.py` (~70 líneas) y cobertura de `test_imaging.py`. Confirmar si fue intencional y o revertirlo o abandonar la rama.
 
@@ -123,6 +136,8 @@ fila, PR #53), **T-14 (smoke determinístico)**, leyenda/ayuda, búsqueda + filt
 **Pros:** Evita una regresión silenciosa del pipeline. **Cons:** Ninguno real, es chequeo.
 
 **Context:** No bloquea el feature bento (se implementa desde `origin/main`, donde focal está). Comparar `git show chore/react-doctor-cleanup:scripts/assets/imaging.py` vs `origin/main`. **Priority:** P1 si esa rama está por mergearse, sino P3.
+
+</details>
 
 ---
 
@@ -348,13 +363,34 @@ sin foto no molesta hoy).
 
 ---
 
-## T-17 · Redirect `cromiks.com` → `cromiks.app`
+## T-17 · Redirect `cromiks.com` → `cromiks.app` — ✅ HECHA (2026-06-05)
+
+**Resuelto:** `cromiks.com` y `www.cromiks.com` (con cualquier path/query) hacen **301 →
+`https://cromiks.app/<path>?<query>`**. Verificado en vivo por HTTP (`/album?x=1&y=2`, `/legal`,
+`www/foo/bar` → todos 301 al path+query correcto).
+
+**Cómo (NO fue con Redirect Rules):** el token del MCP de Cloudflare es **read-only para reglas**
+(escritura de rulesets/account-rulesets/bulk-redirects → `10000 auth`; Page Rules y activation_check
+→ `9109 unauthorized`) pero **SÍ tiene write en Workers**. Así que el redirect se armó con un
+**Worker** `cromiks-com-redirect` (service-worker: `Response.redirect("https://cromiks.app" +
+url.pathname + url.search, 301)`) + dos **Workers Routes**: `cromiks.com/*` y `www.cromiks.com/*`.
+El DNS apex/www ya estaba proxied, así que no se tocó. NO se agregó el `.com` a Railway ni al
+allowlist de Supabase. Pasos previos: el dueño cambió los NS en Porkbun → darwin/leanna (la zona
+pasó a `active`).
+
+**Pendiente (automático, sin acción):** el **Universal SSL** de `cromiks.com` se emite solo en
+minutos–~1h; hasta entonces el HTTPS da SSL error (exit 35) y solo anda el HTTP. Una vez emitido,
+`https://cromiks.com/...` redirige igual.
+
+<details><summary>Contexto original</summary>
 
 **What:** `cromiks.com` debe redirigir (301) a `cromiks.app`. Plan del dueño: **transferir primero el dominio `.com` a Cloudflare**, después armar el redirect.
 
 **Why:** `cromiks.app` es el dominio canónico (live en Railway, auth/OG/links apuntan ahí). El `.com` suelto confunde y puede romper auth/OG si alguien entra por ahí.
 
 **Cómo:** (1) Transferir/agregar `cromiks.com` a Cloudflare (DNS). (2) **Redirect Rule** / Bulk Redirect en Cloudflare: `cromiks.com/*` → `https://cromiks.app/$1`, 301, preservando path+query. No requiere tocar Railway ni el código. Ojo: NO agregar `cromiks.com` como dominio servido en Railway ni al allowlist de Supabase — solo redirige.
+
+</details>
 
 **Priority:** P3 (cosmético/canónico; no bloquea la beta — el link a DMear es `cromiks.app` directo).
 
