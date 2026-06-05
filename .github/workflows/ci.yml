@@ -85,14 +85,16 @@ jobs:
         run: supabase start
       # Exporta la URL + keys del stack local a las env vars que el código espera.
       # `--override-name` mapea nombres internos estables del CLI → nuestros nombres,
-      # sin hardcodear keys ni depender del shape del JSON.
+      # sin hardcodear keys ni depender del shape del JSON. `supabase status` emite
+      # `KEY="value"` (con comillas); `$GITHUB_ENV` las tomaría como parte del valor,
+      # así que las quitamos con `tr -d '"'` (las URLs/keys no llevan comillas internas).
       - name: Exportar env del Supabase local
         run: |
           supabase status -o env \
             --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
             --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
             --override-name auth.service_role_key=SUPABASE_SECRET_KEY \
-            | grep -E '^[A-Z0-9_]+=' >> "$GITHUB_ENV"
+            | grep -E '^[A-Z0-9_]+=' | tr -d '"' >> "$GITHUB_ENV"
       - run: pnpm install --frozen-lockfile
       # Popula el álbum. El catálogo deja francia con 31 cards published; global-setup
       # del e2e activa esa página (pages.is_active) antes de correr el smoke.
