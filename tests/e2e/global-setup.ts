@@ -44,6 +44,17 @@ export default async function globalSetup(config: FullConfig) {
     auth: { autoRefreshToken: false, persistSession: false },
   })
 
+  // 0) Cutover de la beta: garantizar la página francia activa. La migración crea
+  // `pages.is_active` en default false y el seed no lo setea (es estado operacional),
+  // pero el smoke necesita ≥1 página activa con cards published para reclamar/abrir un
+  // pack — francia las tiene (31 published vía el catálogo). Idempotente: en prod ya
+  // está activa, en una DB local recién sembrada la activa.
+  const { error: activateErr } = await admin
+    .from('pages')
+    .update({ is_active: true })
+    .eq('id', 'francia')
+  if (activateErr) throw new Error(`[e2e setup] activar francia falló: ${activateErr.message}`)
+
   // 1) Si el user e2e ya existe, lo borramos completo. Esto fuerza a que el
   // trigger `handle_new_user` (si existe a nivel proyecto) re-cree las base
   // rows (streaks, user_coins, profiles, etc) en estado conocido. Más limpio

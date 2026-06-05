@@ -336,7 +336,27 @@ sin foto no molesta hoy).
 
 ---
 
-## T-16 · El E2E corre contra prod — split a una Supabase de staging
+## T-16 · El E2E corre contra prod — aislar a Supabase local — ✅ HECHA (2026-06-05)
+
+**Resuelto (Supabase local en CI, NO staging dedicado — decisión del dueño):** el e2e ya no toca
+prod. Salió en **2 PRs**:
+
+- **PR1 `chore/db-baseline`** (commit `9905700`): el repo no podía recrear su DB (solo parches
+  incrementales). Se generó `supabase/migrations/00000000000000_baseline.sql` (dump del schema de
+  prod + el trigger `on_auth_user_created` que `db dump` no captura), se archivaron las 18
+  incrementales en `_archived_migrations/`, y se agregó `config.toml` (analytics/storage off).
+  Ver [[cromiks-migrations-not-self-contained]].
+- **PR2 `chore/e2e-local`**: el job `e2e` de `ci.yml` ahora hace `supabase start` (aplica el
+  baseline) → `supabase status -o env --override-name …` (exporta URL+keys del stack local, sin
+  secrets de prod) → `pnpm seed` → `pnpm test:e2e`. `global-setup.ts` activa la página francia
+  (`pages.is_active`, que el seed no setea). Doc en `migrations.md`.
+
+**Verificado local (Docker):** `supabase start` aplica el baseline exit 0; el seed corre
+(205 cromos, 31 published); **los 11 e2e pasan contra `127.0.0.1:54321`** (incl. el smoke golden
+path), no contra prod. **Pendiente al mergear PR1:** `supabase migration repair` en prod (ver
+`_archived_migrations/README.md`). Contexto original abajo.
+
+<details><summary>Contexto original (resuelto)</summary>
 
 **What:** El `tests/e2e/global-setup.ts` corre contra la **DB de prod** (`oaussuztahdxivemqbnd`, confirmado por el dueño 2026-06-04): crea/borra el user `PLAYWRIGHT_TEST_USER_EMAIL` y siembra packs ahí, en cada PR (CI) y en cada corrida local. Apuntar el E2E a un proyecto Supabase de **staging** (env aparte para CI) y dejar prod solo para usuarios reales.
 
@@ -345,6 +365,8 @@ sin foto no molesta hoy).
 **Cómo:** Proyecto Supabase staging (mismas migraciones + seed) → secrets de CI apuntando a staging → `.env.local` de cada dev a staging para e2e. Ojo: el smoke necesita una página `is_active` con cartas published en staging (replicar el cutover de francia ahí).
 
 **Priority:** P2 (no bloquea la beta, pero sí antes de que el CI corra seguido con usuarios reales en prod).
+
+</details>
 
 ---
 
