@@ -35,23 +35,38 @@ Ejemplo: `20260526140000_add_mission_progress_triggers.sql`
 | `20260530120100_add_pages_is_active.sql` | Columna `pages.is_active boolean NOT NULL DEFAULT false` (gate del pool de la beta) | 13 | ✅ (`ADD COLUMN IF NOT EXISTS`) |
 | `20260530120200_roll_cards_beta_weighted_draw.sql` | Reescribe `roll_cards`: filtro `is_active` + draw ponderado por cromo + guard `no_active_cards` | 14 | ✅ (`CREATE OR REPLACE`) |
 
-⚠️ **No hay migration `00000000000000_initial_schema.sql`**. El schema base (tablas, enums, RLS inicial) vive solo en Supabase Studio. Pendiente: hacer dump y guardarlo para reproducibilidad completa.
+✅ **Baseline (2026-06-05):** `supabase/migrations/00000000000000_baseline.sql` es ahora un dump
+completo del schema de prod (tablas, enums, RLS, funciones, triggers + el `CREATE TRIGGER
+on_auth_user_created` en `auth.users`, que `db dump` no captura). Las incrementales de la tabla de
+arriba fueron **squasheadas** en él y archivadas en `supabase/_archived_migrations/` (ver su
+README). Por eso `supabase start` / `supabase db reset` recrean la DB entera desde cero — el repo
+ya es self-contained. **Pendiente al mergear el baseline a prod:** alinear el migration history con
+`supabase migration repair` (NO ejecuta SQL; ver el README del archivo).
 
 ---
 
 ## Cómo aplicar una migration
 
-### Opción 1: Supabase Studio (la que usamos hoy)
+### En desarrollo local (Supabase CLI + Docker)
 
-1. Abrí [Supabase Studio](https://supabase.com/dashboard/project/oaussuztahdxivemqbnd) → **SQL Editor**
-2. New query
-3. Pegá el contenido del archivo `.sql`
-4. Run (`Ctrl+Enter`)
-5. Esperá "Success. No rows returned" o el resultado esperado
+El repo ya tiene `supabase/config.toml`, así que el stack local levanta solo:
 
-### Opción 2: Supabase CLI (no implementado todavía)
+```bash
+pnpx supabase start      # levanta el stack y aplica TODAS las migrations (baseline incl.)
+pnpx supabase db reset   # recrea la DB desde cero re-aplicando las migrations + seed.sql
+```
 
-🚧 Pendiente: configurar `supabase` CLI con `pnpm supabase db push` para aplicar la carpeta `migrations/` automáticamente.
+Para una migration nueva, agregá el `.sql` a `supabase/migrations/` y corré `db reset`
+(o `supabase migration up`). Requiere **Docker Desktop corriendo**.
+
+### A prod
+
+```bash
+pnpx supabase db push    # aplica a prod las migrations que falten (según schema_migrations)
+```
+
+> Si preferís a mano: Supabase Studio → SQL Editor → pegar el `.sql` → Run. Pero
+> registrar la migration en `schema_migrations` queda a tu cargo (mejor usar `db push`).
 
 ---
 
@@ -154,12 +169,34 @@ GRANT EXECUTE ON FUNCTION public.nombre(args) TO authenticated;
 
 ## Tip: testear una migration antes de aplicarla en prod
 
-1. Crear un branch en Supabase (feature opcional, pagada)
-2. Aplicar la migration ahí
-3. Probar
-4. Si funciona → aplicar en main
+Con el stack local ya no hace falta branching pago: probá la migration contra una DB
+idéntica a prod.
 
-Si no tenés branching, hacé backup del schema antes (Studio → Database → Backups).
+```bash
+pnpx supabase db reset   # recrea la DB local desde el baseline + migrations
+pnpm seed                # popula contra el local (ver env vars en e2e local, abajo)
+```
+
+Si aplica limpio y el seed corre, está lista para `db push`.
+
+---
+
+## Desarrollo local + e2e
+
+El e2e (`pnpm test:e2e`) corre contra el **Supabase local**, no contra prod (T-16). Flujo:
+
+```bash
+pnpx supabase start      # 1. stack local (aplica el baseline)
+# 2. exportar las env del stack a la sesión (o ponerlas en .env.local apuntando al local):
+#    NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+#    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY / SUPABASE_SECRET_KEY  ← de `supabase status`
+pnpm seed                # 3. popula el álbum (catálogo deja francia con 31 cards published)
+pnpm test:e2e            # 4. global-setup activa francia + crea el user; corre el smoke
+```
+
+En CI esto lo hace `.github/workflows/ci.yml` (job `e2e`) automáticamente:
+`supabase/setup-cli` → `supabase start` → exporta env con `supabase status -o env
+--override-name …` → `pnpm seed` → `pnpm test:e2e`. Sin secrets de Supabase de prod.
 
 ---
 
@@ -167,8 +204,9 @@ Si no tenés branching, hacé backup del schema antes (Studio → Database → B
 
 | | |
 |---|---|
-| 🚧 | Dump del schema inicial → `00000000000000_initial_schema.sql` |
-| 🚧 | Configurar Supabase CLI (`pnpm supabase`) para apply automatizado |
+| ✅ | ~~Dump del schema inicial~~ → `00000000000000_baseline.sql` (2026-06-05) |
+| ✅ | ~~Configurar Supabase CLI~~ → `config.toml` + `supabase start`/`db push` |
+| 🚧 | Alinear el migration history de prod con el baseline (`supabase migration repair`, ver `_archived_migrations/README.md`) |
 | 🚧 | CI que valide que las migrations son idempotentes (`DROP IF EXISTS` + `CREATE`) |
 | 🚧 | Script `pnpm db:status` que muestre qué migrations están aplicadas y cuáles faltan |
 
