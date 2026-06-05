@@ -8,7 +8,8 @@ node_modules
 .venv
 __pycache__/
 *.pyc
-scripts/assets/candidates.json   # output del discover.py (candidatos de imágenes, no se versiona)
+# output del discover.py (candidatos de imágenes, no se versiona)
+scripts/assets/candidates.json
 
 # Testing
 coverage
