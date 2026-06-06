@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils'
  * - referral: por traer un amigo
  */
 
-type SobreType = 'daily' | 'mission' | 'match' | 'welcome' | 'premium' | 'referral'
+export type SobreType = 'daily' | 'mission' | 'match' | 'welcome' | 'premium' | 'referral'
 type SobreState = 'closed' | 'opening' | 'opened'
 type SobreSize = 'sm' | 'md' | 'lg'
 
@@ -44,7 +44,7 @@ const sizeMap: Record<
   lg: { width: 280, height: 369, brandSize: 'text-[13px]', sealSize: 'size-20 text-4xl' },
 }
 
-const typeLabels: Record<SobreType, string> = {
+export const typeLabels: Record<SobreType, string> = {
   daily: 'Sobre diario',
   mission: 'Sobre de misión',
   match: 'Sobre del partido',

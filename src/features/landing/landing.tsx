@@ -1,3 +1,4 @@
+import { HeroLegendary } from '@/features/landing/components/hero-legendary'
 import { WaitlistForm } from '@/features/landing/components/waitlist-form'
 
 /**
@@ -61,41 +62,52 @@ export function Landing() {
       {/* ---------------------------------------------------------------- */}
       {/* 1. Hero */}
       {/* ---------------------------------------------------------------- */}
-      <section className="flex flex-col items-center justify-center px-6 pt-20 pb-16 sm:pt-28 max-w-4xl mx-auto text-center">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="h-px w-6 bg-(--color-gold)" />
-          <span className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-gold)">
-            Próximamente · junio 2026
-          </span>
+      <section className="relative overflow-x-clip px-6 pt-20 pb-16 sm:pt-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-8">
+          {/* Copy + captura de email. En mobile va debajo de la carta (order-2). */}
+          <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-px w-6 bg-(--color-gold)" />
+              <span className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-gold)">
+                Próximamente · junio 2026
+              </span>
+            </div>
+
+            <h1 className="text-display text-[clamp(48px,8vw,88px)] leading-[0.9] mb-6">
+              El álbum
+              <br />
+              <span className="text-(--color-argentina-glow)">eterno.</span>
+            </h1>
+
+            <p className="text-[18px] leading-normal text-(--color-text-secondary) max-w-xl mb-8">
+              El primer álbum digital donde los cromos épicos se mueven, suenan y te devuelven el
+              momento original. Empezamos por el más sagrado: Argentina campeón del mundo, 2022.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-mono text-[12px] text-(--color-text-muted) mb-10 lg:justify-start">
+              <span className="flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-(--color-gold)" />
+                205 cromos
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-(--color-gold)" />
+                10 páginas narrativas
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-(--color-gold)" />
+                11 Legendarias
+              </span>
+            </div>
+
+            <WaitlistForm />
+          </div>
+
+          {/* La Legendaria viva — prueba visual del diferenciador. En mobile va
+              arriba (order-1) como gancho. */}
+          <div className="order-1 lg:order-2">
+            <HeroLegendary />
+          </div>
         </div>
-
-        <h1 className="text-display text-[clamp(64px,12vw,128px)] leading-[0.88] mb-6">
-          El álbum
-          <br />
-          <span className="prism-text">eterno.</span>
-        </h1>
-
-        <p className="text-[18px] leading-normal text-(--color-text-secondary) max-w-xl mb-8">
-          El primer álbum digital donde los cromos épicos se mueven, suenan y te devuelven el
-          momento original. Empezamos por el más sagrado: Argentina campeón del mundo, 2022.
-        </p>
-
-        <div className="flex flex-wrap items-center justify-center gap-6 text-mono text-[12px] text-(--color-text-muted) mb-10">
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-(--color-gold)" />
-            205 cromos
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-(--color-gold)" />
-            10 páginas narrativas
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-(--color-gold)" />
-            11 Legendarias
-          </span>
-        </div>
-
-        <WaitlistForm />
       </section>
 
       {/* ---------------------------------------------------------------- */}
@@ -103,24 +115,23 @@ export function Landing() {
       {/* ---------------------------------------------------------------- */}
       <section className="px-6 py-16 sm:py-24 border-t border-white/[0.06]">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-display text-[clamp(32px,5vw,52px)] leading-[0.95] mb-3 text-center">
+          <h2 className="text-display text-[clamp(32px,5vw,52px)] leading-[0.95] mb-3 text-center text-balance">
             No es una figurita.
             <br />
             <span className="text-(--color-text-secondary)">Es el momento.</span>
           </h2>
-          <p className="text-center text-(--color-text-muted) text-[15px] max-w-lg mx-auto mb-12">
+          <p className="text-center text-(--color-text-muted) text-[15px] max-w-lg mx-auto mb-14">
             Lo viviste. Ahora lo revivís.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {FEATURES.map((f, i) => (
-              <div
-                key={f.title}
-                className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6"
-              >
-                <span className="text-mono text-[11px] text-(--color-gold)">0{i + 1}</span>
-                <h3 className="text-display text-2xl mt-3 mb-2 leading-tight">{f.title}</h3>
-                <p className="text-(--color-text-secondary) text-[14px] leading-relaxed">
+          {/* Three-up tipográfico (sin cajas, sin números: son features paralelas,
+              no una secuencia). La rulita gold ata el ritmo al eyebrow del hero. */}
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
+            {FEATURES.map((f) => (
+              <div key={f.title}>
+                <span className="block h-px w-8 bg-(--color-gold) mb-4" aria-hidden="true" />
+                <h3 className="text-display text-2xl mb-2 leading-tight">{f.title}</h3>
+                <p className="text-(--color-text-secondary) text-[15px] leading-relaxed">
                   {f.body}
                 </p>
               </div>
@@ -144,18 +155,23 @@ export function Landing() {
             Los que te pusieron la piel de gallina. Están todos. Y cuando sacás uno, vuelve a pasar.
           </p>
 
-          {/* Teasers numerados — sin fotos con IP hasta tener assets propios. */}
+          {/* El álbum vacío esperando: slots recesados con el sol de mayo al agua y
+              su número de catálogo. Sin fotos con IP todavía; cuando existan, acá
+              va el cromo. La metáfora literal del producto: pegoteá tu álbum. */}
           <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
             {LEGENDARIA_SLOTS.map((n) => (
               <div
                 key={n}
-                className="aspect-[3/4] rounded-[12px] bg-(--color-surface-raised) border border-white/[0.06] flex items-center justify-center"
+                className="relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-[12px] border border-white/[0.06] bg-(--color-surface-base) shadow-[inset_0_1px_0_rgba(255,255,255,0.04),inset_0_2px_12px_rgba(0,0,0,0.5)]"
               >
-                <span className="text-display text-3xl text-(--color-text-ghost)">{n}</span>
+                <SlotSeal className="size-8 text-(--color-gold)/15" />
+                <span className="absolute right-2 top-2 text-mono text-[10px] text-(--color-text-ghost)">
+                  {n}
+                </span>
               </div>
             ))}
             {/* Slot 12 = "y vos" / misterio */}
-            <div className="aspect-[3/4] rounded-[12px] border border-dashed border-(--color-gold)/30 flex items-center justify-center">
+            <div className="flex aspect-[3/4] items-center justify-center rounded-[12px] border border-dashed border-(--color-gold)/30">
               <span className="text-mono text-[10px] uppercase tracking-[0.1em] text-(--color-gold)/70 px-2 text-center">
                 Sacalas todas
               </span>
@@ -177,7 +193,7 @@ export function Landing() {
               <div key={s.step} className="text-center sm:text-left">
                 <span className="text-display text-5xl text-(--color-gold)">{s.step}</span>
                 <h3 className="text-display text-xl mt-3 mb-2 leading-tight">{s.title}</h3>
-                <p className="text-(--color-text-secondary) text-[14px] leading-relaxed">
+                <p className="text-(--color-text-secondary) text-[15px] leading-relaxed">
                   {s.body}
                 </p>
               </div>
@@ -212,7 +228,7 @@ export function Landing() {
           <h2 className="text-display text-[clamp(40px,7vw,72px)] leading-[0.9] mb-6">
             Entrá a la
             <br />
-            <span className="prism-text">beta.</span>
+            <span className="text-(--color-argentina-glow)">beta.</span>
           </h2>
           <p className="text-(--color-text-secondary) text-[16px] mb-8">
             Dejá tu mail y sos de los primeros en armar el álbum eterno.
@@ -221,5 +237,21 @@ export function Landing() {
         </div>
       </section>
     </div>
+  )
+}
+
+/**
+ * Sol de mayo al agua para los slots vacíos del álbum (símbolo argentino sin
+ * escudo AFA, mismo motivo que el pip legendary del cromo). Hereda el color por
+ * currentColor; el caller le pone la opacidad baja de watermark.
+ */
+function SlotSeal({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <polygon
+        points="12,1 14.11,6.92 19.78,4.22 17.08,9.89 23,12 17.08,14.11 19.78,19.78 14.11,17.08 12,23 9.89,17.08 4.22,19.78 6.92,14.11 1,12 6.92,9.89 4.22,4.22 9.89,6.92"
+        fill="currentColor"
+      />
+    </svg>
   )
 }
