@@ -1,10 +1,12 @@
 'use client'
 
 import { CheckCircle2Icon, CircleIcon, CoinsIcon, GiftIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { useCoinsBalance } from '@/components/layout/coins-balance-context'
 import { Button } from '@/components/ui/button'
+import { assignDailyMissions } from '@/features/home/actions'
 import { claimMission } from '@/features/missions/actions'
 import type { MissionWithReward } from '@/features/missions/queries'
 import { errorCopy } from '@/lib/errors'
@@ -29,9 +31,15 @@ import { cn } from '@/lib/utils'
 
 type MissionsCardProps = {
   missions: MissionWithReward[]
+  /**
+   * ¿El ciclo de hoy ya tiene misiones asignadas (en cualquier estado, incluido
+   * claimed)? Lo calcula el Home. Distingue "ya reclamaste todo hoy" (estado
+   * done) de "no se asignaron ninguna" (reintento).
+   */
+  dailyAssigned?: boolean
 }
 
-export function MissionsCard({ missions }: MissionsCardProps) {
+export function MissionsCard({ missions, dailyAssigned = false }: MissionsCardProps) {
   // Track de misiones que el user ya claimed en esta sesión, para hide del UI
   // sin esperar revalidación (optimistic)
   const [claimedLocally, setClaimedLocally] = useState<Set<string>>(new Set())
@@ -40,20 +48,22 @@ export function MissionsCard({ missions }: MissionsCardProps) {
   const visibleMissions = missions.filter((m) => !claimedLocally.has(m.id))
 
   if (visibleMissions.length === 0) {
+    // Reintento SOLO si de verdad no hay misiones del ciclo (el assign falló o
+    // se cruzó con otra request). Si ya están asignadas —las reclamó en esta
+    // sesión, o ya estaban todas claimed del día— es "listo por hoy", no un
+    // error: no le pedimos que recargue a mano.
+    if (missions.length === 0 && !dailyAssigned) {
+      return <MissionsRecovery />
+    }
+    // Todo reclamado por hoy.
     return (
       <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6">
         <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) mb-3">
           Misiones del día
         </p>
-        {missions.length === 0 ? (
-          <p className="text-(--color-text-secondary) text-sm">
-            Asignando misiones… volvé a cargar la página en un instante.
-          </p>
-        ) : (
-          <p className="text-(--color-text-secondary) text-sm">
-            ¡Reclamaste todas tus misiones del día! Volvé mañana por más.
-          </p>
-        )}
+        <p className="text-(--color-text-secondary) text-sm">
+          ¡Reclamaste todas tus misiones del día! Volvé mañana por más.
+        </p>
       </div>
     )
   }
@@ -96,6 +106,49 @@ export function MissionsCard({ missions }: MissionsCardProps) {
           </p>
         </div>
       )}
+    </div>
+  )
+}
+
+/**
+ * Estado de recuperación de las misiones.
+ *
+ * Se llega acá cuando el home intentó asignar las misiones del día y no quedó
+ * ninguna (la asignación falló o se cruzó con otra request). En vez de pedirle
+ * al user que recargue la página a mano —que ni siquiera arregla el problema—
+ * le damos un reintento real: vuelve a disparar la asignación y, si sale,
+ * refresca el server component para que aparezcan las misiones.
+ */
+function MissionsRecovery() {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+
+  const handleRetry = () => {
+    startTransition(async () => {
+      const result = await assignDailyMissions()
+      if (!result.ok) {
+        toast.error('No pudimos preparar tus misiones', {
+          description: errorCopy(result.code),
+        })
+        return
+      }
+      // Re-fetch del server component → la card se re-renderiza con las
+      // misiones ya asignadas (sin perder el estado de claim de la sesión).
+      router.refresh()
+    })
+  }
+
+  return (
+    <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6">
+      <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) mb-3">
+        Misiones del día
+      </p>
+      <p className="text-(--color-text-secondary) text-sm mb-4">
+        No pudimos preparar tus misiones de hoy. Dale de nuevo y aparecen.
+      </p>
+      <Button variant="ghost" size="sm" onClick={handleRetry} disabled={isPending}>
+        {isPending ? 'Preparando…' : 'Reintentar'}
+      </Button>
     </div>
   )
 }
@@ -146,9 +199,15 @@ function MissionRow({ mission, onClaimed }: { mission: MissionWithReward; onClai
   return (
     <li className="flex items-start gap-3">
       {isCompleted || isClaimed ? (
-        <CheckCircle2Icon className="size-5 mt-0.5 text-(--color-argentina-glow) shrink-0" />
+        <CheckCircle2Icon
+          aria-hidden="true"
+          className="size-5 mt-0.5 text-(--color-argentina-glow) shrink-0"
+        />
       ) : (
-        <CircleIcon className="size-5 mt-0.5 text-(--color-text-muted) shrink-0" />
+        <CircleIcon
+          aria-hidden="true"
+          className="size-5 mt-0.5 text-(--color-text-muted) shrink-0"
+        />
       )}
 
       <div className="flex-1 min-w-0">
@@ -212,27 +271,31 @@ function RewardBadges({ reward }: { reward: MissionWithReward['reward'] }) {
     <div className="flex items-center gap-2 flex-wrap">
       {hasCoins && (
         <span
+          role="img"
           className={cn(
             'inline-flex items-center gap-1 rounded-full px-2 py-0.5',
             'bg-(--color-gold)/10 border border-(--color-gold)/20',
             'text-mono text-[10px] text-(--color-gold)',
           )}
           title={`Te da ${reward.coins} monedas al reclamar`}
+          aria-label={`Recompensa: ${reward.coins} monedas`}
         >
-          <CoinsIcon className="size-3" />
+          <CoinsIcon className="size-3" aria-hidden="true" />
           {reward.coins}
         </span>
       )}
       {hasPack && (
         <span
+          role="img"
           className={cn(
             'inline-flex items-center gap-1 rounded-full px-2 py-0.5',
             'bg-(--color-argentina-glow)/10 border border-(--color-argentina-glow)/20',
             'text-mono text-[10px] text-(--color-argentina-glow)',
           )}
           title={`Te da un sobre de ${reward.cardCount ?? '?'} cromos al reclamar`}
+          aria-label={`Recompensa: un sobre con ${reward.cardCount ?? ''} cromos`}
         >
-          <GiftIcon className="size-3" />
+          <GiftIcon className="size-3" aria-hidden="true" />
           {reward.cardCount ?? ''} cromos
         </span>
       )}

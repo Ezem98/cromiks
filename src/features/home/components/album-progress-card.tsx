@@ -33,7 +33,14 @@ export function AlbumProgressCard({ cardsOwned, totalCards }: AlbumProgressCardP
       </div>
 
       {/* Progress bar */}
-      <div className="h-1.5 bg-(--color-surface-elevated) rounded-full overflow-hidden mb-3">
+      <div
+        role="progressbar"
+        aria-valuenow={percentage}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`Progreso del álbum: ${cardsOwned} de ${totalCards} cromos`}
+        className="h-1.5 bg-(--color-surface-elevated) rounded-full overflow-hidden mb-3"
+      >
         <div
           className="h-full bg-(--color-argentina-glow) rounded-full transition-all duration-500"
           style={{ width: `${percentage}%` }}
@@ -59,7 +66,7 @@ export function AlbumProgressCard({ cardsOwned, totalCards }: AlbumProgressCardP
         className="mt-3 inline-flex items-center gap-1.5 text-sm text-(--color-argentina-glow) hover:underline underline-offset-2"
       >
         Ver el álbum
-        <ArrowRightIcon className="size-3.5" />
+        <ArrowRightIcon className="size-3.5" aria-hidden="true" />
       </Link>
     </div>
   )

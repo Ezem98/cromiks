@@ -5,6 +5,7 @@ import { getHomeData } from '@/features/home/queries'
 import { getMissionsForUser } from '@/features/missions/queries'
 import { AlbumProgressCard } from './album-progress-card'
 import { DailyPackCard } from './daily-pack-card'
+import { ExtraPacksCard } from './extra-packs-card'
 import { MissionsCard } from './missions-card'
 import { StreakCard } from './streak-card'
 
@@ -20,26 +21,36 @@ import { StreakCard } from './streak-card'
  *  4. Render
  */
 export async function Home() {
-  let data = await getHomeData()
+  const data = await getHomeData()
   if (!data) {
     // Layout debería haber redirigido. Si llegamos acá, algo raro.
     return null
   }
 
-  // Si no tiene misiones activas hoy, asignar 3 random.
+  // Si no tiene misiones activas hoy, asignar 3 random. Best-effort: si la
+  // asignación falla, la MissionsCard ofrece un reintento en cliente en vez de
+  // dejar al user con "recargá la página".
   if (data.missions.length === 0) {
     await assignDailyMissions()
-    const refreshed = await getHomeData()
-    if (refreshed) data = refreshed
   }
 
-  // Trae misiones con sus templates joineados + reward info.
-  // Reemplaza el patrón viejo de 2 queries separadas.
+  // Fuente de verdad de las misiones a renderizar. Corre DESPUÉS del assign, así
+  // toma las recién creadas. (Antes se refetcheaba todo el home acá, pero el
+  // assign solo toca misiones → ese segundo getHomeData era trabajo de más.)
   const missions = await getMissionsForUser()
+
+  // ¿El usuario ya tiene las misiones de hoy asignadas? Con esto la MissionsCard
+  // distingue "ya reclamaste todo" (estado done) de "no se asignaron" (reintento):
+  // si hay claimables, sí; si no, miramos el conteo del ciclo (incluye claimed).
+  const dailyAssigned = missions.length > 0 || data.dailyCycleCount > 0
 
   // Badges para el listener de notificaciones (toast cuando se desbloquea
   // una nueva). El listener compara contra localStorage en cliente.
   const badges = await getBadgesForUser(data.user.id)
+
+  // Sobres extra (misiones, referidos, etc.). El diario tiene su propia card
+  // protagonista arriba, así que lo excluimos de esta lista.
+  const extraPacks = data.pendingPacks.filter((p) => p.type !== 'daily')
 
   return (
     <div className="space-y-8">
@@ -70,46 +81,22 @@ export async function Home() {
         />
       ) : null}
 
-      {/* Grid de stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Grid de stats — dos datos reales del user (racha + álbum). El placeholder
+          "Trades entre amigos" vivía acá ocupando un tercio sin dato; vuelve como
+          card real cuando trades exista, no como teaser en la fila prime. */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StreakCard
           currentStreak={data.streak.current_streak}
           longestStreak={data.streak.longest_streak}
         />
         <AlbumProgressCard cardsOwned={data.cardsOwned} totalCards={data.totalCards} />
-        <div className="sm:col-span-1 col-span-1">
-          {/* Mini placeholder de balance de monedas — se va a usar más adelante */}
-          <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6 h-full">
-            <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) mb-4">
-              Próximamente
-            </p>
-            <div className="text-display text-2xl text-(--color-text-secondary) leading-tight">
-              Trades
-              <br />
-              entre amigos
-            </div>
-            <p className="text-(--color-text-muted) text-sm mt-3">
-              Pronto vas a poder intercambiar repetidas con tus amigos.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Misiones — ancho completo */}
-      <MissionsCard missions={missions} />
+      <MissionsCard missions={missions} dailyAssigned={dailyAssigned} />
 
-      {/* Sobres extra pendientes (si hay más de daily) */}
-      {data.pendingPacks.filter((p) => p.type !== 'daily').length > 0 && (
-        <div className="rounded-[16px] bg-(--color-surface-raised) border border-white/[0.06] p-6">
-          <p className="text-mono text-[11px] uppercase tracking-[0.15em] text-(--color-text-muted) mb-3">
-            Otros sobres pendientes
-          </p>
-          <p className="text-(--color-text-secondary) text-sm">
-            Tenés {data.pendingPacks.filter((p) => p.type !== 'daily').length} sobre(s) extra de
-            misiones o referrals esperando.
-          </p>
-        </div>
-      )}
+      {/* Sobres extra pendientes (misiones, referidos, etc.) — accionables */}
+      {extraPacks.length > 0 && <ExtraPacksCard packs={extraPacks} />}
     </div>
   )
 }

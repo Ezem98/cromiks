@@ -26,6 +26,7 @@ export function StreakCard({ currentStreak, longestStreak }: StreakCardProps) {
           Tu racha
         </p>
         <FlameIcon
+          aria-hidden="true"
           className={cn(
             'size-5',
             currentStreak === 0 ? 'text-(--color-text-ghost)' : 'text-(--color-gold)',
@@ -37,7 +38,7 @@ export function StreakCard({ currentStreak, longestStreak }: StreakCardProps) {
         <span
           className={cn(
             'text-display text-6xl leading-none',
-            currentStreak === 0 ? 'text-(--color-text-ghost)' : 'text-(--color-text-primary)',
+            currentStreak === 0 ? 'text-(--color-text-muted)' : 'text-(--color-text-primary)',
           )}
         >
           {currentStreak}
