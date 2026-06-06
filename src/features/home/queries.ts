@@ -1,6 +1,5 @@
 import 'server-only'
 import { getAlbumScope } from '@/features/album/scope'
-import { nextDailyCycleExpiry } from '@/features/missions/daily-cycle'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -56,15 +55,17 @@ export async function getHomeData() {
       // álbum si no está gateado). Mismo helper que el álbum → progreso consistente.
       getAlbumScope(supabase, ALBUM_ID),
 
-      // Misiones del ciclo de hoy en CUALQUIER estado (incluido 'claimed'). Sirve
-      // para que el Home distinga "ya reclamaste todo hoy" de "no se asignaron
-      // ninguna", sin pedir otra vuelta a la DB. Misma clave de ciclo que
-      // assignDailyMissions → cuenta exactamente las 3 del día.
+      // Misiones del ciclo vigente en CUALQUIER estado (incluido 'claimed'):
+      // las no vencidas (expires_at >= ahora). Sirve para que el Home distinga
+      // "ya reclamaste todo hoy" (estado done) de "no se asignaron" (reintento),
+      // sin depender de recomputar la frontera del ciclo en JS (esa lógica vive
+      // server-side en el RPC). Hoy todas las misiones son diarias; si se suman
+      // semanales/permanentes, acotar con un join a is_daily_pool.
       supabase
         .from('user_missions')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
-        .eq('expires_at', nextDailyCycleExpiry()),
+        .gte('expires_at', new Date().toISOString()),
     ])
 
   const pendingPacks = packsRes.data ?? []

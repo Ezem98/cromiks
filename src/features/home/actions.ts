@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { nextDailyCycleExpiry } from '@/features/missions/daily-cycle'
 import { defineAction } from '@/lib/actions'
 import { track } from '@/lib/analytics'
 
@@ -69,31 +68,29 @@ export const claimDailyPack = defineAction({
   },
 })
 
+/** Codes que el RPC assign_daily_missions puede lanzar (match contra error.message). */
+const ASSIGN_MISSIONS_CODES = new Set(['no_templates_available', 'auth_required'])
+
 /**
  * Asigna 3 misiones diarias al user si todavía no tiene las del ciclo de hoy.
  *
  * Idempotente POR CICLO y a prueba de concurrencia: delega en el RPC
- * assign_daily_missions, que toma un advisory lock por user+ciclo, cuenta las
- * misiones del día (cualquier estado, incluido claimed) e inserta solo las que
- * falten. Reclamar las 3 NO dispara una reasignación, y dos cargas concurrentes
- * no insertan 3 c/u.
+ * security-definer assign_daily_missions, que computa la frontera del ciclo
+ * SERVER-SIDE (próxima medianoche AR), toma un advisory lock por user+ciclo,
+ * cuenta las misiones del día (cualquier estado, incluido claimed) e inserta
+ * solo las que falten. Reclamar las 3 NO dispara reasignación, dos cargas
+ * concurrentes no insertan 3 c/u, y el cliente no puede elegir el ciclo ni las
+ * misiones (si pudiera, mintearía recompensas infinitas).
  */
 export const assignDailyMissions = defineAction({
   name: 'assignDailyMissions',
   schema: z.void(),
-  expectedErrors: ['no_templates_available'],
+  expectedErrors: ['no_templates_available', 'auth_required'],
   fn: async (_input, { supabase }) => {
-    // Toda la lógica vive en el RPC security-definer assign_daily_missions:
-    // pg_advisory_xact_lock(user+ciclo) + count + pick weighted + insert, todo en
-    // una transacción. Eso cierra la race de "dos cargas concurrentes insertan
-    // 3 c/u" (la idempotencia por count desde acá, sola, era TOCTOU). El pick
-    // pasó a SQL → ya no hace falta el admin client ni exponer la selección.
-    const { error } = await supabase.rpc('assign_daily_missions', {
-      p_expires_at: nextDailyCycleExpiry(),
-    })
+    const { error } = await supabase.rpc('assign_daily_missions')
 
     if (error) {
-      const code = error.message === 'no_templates_available' ? 'no_templates_available' : 'unknown'
+      const code = ASSIGN_MISSIONS_CODES.has(error.message) ? error.message : 'unknown'
       return { ok: false, code, message: error.message }
     }
 

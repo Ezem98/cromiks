@@ -729,7 +729,7 @@ export type Database = {
         Args: { p_rarity: Database["public"]["Enums"]["card_rarity"] }
         Returns: number
       }
-      assign_daily_missions: { Args: { p_expires_at: string }; Returns: number }
+      assign_daily_missions: { Args: never; Returns: number }
       claim_daily_pack: {
         Args: never
         Returns: {
