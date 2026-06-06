@@ -1,5 +1,6 @@
 import 'server-only'
 import { getAlbumScope } from '@/features/album/scope'
+import { nextDailyCycleExpiry } from '@/features/missions/daily-cycle'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -22,38 +23,49 @@ export async function getHomeData() {
   const today = new Date().toISOString().slice(0, 10)
 
   // Fetch en paralelo todo lo que necesita el home
-  const [packsRes, streakRes, missionsRes, cardsCountRes, albumScope] = await Promise.all([
-    // Sobres pendientes (todos los tipos)
-    supabase
-      .from('packs')
-      .select('id, type, card_count, available_at, expires_at, context')
-      .eq('user_id', user.id)
-      .eq('status', 'pending')
-      .order('available_at', { ascending: false }),
+  const [packsRes, streakRes, missionsRes, cardsCountRes, albumScope, dailyCycleRes] =
+    await Promise.all([
+      // Sobres pendientes (todos los tipos)
+      supabase
+        .from('packs')
+        .select('id, type, card_count, available_at, expires_at, context')
+        .eq('user_id', user.id)
+        .eq('status', 'pending')
+        .order('available_at', { ascending: false }),
 
-    // Streak
-    supabase.from('streaks').select('*').eq('user_id', user.id).single(),
+      // Streak
+      supabase.from('streaks').select('*').eq('user_id', user.id).single(),
 
-    // Misiones activas
-    supabase
-      .from('user_missions')
-      .select('id, mission_template_id, status, progress, target, expires_at')
-      .eq('user_id', user.id)
-      .in('status', ['active', 'completed'])
-      .or(`expires_at.gte.${today}T00:00:00,expires_at.is.null`),
+      // Misiones activas
+      supabase
+        .from('user_missions')
+        .select('id, mission_template_id, status, progress, target, expires_at')
+        .eq('user_id', user.id)
+        .in('status', ['active', 'completed'])
+        .or(`expires_at.gte.${today}T00:00:00,expires_at.is.null`),
 
-    // Cuántos cromos únicos tiene del álbum eterno-diciembre.
-    // Inner join filtra automáticamente user_cards huérfanos o de otros álbumes.
-    supabase
-      .from('user_cards')
-      .select('card_id, cards!inner(album_id)', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .eq('cards.album_id', ALBUM_ID),
+      // Cuántos cromos únicos tiene del álbum eterno-diciembre.
+      // Inner join filtra automáticamente user_cards huérfanos o de otros álbumes.
+      supabase
+        .from('user_cards')
+        .select('card_id, cards!inner(album_id)', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('cards.album_id', ALBUM_ID),
 
-    // Total de cromos OBTENIBLES (scope activo: solo páginas is_active, o todo el
-    // álbum si no está gateado). Mismo helper que el álbum → progreso consistente.
-    getAlbumScope(supabase, ALBUM_ID),
-  ])
+      // Total de cromos OBTENIBLES (scope activo: solo páginas is_active, o todo el
+      // álbum si no está gateado). Mismo helper que el álbum → progreso consistente.
+      getAlbumScope(supabase, ALBUM_ID),
+
+      // Misiones del ciclo de hoy en CUALQUIER estado (incluido 'claimed'). Sirve
+      // para que el Home distinga "ya reclamaste todo hoy" de "no se asignaron
+      // ninguna", sin pedir otra vuelta a la DB. Misma clave de ciclo que
+      // assignDailyMissions → cuenta exactamente las 3 del día.
+      supabase
+        .from('user_missions')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('expires_at', nextDailyCycleExpiry()),
+    ])
 
   const pendingPacks = packsRes.data ?? []
   const dailyPack = pendingPacks.find((p) => p.type === 'daily') ?? null
@@ -79,6 +91,9 @@ export async function getHomeData() {
       total_claims: 0,
     },
     missions: missionsRes.data ?? [],
+    // Misiones del ciclo de hoy en cualquier estado (incluido claimed). El Home
+    // lo usa para diferenciar "ya reclamaste todo" de "no se asignaron".
+    dailyCycleCount: dailyCycleRes.count ?? 0,
     cardsOwned: cardsCountRes.count ?? 0,
     totalCards: albumScope.totalCards,
   }

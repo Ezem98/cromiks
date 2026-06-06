@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { nextDailyCycleExpiry } from '@/features/missions/daily-cycle'
 import { defineAction } from '@/lib/actions'
 import { track } from '@/lib/analytics'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -70,9 +71,11 @@ export const claimDailyPack = defineAction({
 })
 
 /**
- * Asigna 3 misiones diarias al user si todavía no tiene activas hoy.
+ * Asigna 3 misiones diarias al user si todavía no tiene las del ciclo de hoy.
  *
- * Idempotente: si ya tiene 3 misiones activas con expires_at hoy, no hace nada.
+ * Idempotente POR CICLO: si ya tiene 3 misiones con el expires_at de hoy en
+ * CUALQUIER estado (incluido claimed), no hace nada. Reclamar las 3 NO dispara
+ * una reasignación (eso sería un loop de recompensas infinitas).
  *
  * Usa admin client porque queremos bypassear RLS para insertar en user_missions
  * (los inserts directos están bloqueados por RLS — solo via functions).
@@ -82,26 +85,27 @@ export const assignDailyMissions = defineAction({
   schema: z.void(),
   expectedErrors: ['no_templates_available', 'insert_failed'],
   fn: async (_input, { userId, supabase }) => {
-    const today = new Date().toISOString().slice(0, 10)
-    const tomorrow = new Date()
-    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
-    tomorrow.setUTCHours(3, 0, 0, 0) // 00:00 AR = 03:00 UTC
-    const expiresAt = tomorrow.toISOString()
+    const expiresAt = nextDailyCycleExpiry()
 
-    // Check si ya tiene misiones diarias activas hoy
-    const { data: existing } = await supabase
+    // Idempotencia POR CICLO: todas las misiones de un día comparten este
+    // expires_at. Contamos las de hoy en CUALQUIER estado —incluido 'claimed'—
+    // para no reasignar 3 nuevas cuando el user ya reclamó las del día (sería un
+    // loop de recompensas infinitas).
+    //
+    // El chequeo viejo estaba doblemente roto: filtraba status in
+    // (active, completed) —dejaba afuera las claimed— y miraba una ventana de
+    // "hoy" que ni siquiera incluía el expiry que se insertaba (mañana 03:00Z).
+    const { count: existingCount } = await supabase
       .from('user_missions')
-      .select('id')
+      .select('id', { count: 'exact', head: true })
       .eq('user_id', userId)
-      .in('status', ['active', 'completed'])
-      .gte('expires_at', `${today}T00:00:00`)
-      .lte('expires_at', `${today}T23:59:59`)
+      .eq('expires_at', expiresAt)
 
-    if (existing && existing.length >= 3) {
+    if ((existingCount ?? 0) >= 3) {
       return { ok: true, data: undefined }
     }
 
-    const slotsToFill = 3 - (existing?.length ?? 0)
+    const slotsToFill = 3 - (existingCount ?? 0)
 
     // Pickear N misiones random del pool con weighted random
     const admin = createAdminClient()
